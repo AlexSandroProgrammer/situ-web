@@ -3307,7 +3307,7 @@ textarea.form-control-lg {
 }
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #697a8d;
+  color: #191b1f;
   background-color: #fff;
   border-color: #fff;
 }
@@ -3763,7 +3763,7 @@ textarea.form-control-lg {
 }
 
 .navbar-light .navbar-brand {
-  color: #697a8d;
+  color: #191b1f;
 }
 .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:focus {
   color: #697a8d;
