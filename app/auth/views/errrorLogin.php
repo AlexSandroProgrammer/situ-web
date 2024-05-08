@@ -1,6 +1,5 @@
 <?php
 require_once("../components/header.php");
-require_once("../../functions/functions.php");
 require_once("../controllers/Controllers.php");
 ?>
 
@@ -23,6 +22,7 @@ require_once("../controllers/Controllers.php");
                             <div class="navbar-nav me-auto">
                                 <a class="nav-item nav-link active" href="javascript:void(0)">Inicio de Sesion</a>
                             </div>
+
                             <form>
                                 <button class="btn btn-outline-primary" type="button">Usuario Invitado</button>
                                 <button class="btn btn-outline-danger" type="button">Volver al Blog </button>
@@ -82,7 +82,7 @@ require_once("../controllers/Controllers.php");
                                     </g>
                                 </svg>
                             </span>
-                            <span class="app-brand-text demo text-body fw-bolder">SITU INICIO DE SESION</span>
+                            <span class="app-brand-text demo text-body fw-bolder">SITU ERROR INICIO DE SESION</span>
                         </a>
                     </div>
                     <!-- /Logo -->
@@ -91,14 +91,14 @@ require_once("../controllers/Controllers.php");
                     <p class="mb-4">Ingresa por favor tus credenciales para empezar a gestionar los turnos rutinarios de
                         esta semana. </p>
 
-                    <form id="formAuthentication" class="mb-3" autocomplete="off" method="POST" action="">
+                    <form id="formAuthentication" class="mb-3" autocomplete="off" action="" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electronico</label>
-                            <input type="email" class="form-control" required maxlength="50" id="email" name="email" placeholder="Ingresa tu correo electronico" autofocus />
+                            <input type="email" class="form-control" maxlength="50" id="email" name="email" placeholder="Ingresa tu correo electronico" autofocus />
                         </div>
                         <div class="mb-3 form-password-toggle">
                             <div class="d-flex justify-content-between">
-                                <label class="form-label" required for="password">Contraseña</label>
+                                <label class="form-label" for="password">Contraseña</label>
                                 <a href="./verify-email.php">
                                     <small>Olvidaste tu contraseña?</small>
                                 </a>
@@ -109,7 +109,7 @@ require_once("../controllers/Controllers.php");
                             </div>
                         </div>
                         <div class="mb-3">
-                            <input class="btn btn-primary d-grid w-100" type="submit" name="iniciarSesion" value="Iniciar Sesion" />
+                            <button class="btn btn-primary d-grid w-100" type="submit">Iniciar Sesion</button>
                         </div>
                     </form>
                 </div>

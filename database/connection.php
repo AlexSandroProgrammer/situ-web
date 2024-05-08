@@ -7,7 +7,7 @@ class Database
     // Variable para declarar el parametro del servidor
     private $localhost = "localhost";
     // Variable para declarar el parametro del nombre de la base de datos
-    private $namedatabase = "listado_maestro";
+    private $namedatabase = "situ_db";
 
     // Variable para declarar el parametro del nombre de usuario
     private $username = "root";
