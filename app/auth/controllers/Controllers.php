@@ -1,8 +1,9 @@
 <?php
-session_start();
 require_once "../../../database/connection.php";
 $db = new Database();
 $connection = $db->conectar();
+
+require_once("../../functions/functions.php");
 
 // controlador inicio de sesion
 if (isset($_POST["iniciarSesion"])) {
@@ -14,11 +15,10 @@ if (isset($_POST["iniciarSesion"])) {
         <script>        
         Swal.fire({
             icon: "error",
-            title: "Error al momento de iniciar Sesion",
+            title: "Error inicio de sesion",
             text: "Hay datos vacios en el formulario, debes ingresar todos los datos",
         });</script>';
         session_destroy();
-        exit();
     }
     // Realiza la consulta de autenticación
     $authValidation = $connection->prepare("SELECT * FROM usuarios WHERE email = :email");
@@ -26,33 +26,102 @@ if (isset($_POST["iniciarSesion"])) {
     $authValidation->execute();
     $authSession = $authValidation->fetch();
 
-    if ($authSession && password_verify($passwordLog, $authSession['contrasena'])) {
+    if ($authSession && password_verify($passwordLog, $authSession['password'])) {
         // Si la autenticación es exitosa
-        $_SESSION['rol_user'] = $authSession['rol'];
-        $_SESSION['names'] = $authSession['nombre_usuario'];
-        $_SESSION['email'] = $authSession['usuario'];
+        $_SESSION['rol'] = $authSession['tipo_usuario'];
+        $_SESSION['username'] = $authSession['nombre_usuario'];
+        $_SESSION['email'] = $authSession['email'];
 
-        if ($_SESSION['rol_user'] == 'administrador') {
+        if ($_SESSION['rol'] == 'administrador') {
             header("Location:../../admin/");
         } else {
             session_destroy();
-            echo '<script>alert("No tienes permiso para acceder a este tipo de cuenta.");</script>';
             echo '<script>
+            Swal.fire({
+                icon: "error",
+                title: "Error inicio de sesion",
+                text: "No tienes permiso para acceder a este tipo de cuenta",
+            });</script>';
+        }
+    } else {
+        echo '<script>
+        Swal.fire({
+            icon: "error",
+            title: "Error inicio de sesion",
+            text: "Error al momento de iniciar sesion, verifica tus credenciales",
+        });</script>';
+    }
+}
+
+// CONSUMO DE FUNCIONES PARA REGISTRO DE USUARIO
+
+if (isset($_POST["registro"])) {
+    // Obtener datos del formulario
+    $nombre_usuario = $_POST['nombre_usuario'];
+    $rol = $_POST['rol'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $estado = 1;
+
+    // CONSULTA SQL PARA VERIFICAR SI EL USUARIO YA EXISTE EN LA BASE DE DATOS
+
+    $data = $connection->prepare("SELECT * FROM usuarios WHERE nombre_usuario = '$nombre_usuario' OR email = '$email'");
+    $data->execute();
+    $register_validation = $data->fetchAll();
+
+    if (isEmpty([$nombre_usuario, $password, $rol, $email])) {
+        echo '
+        <script>        
+        Swal.fire({
+            icon: "error",
+            title: "Error al momento de iniciar Sesion",
+            text: "Hay datos vacios en el formulario, debes ingresar todos los datos",
+        });</script>';
+        session_destroy();
+        exit();
+    }
+
+    // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
+    if ($register_validation) {
+        session_destroy();
+        echo '<script>
             Swal.fire({
                 icon: "success",
                 title: "Perfecto",
                 text: "Error al momento de iniciar sesion, verifica tus credenciales",
             });</script>';
+    } else {
+        // Hash de la contraseña
+        $pass_encriptaciones = [
+            'cost' => 15
+        ];
+
+        $user_password = password_hash($password, PASSWORD_DEFAULT, $pass_encriptaciones);
+
+        // Registrar el usuario en la base de datos
+        $userRegistered = registerUser($connection, $rol,  $nombre_usuario, $email, $user_password, $estado);
+
+        if ($userRegistered) {
+            echo '
+        <script>        
+        Swal.fire({
+            icon: "error",
+            title: "Error al momento de iniciar Sesion",
+            text: "Hay datos vacios en el formulario, debes ingresar todos los datos",
+        });</script>';
+            session_destroy();
+            exit();
+        } else {
+            echo '
+        <script>        
+        Swal.fire({
+            icon: "error",
+            title: "Error al momento de iniciar Sesion",
+            text: "Los datos ingresados ya estan registrados",
+        });</script>';
+            session_destroy();
             exit();
         }
-    } else {
-        echo '<script>
-        Swal.fire({
-            icon: "success",
-            title: "Perfecto",
-            text: "Error al momento de iniciar sesion, verifica tus credenciales",
-        });</script>';
-        exit();
     }
 }
 
