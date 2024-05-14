@@ -27,20 +27,38 @@ if (isset($_POST["iniciarSesion"])) {
     $authSession = $authValidation->fetch();
 
     if ($authSession && password_verify($passwordLog, $authSession['password'])) {
-        // Si la autenticación es exitosa
-        $_SESSION['rol'] = $authSession['tipo_usuario'];
-        $_SESSION['username'] = $authSession['nombre_usuario'];
-        $_SESSION['email'] = $authSession['email'];
+        $emailUser = $authSession['email'];
+        $tipoUsuario = $authSession['id_tipo_usuario'];
 
-        if ($_SESSION['rol'] == 'administrador') {
-            header("Location:../../admin/");
+        // llamamos los datos del administrador 
+        $requestUser = $connection->prepare("SELECT * FROM usuarios INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id  WHERE usuarios.email = '$emailUser'");
+        $requestUser->execute();
+        $userSession = $requestUser->fetch();
+
+        if ($userSession) {
+            // Si la autenticación es exitosa
+            $_SESSION['rol'] = $userSession['tipo_usuario'];
+            $_SESSION['names'] = $userSession['nombres'];
+            $_SESSION['surnames'] = $userSession['apellidos'];
+            $_SESSION['email'] = $userSession['email'];
+
+            if ($_SESSION['rol'] == 'administrador') {
+                header("Location:../../admin/");
+            } else {
+                session_destroy();
+                echo '<script>
+                Swal.fire({
+                    icon: "error",
+                    title: "Error inicio de sesion",
+                    text: "No tienes permiso para acceder a este tipo de cuenta",
+                });</script>';
+            }
         } else {
-            session_destroy();
             echo '<script>
             Swal.fire({
                 icon: "error",
                 title: "Error inicio de sesion",
-                text: "No tienes permiso para acceder a este tipo de cuenta",
+                text: "Error al momento de iniciar sesion, verifica tus credenciales",
             });</script>';
         }
     } else {

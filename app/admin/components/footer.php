@@ -4,21 +4,19 @@
         <hr class="container-m-nx border-light my-5" />
         <!-- Footer with components -->
         <section id="component-footer">
-            <footer class="footer bg-light">
-                <div
-                    class="container-fluid d-flex flex-lg-row flex-column justify-content-between align-items-md-center gap-1 container-p-x py-3">
+            <footer class="footer bg-dark">
+                <div class="container-fluid d-flex flex-lg-row flex-column text-bg-white justify-content-between align-items-md-center gap-1 container-p-x py-3">
                     <div class="mb-2 mb-md-0">
                         ©
                         <script>
-                        document.write(new Date().getFullYear());
+                            document.write(new Date().getFullYear());
                         </script>
                         , Todos los derechos reservados, diseñado y desarrollado por
                         <a href="#" target="_blank" class="footer-link fw-bolder">Luis
                             Alejandro Muñoz Garcia</a>
                     </div>
                     <div>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"><i
-                                class="bx bx-log-out-circle"></i>Cerrar Sesion</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger"><i class="bx bx-log-out-circle"></i>Cerrar Sesion</a>
                     </div>
                 </div>
             </footer>
@@ -38,6 +36,7 @@
     <!-- Overlay -->
     <div class="layout-overlay layout-menu-toggle"></div>
     </div>
+
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
@@ -57,8 +56,15 @@
     <!-- Page JS -->
     <script src="../../assets/js/dashboards-analytics.js"></script>
 
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="../../libraries/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../libraries/bootstrap/popper/popper.min.js"></script>
+    <script src="../../libraries/bootstrap/js/bootstrap.min.js"></script>
+    <!-- datatables JS -->
+    <script type="text/javascript" src="../../libraries/datatables/datatables.min.js"></script>
+    <!-- código JS propìo-->
+    <script type="text/javascript" src="../../assets/js/props-datatable.js"></script>
+
     </body>
 
     </html>
