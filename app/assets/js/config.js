@@ -7,7 +7,6 @@
 
 'use strict';
 
-
 // JS global variables
 let config = {
   colors: {

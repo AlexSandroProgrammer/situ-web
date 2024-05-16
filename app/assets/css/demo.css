@@ -105,33 +105,3 @@
   text-align: center;
   margin-top: 1rem;
 }
-
-
-table {
-  font-size: 14px;
-  color: white;
-}
-
-header {
-  background: rgba(105, 108, 255, 0.16) !important;;
-}
-
-/*estilos para la tabla*/
-table th {
-  background-color: rgba(105, 108, 255, 0.16) !important;;
-  color: rgb(0, 0, 0);
-}
-table > tbody > tr > td {
-  vertical-align: middle !important;
-}
-
-/*para alinear los botones y cuadro de busqueda*/
-.btn-group,
-.btn-group-vertical {
-  position: absolute !important;
-}
-
-.buttons-html5,
-.buttons-print {
-  display: none;
-}
