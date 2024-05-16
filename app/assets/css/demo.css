@@ -105,3 +105,37 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+
+header{
+  background: #8E2DE2;
+  background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);
+  background: linear-gradient(to right, #4A00E0, #8E2DE2);
+}
+
+/*estilos para la tabla*/
+table th {
+  background: -webkit-linear-gradient(to right, #ffffff, #cdc9d4);
+  background: linear-gradient(to right, #ffffff, #cdc9d4);
+  color: white;
+}
+table>tbody>tr>td {
+  vertical-align: middle !important;
+}
+
+/*para alinear los botones y cuadro de busqueda*/
+.btn-group, .btn-group-vertical {
+  position: absolute !important;
+}
+
+a:hover{
+  text-decoration: none;
+}
+
+select.custom-select{
+  padding: 15px;
+}
+
+.btn-nones{
+  display: none;
+}

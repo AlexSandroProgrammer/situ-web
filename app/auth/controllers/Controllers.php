@@ -11,45 +11,137 @@ if (isset($_POST["iniciarSesion"])) {
     $passwordLog = $_POST['password'];
     // validamos que no vengan campos vacios
     if (isEmpty([$email, $passwordLog])) {
-        echo '
-        <script>        
+        echo '<script>
         Swal.fire({
             icon: "error",
             title: "Error inicio de sesion",
-            text: "Hay datos vacios en el formulario, debes ingresar todos los datos",
+            text: "Existen datos vacios al momento de autenticarte",
+        }).then(()=> {
+            window.location="./index.php"    
         });</script>';
         session_destroy();
     }
     // Realiza la consulta de autenticación
-    $authValidation = $connection->prepare("SELECT * FROM usuarios WHERE email = :email");
+    $authValidation = $connection->prepare("SELECT * FROM usuarios WHERE email = :email AND estado_usuario = 1");
     $authValidation->bindParam(':email', $email);
     $authValidation->execute();
     $authSession = $authValidation->fetch();
 
     if ($authSession && password_verify($passwordLog, $authSession['password'])) {
         // Si la autenticación es exitosa
-        $_SESSION['rol'] = $authSession['tipo_usuario'];
-        $_SESSION['username'] = $authSession['nombre_usuario'];
+        $_SESSION['rol'] = $authSession['id_tipo_usuario'];
+        $_SESSION['names'] = $authSession['nombres'];
+        $_SESSION['surnames'] = $authSession['apellidos'];
         $_SESSION['email'] = $authSession['email'];
 
-        if ($_SESSION['rol'] == 'administrador') {
+        if ($_SESSION['rol'] == 1) {
             header("Location:../../admin/");
         } else {
-            session_destroy();
             echo '<script>
             Swal.fire({
                 icon: "error",
                 title: "Error inicio de sesion",
-                text: "No tienes permiso para acceder a este tipo de cuenta",
+                text: "No tienes permiso para iniciar sesion en este tipo de cuenta",
+            }).then(()=> {
+                window.location="./index.php"    
             });</script>';
+            session_destroy();
         }
     } else {
-        echo '<script>
-        Swal.fire({
-            icon: "error",
-            title: "Error inicio de sesion",
-            text: "Error al momento de iniciar sesion, verifica tus credenciales",
-        });</script>';
+
+        // llamamos los datos del usuario que esta intentando autenticarse
+        $selectEmail = $connection->prepare("SELECT * FROM usuarios WHERE email = :email");
+        $selectEmail->bindParam(':email', $email);
+        $selectEmail->execute();
+        $selectEmailSession = $selectEmail->fetch(PDO::FETCH_ASSOC);
+        if ($selectEmailSession) {
+            // llamamos el horario local
+            date_default_timezone_set("America/Bogota");
+            $fecha_actual = date("Y-m-d");
+
+            // creamos la cantidad posible de inicio de sesion
+            $posibilidades = 5;
+
+            $intentos_usuario = $connection->prepare("SELECT COUNT(*) AS conteointentos FROM intentos_fallidos WHERE email = :email AND fecha_intento = :fecha_actual");
+            $intentos_usuario->bindParam(':email', $email);
+            $intentos_usuario->bindParam(':fecha_actual', $fecha_actual);
+            $intentos_usuario->execute();
+            $intentos_realizados = $intentos_usuario->fetch(PDO::FETCH_ASSOC);
+
+            if ($intentos_realizados['conteointentos'] == $posibilidades) {
+                // si ya es igual al intento 
+                $updateState = $connection->prepare("UPDATE usuarios SET estado_usuario = 2 WHERE email = :email");
+                $updateState->bindParam(':email', $email);
+                $updateState->execute();
+                echo '<script>
+                        Swal.fire({
+                            icon: "error",
+                            title: "Demasiados intentos",
+                            text: "Superaste la cantidad maxima de intentos minimos, por tal motivo hemos bloqueado tu cuenta",
+                        }).then(()=> {
+                            window.location="./index.php"    
+                        });</script>';
+                session_destroy();
+            } else {
+                $registrointentos = $connection->prepare("INSERT INTO intentos_fallidos(email, fecha_intento) VALUES (:email,:fecha_actual)");
+                $registrointentos->bindParam(':email', $email);
+                $registrointentos->bindParam(':fecha_actual', $fecha_actual);
+                $registrointentos->execute();
+                if ($registrointentos) {
+                    // CREAMOS LA CONSULTA PARA REALIZAR EL CONTEO DE LOS INTENTOS QUE HA REALIZADO EL USUARIO
+                    $intentosPosibles = $connection->prepare("SELECT COUNT(*) AS contador FROM intentos_fallidos WHERE email = :email AND fecha_intento = :fecha_actual");
+                    $intentosPosibles->bindParam(':email', $email);
+                    $intentosPosibles->bindParam(':fecha_actual', $fecha_actual);
+                    $intentosPosibles->execute();
+                    $intentoUsuario = $intentosPosibles->fetch(PDO::FETCH_ASSOC);
+
+                    if ($intentoUsuario['contador'] == $posibilidades) { // Verificar el valor de "conteo"
+                        // si ya es igual al intento 
+                        $updateState = $connection->prepare("UPDATE usuarios SET estado_usuario = 2 WHERE email = :email");
+                        $updateState->bindParam(':email', $email);
+                        $updateState->execute();
+                        echo '<script>
+                        Swal.fire({
+                            icon: "error",
+                            title: "Demasiados intentos",
+                            text: "Superaste la cantidad maxima de intentos minimos, por tal motivo hemos bloqueado tu cuenta",
+                        }).then(()=> {
+                            window.location="./index.php"    
+                        });</script>';
+                        session_destroy();
+                    } else {
+                        echo '<script>
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error inicio de sesion",
+                            text: "Las credenciales son incorrectas",
+                        }).then(()=> {
+                            window.location="./index.php"    
+                        });</script>';
+                        session_destroy();
+                    }
+                } else {
+                    echo '<script>
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error inicio de sesion",
+                        text: "Las credenciales son incorrectas",
+                    }).then(()=> {
+                        window.location="./index.php"    
+                    });</script>';
+                    session_destroy();
+                }
+            }
+        } else {
+            echo '<script>
+            Swal.fire({
+                icon: "error",
+                title: "Error inicio de sesion",
+                text: "Error al momento de iniciar sesion, verifica tus credenciales",
+            }).then(()=> {
+                window.location="./index.php"    
+            });</script>';
+        }
     }
 }
 
