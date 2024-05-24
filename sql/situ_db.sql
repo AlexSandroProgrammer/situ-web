@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-05-2024 a las 22:51:43
+-- Tiempo de generación: 24-05-2024 a las 22:44:29
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -53,6 +53,29 @@ CREATE TABLE `fichas` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `intentos_fallidos`
+--
+
+CREATE TABLE `intentos_fallidos` (
+  `id` int(11) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `fecha_intento` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `intentos_fallidos`
+--
+
+INSERT INTO `intentos_fallidos` (`id`, `email`, `fecha_intento`) VALUES
+(1, 'mitalentohumanose@gmail.com', '2024-05-16'),
+(2, 'mitalentohumanose@gmail.com', '2024-05-16'),
+(3, 'mitalentohumanose@gmail.com', '2024-05-16'),
+(4, 'mitalentohumanose@gmail.com', '2024-05-16'),
+(6, 'mitalentohumanose@gmail.com', '2024-05-16');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `programas_formacion`
 --
 
@@ -60,7 +83,6 @@ CREATE TABLE `programas_formacion` (
   `id-programa` int(11) NOT NULL,
   `nombre_programa` int(11) NOT NULL,
   `descripcion` int(11) NOT NULL,
-  `id_area` int(11) NOT NULL,
   `estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -80,6 +102,25 @@ CREATE TABLE `sugerencias` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipo_usuario`
+--
+
+CREATE TABLE `tipo_usuario` (
+  `id` int(11) NOT NULL,
+  `tipo_usuario` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_usuario`
+--
+
+INSERT INTO `tipo_usuario` (`id`, `tipo_usuario`) VALUES
+(1, 'administrador'),
+(2, 'aprendiz');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `unidad`
 --
 
@@ -87,11 +128,10 @@ CREATE TABLE `unidad` (
   `id_unidad` bigint(20) NOT NULL,
   `nombre_unidad` varchar(200) NOT NULL,
   `id_area` int(11) NOT NULL,
-  `tipo_turno` varchar(200) NOT NULL,
   `hora_inicio` date NOT NULL,
   `hora_finalizacion` date NOT NULL,
   `cantidad_aprendices` int(11) NOT NULL,
-  `estado_usuario` int(11) NOT NULL,
+  `estado` int(11) NOT NULL,
   `estado_trimestre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -102,20 +142,26 @@ CREATE TABLE `unidad` (
 --
 
 CREATE TABLE `usuarios` (
-  `documento` bigint(20) NOT NULL,
-  `tipoDocumento` varchar(100) NOT NULL,
-  `nombres` varchar(100) NOT NULL,
-  `apellidos` varchar(100) NOT NULL,
+  `documento` int(11) NOT NULL,
+  `nombres` varchar(255) NOT NULL,
+  `apellidos` varchar(255) NOT NULL,
   `celular` varchar(20) NOT NULL,
-  `sexo` int(11) NOT NULL,
-  `correo` varchar(100) NOT NULL,
-  `estado` int(1) NOT NULL,
-  `estadoSenaEmpresa` int(1) NOT NULL,
-  `estadoTrimestre` int(1) NOT NULL,
-  `id_ficha` int(11) NOT NULL,
-  `tipo_usuario` int(11) NOT NULL,
-  `intentos_fallidos` int(11) NOT NULL
+  `password` varchar(255) DEFAULT NULL,
+  `sexo` varchar(100) NOT NULL,
+  `estadoSenaEmpresa` int(10) DEFAULT NULL,
+  `estadoTrimestre` int(11) DEFAULT NULL,
+  `id_ficha` int(11) DEFAULT NULL,
+  `id_tipo_usuario` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `estado_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `celular`, `password`, `sexo`, `estadoSenaEmpresa`, `estadoTrimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `estado_usuario`) VALUES
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1);
 
 --
 -- Índices para tablas volcadas
@@ -128,10 +174,22 @@ ALTER TABLE `fichas`
   ADD PRIMARY KEY (`codigoFicha`);
 
 --
+-- Indices de la tabla `intentos_fallidos`
+--
+ALTER TABLE `intentos_fallidos`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `sugerencias`
 --
 ALTER TABLE `sugerencias`
   ADD PRIMARY KEY (`id_sugerencia`);
+
+--
+-- Indices de la tabla `tipo_usuario`
+--
+ALTER TABLE `tipo_usuario`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `unidad`
@@ -150,10 +208,22 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `intentos_fallidos`
+--
+ALTER TABLE `intentos_fallidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT de la tabla `sugerencias`
 --
 ALTER TABLE `sugerencias`
   MODIFY `id_sugerencia` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_usuario`
+--
+ALTER TABLE `tipo_usuario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad`

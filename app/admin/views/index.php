@@ -23,7 +23,9 @@ require_once("../components/sidebar.php");
                         </div>
                         <div class="col-sm-5 text-center text-sm-left">
                             <div class="card-body pb-0 px-0 px-md-4">
-                                <img src="../../assets/img/illustrations/man-with-laptop-light.png" height="140" alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png" data-app-light-img="illustrations/man-with-laptop-light.png" />
+                                <img src="../../assets/img/illustrations/man-with-laptop-light.png" height="140"
+                                    alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                                    data-app-light-img="illustrations/man-with-laptop-light.png" />
                             </div>
                         </div>
                     </div>
@@ -39,17 +41,17 @@ require_once("../components/sidebar.php");
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
                             <div class="d-flex flex-column align-items-center gap-1">
                                 <h2 class="mb-2">8,258</h2>
                                 <span>Total Aprendices</span>
                             </div>
-                            <div id="orderStatisticsChart"></div>
                         </div>
                         <ul class="p-0 m-0">
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-success"><i class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-success"><i
+                                            class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -63,7 +65,8 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-danger"><i class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-danger"><i
+                                            class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -77,7 +80,8 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-secondary"><i class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-secondary"><i
+                                            class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -101,7 +105,9 @@ require_once("../components/sidebar.php");
                     <div class="card-header">
                         <ul class="nav nav-pills" role="tablist">
                             <li class="nav-item">
-                                <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-line-card-income" aria-controls="navs-tabs-line-card-income" aria-selected="true">
+                                <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-tabs-line-card-income"
+                                    aria-controls="navs-tabs-line-card-income" aria-selected="true">
                                     Income
                                 </button>
                             </li>
@@ -154,7 +160,8 @@ require_once("../components/sidebar.php");
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="card-title m-0 me-2">Transactions</h5>
                         <div class="dropdown">
-                            <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn p-0" type="button" id="transactionID" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
@@ -269,10 +276,12 @@ require_once("../components/sidebar.php");
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <div class="avatar flex-shrink-0">
-                                        <img src="../assets/img/icons/unicons/chart-success.png" alt="chart success" class="rounded" />
+                                        <img src="../assets/img/icons/unicons/chart-success.png" alt="chart success"
+                                            class="rounded" />
                                     </div>
                                     <div class="dropdown">
-                                        <button class="btn p-0" type="button" id="cardOpt3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn p-0" type="button" id="cardOpt3" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
@@ -294,10 +303,12 @@ require_once("../components/sidebar.php");
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <div class="avatar flex-shrink-0">
-                                        <img src="../assets/img/icons/unicons/wallet-info.png" alt="Credit Card" class="rounded" />
+                                        <img src="../assets/img/icons/unicons/wallet-info.png" alt="Credit Card"
+                                            class="rounded" />
                                     </div>
                                     <div class="dropdown">
-                                        <button class="btn p-0" type="button" id="cardOpt6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn p-0" type="button" id="cardOpt6" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
@@ -328,7 +339,9 @@ require_once("../components/sidebar.php");
                             <div class="card-body">
                                 <div class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="growthReportId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                                            id="growthReportId" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
                                             2022
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="growthReportId">
@@ -345,7 +358,8 @@ require_once("../components/sidebar.php");
                             <div class="d-flex px-xxl-4 px-lg-2 p-4 gap-xxl-3 gap-lg-1 gap-3 justify-content-between">
                                 <div class="d-flex">
                                     <div class="me-2">
-                                        <span class="badge bg-label-primary p-2"><i class="bx bx-dollar text-primary"></i></span>
+                                        <span class="badge bg-label-primary p-2"><i
+                                                class="bx bx-dollar text-primary"></i></span>
                                     </div>
                                     <div class="d-flex flex-column">
                                         <small>2022</small>
@@ -354,7 +368,8 @@ require_once("../components/sidebar.php");
                                 </div>
                                 <div class="d-flex">
                                     <div class="me-2">
-                                        <span class="badge bg-label-info p-2"><i class="bx bx-wallet text-info"></i></span>
+                                        <span class="badge bg-label-info p-2"><i
+                                                class="bx bx-wallet text-info"></i></span>
                                     </div>
                                     <div class="d-flex flex-column">
                                         <small>2021</small>
@@ -374,10 +389,12 @@ require_once("../components/sidebar.php");
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <div class="avatar flex-shrink-0">
-                                        <img src="../assets/img/icons/unicons/paypal.png" alt="Credit Card" class="rounded" />
+                                        <img src="../assets/img/icons/unicons/paypal.png" alt="Credit Card"
+                                            class="rounded" />
                                     </div>
                                     <div class="dropdown">
-                                        <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn p-0" type="button" id="cardOpt4" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4">
@@ -399,10 +416,12 @@ require_once("../components/sidebar.php");
                             <div class="card-body">
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <div class="avatar flex-shrink-0">
-                                        <img src="../assets/img/icons/unicons/cc-primary.png" alt="Credit Card" class="rounded" />
+                                        <img src="../assets/img/icons/unicons/cc-primary.png" alt="Credit Card"
+                                            class="rounded" />
                                     </div>
                                     <div class="dropdown">
-                                        <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
                                             <i class="bx bx-dots-vertical-rounded"></i>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="cardOpt1">
@@ -424,14 +443,16 @@ require_once("../components/sidebar.php");
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
-                                    <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+                                    <div
+                                        class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                                         <div class="card-title">
                                             <h5 class="text-nowrap mb-2">Profile Report</h5>
                                             <span class="badge bg-label-warning rounded-pill">Year
                                                 2021</span>
                                         </div>
                                         <div class="mt-sm-auto">
-                                            <small class="text-success text-nowrap fw-semibold"><i class="bx bx-chevron-up"></i> 68.2%</small>
+                                            <small class="text-success text-nowrap fw-semibold"><i
+                                                    class="bx bx-chevron-up"></i> 68.2%</small>
                                             <h3 class="mb-0">$84,686k</h3>
                                         </div>
                                     </div>

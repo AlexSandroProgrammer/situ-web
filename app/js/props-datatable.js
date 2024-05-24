@@ -21,21 +21,21 @@ $(document).ready(function() {
         buttons:[ 
 			{
 				extend:    'excelHtml5',
-				text:      '<i class="fas fa-file-excel"></i> ',
+				text:      `<i class="fas fa-file-excel"></i>${" "}Exportar`,
 				titleAttr: 'Exportar a Excel',
-				className: 'btn btn-success btn-nones'
+				className: 'btn btn-success'
 			},
 			{
 				extend:    'pdfHtml5',
-				text:      '<i class="fas fa-file-pdf"></i> ',
+				text:      `<i class="fas fa-file-pdf"></i>${" "}Exportar`,
 				titleAttr: 'Exportar a PDF',
-				className: 'btn btn-danger btn-nones'
+				className: 'btn btn-danger'
 			},
 			{
 				extend:    'print',
-				text:      '<i class="fa fa-print"></i> ',
+				text:      `<i class="fas fa-print"></i>${" "}Exportar`,
 				titleAttr: 'Imprimir',
-				className: 'btn btn-info btn-nones'
+				className: 'btn btn-info'
 			},
 		]	        
     });     
