@@ -1,4 +1,5 @@
 <?php
+$titlePage = "Listado de Areas";
 require_once("../components/sidebar.php");
 ?>
 <!-- Content wrapper -->
@@ -28,30 +29,27 @@ require_once("../components/sidebar.php");
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label class="form-label" for="codigo-ficha">Codigo de Ficha</label>
+                                            <label class="form-label" for="nombre_area">Nombre de Area</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="codigo-ficha-2" class="input-group-text"><i
-                                                        class="bx bx-user"></i></span>
-                                                <input type="text" onkeypress="return(multiplenumber(event));"
-                                                    oninput="maxlengthNumber(this);" minlength="5" maxlength="20"
-                                                    autofocus class="form-control" id="codigo-ficha"
-                                                    placeholder="Ingresa el codigo de ficha"
-                                                    aria-describedby="codigo-ficha-2" />
+                                                <span id="nombre_area-span" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i> </span>
+                                                <input type="text" required minlength="2" maxlength="20" autofocus
+                                                    class="form-control" name="nombreArea" id="nombre_area"
+                                                    placeholder="Ingresa el nombre del area" />
                                             </div>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="exampleFormControlSelect1" class="form-label">Programacion de
-                                                Formacion</label>
+                                            <label for="estadoInicial" class="form-label">Estado
+                                                Inicial</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="codigo-ficha-2" class="input-group-text"><i
-                                                        class="bx bx-user"></i></span>
-                                                <select class="form-select" id="exampleFormControlSelect1"
-                                                    aria-label="Default select example">
-                                                    <option selected>Seleccionar Programa...</option>
-                                                    <option value="1">One</option>
-                                                    <option value="2">Two</option>
-                                                    <option value="3">Three</option>
+                                                <span id="estadoInicial-2" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i></span>
+                                                <select class="form-select" name="estadoInicial" required
+                                                    id="estadoInicial" aria-label="Selecciona un estado inicial">
+                                                    <option selected value="">Seleccionar Estado...</option>
+                                                    <option value="1">Activo</option>
+                                                    <option value="2">Inactivo</option>
                                                 </select>
                                             </div>
                                         </div>

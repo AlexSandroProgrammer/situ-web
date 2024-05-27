@@ -10,12 +10,29 @@ function isEmpty($fields)
 }
 
 
-function showErrorAndRedirect($message, $location)
+function showErrorOrSuccessAndRedirect($icon, $title, $description, $location)
 {
-    echo "<script>alert('$message');</script>";
-    echo "<script>window.location = '$location';</script>";
+    echo "<script>
+        Swal.fire({
+            icon: '$icon',
+            title: '$title',
+            text: '$description',
+        }).then(() => {
+            window.location='$location'    
+        });</script>";
 }
 
+function showErrorFieldsEmpty($location)
+{
+    echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Algunos datos estan vacios, debes ingresar todos los datos del formulario',
+        }).then(() => {
+            window.location='$location'    
+        });</script>";
+}
 
 
 function isFileUploaded($file)
@@ -40,11 +57,6 @@ function moveUploadedFile($file, $destination)
     return move_uploaded_file($file["tmp_name"], $destination);
 }
 
-function showSuccessAndRedirect($message, $location)
-{
-    echo "<script>alert('$message');</script>";
-    echo "<script>window.location = '$location';</script>";
-}
 
 
 
