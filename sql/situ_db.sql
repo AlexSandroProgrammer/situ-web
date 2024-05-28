@@ -21,7 +21,7 @@ USE `situ_db`;
 
 -- Volcando estructura para tabla situ_db.areas
 CREATE TABLE IF NOT EXISTS `areas` (
-  `id_area` int NOT NULL AUTO_INCREMENT,
+  `id_area` int NOT NULL  AUTO_INCREMENT,
   `nombreArea` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `id_estado` int NOT NULL,
   PRIMARY KEY (`id_area`)
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `unidad` (
 
 -- Volcando estructura para tabla situ_db.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
-  `documento` int NOT NULL,
+  `documento` int NOT NULL ,
   `nombres` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `apellidos` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `celular` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,

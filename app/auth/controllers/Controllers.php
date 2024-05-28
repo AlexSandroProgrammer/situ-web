@@ -22,19 +22,22 @@ if (isset($_POST["iniciarSesion"])) {
         session_destroy();
     }
     // Realiza la consulta de autenticación
-    $authValidation = $connection->prepare("SELECT * FROM usuarios WHERE email = :email AND estado_usuario = 1");
+    $authValidation = $connection->prepare("SELECT * FROM usuarios INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id WHERE email = :email AND id_estado = 1 AND usuarios.id_tipo_usuario = tipo_usuario.id");
     $authValidation->bindParam(':email', $email);
     $authValidation->execute();
-    $authSession = $authValidation->fetch();
+    $authSession = $authValidation->fetch(PDO::FETCH_ASSOC);
 
     if ($authSession && password_verify($passwordLog, $authSession['password'])) {
         // Si la autenticación es exitosa
-        $_SESSION['rol'] = $authSession['id_tipo_usuario'];
+        $_SESSION['id_rol'] = $authSession['id_tipo_usuario'];
+        $_SESSION['rol'] = $authSession['tipo_usuario'];
         $_SESSION['names'] = $authSession['nombres'];
         $_SESSION['surnames'] = $authSession['apellidos'];
         $_SESSION['email'] = $authSession['email'];
+        $_SESSION['documento'] = $authSession['documento'];
 
-        if ($_SESSION['rol'] == 1) {
+
+        if ($_SESSION['id_rol'] == 1) {
             header("Location:../../admin/");
         } else {
             echo '<script>

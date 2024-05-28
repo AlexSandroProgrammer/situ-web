@@ -74998,8 +74998,8 @@ $.extend( true, DataTable.defaults, {
 /* Default class modification */
 $.extend( DataTable.ext.classes, {
 	sWrapper:      "dataTables_wrapper dt-bootstrap4",
-	sFilterInput:  "form-control form-control-md",
-	sLengthSelect: "custom-select custom-select-sm form-control form-control-md",
+	sFilterInput:  "form-control form-control-lg",
+	sLengthSelect: "custom-select custom-select-sm form-control form-control-lg",
 	sProcessing:   "dataTables_processing card",
 	sPageButton:   "paginate_button page-item"
 } );
