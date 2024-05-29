@@ -1,120 +1,338 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Versión del servidor:         8.0.30 - MySQL Community Server - GPL
--- SO del servidor:              Win64
--- HeidiSQL Versión:             12.1.0.6537
--- --------------------------------------------------------
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 29-05-2024 a las 22:48:20
+-- Versión del servidor: 10.4.27-MariaDB
+-- Versión de PHP: 8.2.0
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Base de datos: `situ_db`
+--
 
--- Volcando estructura de base de datos para situ_db
-CREATE DATABASE IF NOT EXISTS `situ_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `situ_db`;
+-- --------------------------------------------------------
 
--- Volcando estructura para tabla situ_db.areas
-CREATE TABLE IF NOT EXISTS `areas` (
-  `id_area` int NOT NULL  AUTO_INCREMENT,
-  `nombreArea` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_estado` int NOT NULL,
-  PRIMARY KEY (`id_area`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Estructura de tabla para la tabla `areas`
+--
 
--- Volcando datos para la tabla situ_db.areas: ~0 rows (aproximadamente)
+CREATE TABLE `areas` (
+  `id_area` int(11) NOT NULL,
+  `nombreArea` varchar(100) NOT NULL,
+  `id_estado` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando estructura para tabla situ_db.fichas
-CREATE TABLE IF NOT EXISTS `fichas` (
-  `codigoFicha` int NOT NULL,
-  `id_programa` int NOT NULL,
-  `cantidad_aprendices` int NOT NULL,
+--
+-- Volcado de datos para la tabla `areas`
+--
+
+INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`) VALUES
+(3, 'Pecuaria', 1),
+(4, 'Agroindustria', 1),
+(5, 'Gestion', 1),
+(6, 'Ambiental', 1),
+(7, 'Agricola', 1),
+(8, 'Mecanizacion', 1),
+(11, 'Innovacion', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estados`
+--
+
+CREATE TABLE `estados` (
+  `id_estado` int(11) NOT NULL,
+  `estado` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `estados`
+--
+
+INSERT INTO `estados` (`id_estado`, `estado`) VALUES
+(1, 'activo'),
+(2, 'inactivo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `fichas`
+--
+
+CREATE TABLE `fichas` (
+  `codigoFicha` int(11) NOT NULL,
+  `id_programa` int(11) NOT NULL,
+  `cantidad_aprendices` int(11) NOT NULL,
   `inicio_formacion` date NOT NULL,
   `fin_formacion` date NOT NULL,
-  `id_estado` int NOT NULL,
-  `id_estado_se` int NOT NULL,
-  `id_estado_trimestre` int NOT NULL,
-  PRIMARY KEY (`codigoFicha`)
+  `id_estado` int(11) NOT NULL,
+  `id_estado_se` int(11) NOT NULL,
+  `id_estado_trimestre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla situ_db.fichas: ~0 rows (aproximadamente)
+-- --------------------------------------------------------
 
--- Volcando estructura para tabla situ_db.intentos_fallidos
-CREATE TABLE IF NOT EXISTS `intentos_fallidos` (
-  `id_intentos` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
-  `fecha_intento` date NOT NULL,
-  PRIMARY KEY (`id_intentos`)
+--
+-- Estructura de tabla para la tabla `intentos_fallidos`
+--
+
+CREATE TABLE `intentos_fallidos` (
+  `id_intentos` int(11) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `fecha_intento` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla situ_db.intentos_fallidos: ~0 rows (aproximadamente)
+-- --------------------------------------------------------
 
--- Volcando estructura para tabla situ_db.programas_formacion
-CREATE TABLE IF NOT EXISTS `programas_formacion` (
-  `id_programa` int NOT NULL AUTO_INCREMENT,
-  `nombre_programa` int NOT NULL,
-  `descripcion` int NOT NULL,
-  `id_estado` int NOT NULL,
-  PRIMARY KEY (`id_programa`)
+--
+-- Estructura de tabla para la tabla `programas_formacion`
+--
+
+CREATE TABLE `programas_formacion` (
+  `id_programa` int(11) NOT NULL,
+  `nombre_programa` varchar(200) NOT NULL,
+  `descripcion` varchar(500) NOT NULL,
+  `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla situ_db.programas_formacion: ~0 rows (aproximadamente)
+--
+-- Volcado de datos para la tabla `programas_formacion`
+--
 
--- Volcando estructura para tabla situ_db.tipo_usuario
-CREATE TABLE IF NOT EXISTS `tipo_usuario` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tipo_usuario` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `programas_formacion` (`id_programa`, `nombre_programa`, `descripcion`, `id_estado`) VALUES
+(4, 'Analisis y Desarrollo de Software', 'Esta es una descripción para un programa de formación relacionado con el analisis y desarrollo de software', 1),
+(5, 'Gestion de Empresas Pecuarias', 'Esta es la descripcion de un programa relacionado con empresas pecuarias', 1),
+(6, 'Gestion de Produccion Agricola', 'esta es una descripcion sencilla del programa de formacion gestion de produccion agricola', 1);
 
--- Volcando datos para la tabla situ_db.tipo_usuario: ~2 rows (aproximadamente)
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_usuario`
+--
+
+CREATE TABLE `tipo_usuario` (
+  `id` int(11) NOT NULL,
+  `tipo_usuario` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_usuario`
+--
+
 INSERT INTO `tipo_usuario` (`id`, `tipo_usuario`) VALUES
-	(1, 'administrador'),
-	(2, 'aprendiz');
+(1, 'administrador'),
+(2, 'aprendiz');
 
--- Volcando estructura para tabla situ_db.unidad
-CREATE TABLE IF NOT EXISTS `unidad` (
-  `id_unidad` int NOT NULL AUTO_INCREMENT,
-  `nombre_unidad` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_area` int NOT NULL,
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `turno_especial`
+--
+
+CREATE TABLE `turno_especial` (
+  `id_turno_especial` int(11) NOT NULL,
+  `id_ficha` int(11) NOT NULL,
+  `fecha_inicio` date NOT NULL,
+  `fecha_fin` date NOT NULL,
+  `horario_inicio` time NOT NULL,
+  `horario_fin` time NOT NULL,
+  `estado` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `turno_rutinario`
+--
+
+CREATE TABLE `turno_rutinario` (
+  `id_turno_rutinario` int(11) NOT NULL,
+  `fecha_inicio` date NOT NULL,
+  `fecha_final` date NOT NULL,
+  `horario_inicial` time NOT NULL,
+  `horario_final` time NOT NULL,
+  `estado` int(11) NOT NULL,
+  `fallas` int(11) NOT NULL,
+  `id_aprendiz` int(11) NOT NULL,
+  `id_unidad` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `unidad`
+--
+
+CREATE TABLE `unidad` (
+  `id_unidad` int(11) NOT NULL,
+  `nombre_unidad` varchar(200) NOT NULL,
+  `id_area` int(11) NOT NULL,
   `hora_inicio` date NOT NULL,
   `hora_finalizacion` date NOT NULL,
-  `cantidad_aprendices` int NOT NULL,
-  `id_estado` int NOT NULL,
-  `id_estado_trimestre` int NOT NULL,
-  PRIMARY KEY (`id_unidad`)
+  `cantidad_aprendices` int(11) NOT NULL,
+  `id_estado` int(11) NOT NULL,
+  `id_estado_trimestre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla situ_db.unidad: ~0 rows (aproximadamente)
+-- --------------------------------------------------------
 
--- Volcando estructura para tabla situ_db.usuarios
-CREATE TABLE IF NOT EXISTS `usuarios` (
-  `documento` int NOT NULL ,
-  `nombres` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `apellidos` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `celular` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sexo` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_estado_se` int DEFAULT NULL,
-  `id_estado_trimestre` int DEFAULT NULL,
-  `id_ficha` int DEFAULT NULL,
-  `id_tipo_usuario` int NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_estado` int NOT NULL,
-  PRIMARY KEY (`documento`)
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `documento` int(11) NOT NULL,
+  `nombres` varchar(255) NOT NULL,
+  `apellidos` varchar(255) NOT NULL,
+  `cargo_funcionario` varchar(150) DEFAULT NULL,
+  `foto_data` varchar(255) NOT NULL,
+  `celular` varchar(20) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `sexo` varchar(100) NOT NULL,
+  `id_estado_se` int(11) DEFAULT NULL,
+  `id_estado_trimestre` int(11) DEFAULT NULL,
+  `id_ficha` int(11) DEFAULT NULL,
+  `id_tipo_usuario` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla situ_db.usuarios: ~1 rows (aproximadamente)
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `celular`, `password`, `sexo`, `id_estado_se`, `id_estado_trimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`) VALUES
-	(1140914512, 'Laura Sofia', 'Casallas Cardenas', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1);
+--
+-- Volcado de datos para la tabla `usuarios`
+--
 
-/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_estado_trimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`) VALUES
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, '', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1);
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `areas`
+--
+ALTER TABLE `areas`
+  ADD PRIMARY KEY (`id_area`);
+
+--
+-- Indices de la tabla `estados`
+--
+ALTER TABLE `estados`
+  ADD PRIMARY KEY (`id_estado`);
+
+--
+-- Indices de la tabla `fichas`
+--
+ALTER TABLE `fichas`
+  ADD PRIMARY KEY (`codigoFicha`);
+
+--
+-- Indices de la tabla `intentos_fallidos`
+--
+ALTER TABLE `intentos_fallidos`
+  ADD PRIMARY KEY (`id_intentos`);
+
+--
+-- Indices de la tabla `programas_formacion`
+--
+ALTER TABLE `programas_formacion`
+  ADD PRIMARY KEY (`id_programa`);
+
+--
+-- Indices de la tabla `tipo_usuario`
+--
+ALTER TABLE `tipo_usuario`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `turno_especial`
+--
+ALTER TABLE `turno_especial`
+  ADD PRIMARY KEY (`id_turno_especial`);
+
+--
+-- Indices de la tabla `turno_rutinario`
+--
+ALTER TABLE `turno_rutinario`
+  ADD PRIMARY KEY (`id_turno_rutinario`);
+
+--
+-- Indices de la tabla `unidad`
+--
+ALTER TABLE `unidad`
+  ADD PRIMARY KEY (`id_unidad`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`documento`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `areas`
+--
+ALTER TABLE `areas`
+  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `estados`
+--
+ALTER TABLE `estados`
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `intentos_fallidos`
+--
+ALTER TABLE `intentos_fallidos`
+  MODIFY `id_intentos` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `programas_formacion`
+--
+ALTER TABLE `programas_formacion`
+  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_usuario`
+--
+ALTER TABLE `tipo_usuario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `turno_especial`
+--
+ALTER TABLE `turno_especial`
+  MODIFY `id_turno_especial` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `turno_rutinario`
+--
+ALTER TABLE `turno_rutinario`
+  MODIFY `id_turno_rutinario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `unidad`
+--
+ALTER TABLE `unidad`
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
