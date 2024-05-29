@@ -74,10 +74,10 @@ if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "for
         $updateDocument->bindParam(':idArea', $id_area);
         $updateDocument->execute();
         if ($updateDocument) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "areas.php");
+            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "areas.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "areas.php");
         }
     }
 }

@@ -4,36 +4,38 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $nombrePrograma = $_POST['nombrePrograma'];
     $estadoInicial = $_POST['estadoInicial'];
+    $descripcion = $_POST['descripcion'];
 
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombreArea, $estadoInicial])) {
-        showErrorFieldsEmpty("areas.php");
+    if (isEmpty([$nombrePrograma, $estadoInicial])) {
+        showErrorFieldsEmpty("programas.php");
         exit();
     }
 
     // validamos que no se repitan los datos del nombre del area
     // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaSelectQuery = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea");
-    $areaSelectQuery->bindParam(':nombreArea', $nombreArea);
-    $areaSelectQuery->execute();
-    $queryFetch = $areaSelectQuery->fetchAll();
+    $programaSelectQuery = $connection->prepare("SELECT * FROM programas_formacion WHERE nombre_programa = :nombrePrograma");
+    $programaSelectQuery->bindParam(':nombrePrograma', $nombrePrograma);
+    $programaSelectQuery->execute();
+    $queryFetchProgram = $programaSelectQuery->fetchAll();
     // // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
-    if ($queryFetch) {
+    if ($queryFetchProgram) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "areas.php");
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "programas.php");
         exit();
     } else {
 
         // Inserta los datos en la base de datos
-        $registerArea = $connection->prepare("INSERT INTO areas(nombreArea, id_estado) VALUES(:nombreArea, :estadoInicial)");
-        $registerArea->bindParam(':nombreArea', $nombreArea);
-        $registerArea->bindParam(':estadoInicial', $estadoInicial);
-        $registerArea->execute();
-        if ($registerArea) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "areas.php");
+        $programRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, id_estado, descripcion) VALUES(:nombrePrograma, :estadoInicial, :descripcion)");
+        $programRegister->bindParam(':nombrePrograma', $nombrePrograma);
+        $programRegister->bindParam(':estadoInicial', $estadoInicial);
+        $programRegister->bindParam(':descripcion', $descripcion);
+        $programRegister->execute();
+        if ($programRegister) {
+            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "programas.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "programas.php");
             exit();
         }
     }
@@ -41,66 +43,67 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
 
 
 //  REGISTRO DE AREA
-if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
+if ((isset($_POST["MM_formUpdatePrograma"])) && ($_POST["MM_formUpdatePrograma"] == "formUpdatePrograma")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
-    $nombre_area = $_POST['nombre_area'];
-    $estado_area = $_POST['estado_area'];
-    $id_area = $_POST['id_area'];
+    $nombre_programa = $_POST['nombre_programa'];
+    $descripcion = $_POST['descripcion'];
+    $estado_programa = $_POST['estado_programa'];
+    $id_programa = $_POST['id_programa'];
 
     // // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_area, $estado_area, $id_area])) {
-        showErrorFieldsEmpty("areas.php?id_area=" . $id_area);
+    if (isEmpty([$nombre_programa, $estado_programa, $id_programa])) {
+        showErrorFieldsEmpty("programas.php?id_programa=" . $id_programa);
         exit();
     }
 
     // validamos que no se repitan los datos del nombre del area
     // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaQueryUpdate = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea AND id_area <> :id_area");
-    $areaQueryUpdate->bindParam(':nombreArea', $nombre_area);
-    $areaQueryUpdate->bindParam(':id_area', $id_area);
-    $areaQueryUpdate->execute();
+    $programasQueryUpdate = $connection->prepare("SELECT * FROM programas_formacion WHERE nombre_programa = :nombre_programa AND id_programa <> :id_programa");
+    $programasQueryUpdate->bindParam(':nombre_programa', $nombre_programa);
+    $programasQueryUpdate->bindParam(':id_programa', $id_programa);
+    $programasQueryUpdate->execute();
     // Obtener todos los resultados en un array
-    $queryAreas = $areaQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($queryAreas) {
+    $programasQuery = $programasQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
+    if ($programasQuery) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "areas.php");
+        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "programas.php");
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado WHERE id_area = :idArea");
-        $updateDocument->bindParam(':nombreArea', $nombre_area);
-        $updateDocument->bindParam(':id_estado', $estado_area);
-        $updateDocument->bindParam(':idArea', $id_area);
-        $updateDocument->execute();
-        if ($updateDocument) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "areas.php");
+        $updateProgramFindById = $connection->prepare("UPDATE programas_formacion SET nombre_programa = :nombre_programa, id_estado = :estado_programa, descripcion = :descripcion WHERE id_programa = :id_programa");
+        $updateProgramFindById->bindParam(':nombre_programa', $nombre_programa);
+        $updateProgramFindById->bindParam(':estado_programa', $estado_programa);
+        $updateProgramFindById->bindParam(':descripcion', $descripcion);
+        $updateProgramFindById->bindParam(':id_programa', $id_programa);
+        $updateProgramFindById->execute();
+        if ($updateProgramFindById) {
+            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "programas.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "programas.php");
         }
     }
 }
 
 // ELIMINAR PROCESO
-if (isset($_GET['id_area-delete'])) {
-    $id_area = $_GET["id_area-delete"];
-    if ($id_area == null) {
-        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "areas.php");
+if (isset($_GET['id_programa-delete'])) {
+    $id_programa = $_GET["id_programa-delete"];
+    if ($id_programa == null) {
+        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "programas.php");
     } else {
-        $deleteArea = $connection->prepare("SELECT * FROM areas WHERE id_area = :id_area");
-        $deleteArea->bindParam(":id_area", $id_area);
-        $deleteArea->execute();
-        $deleteAreaSelect = $deleteArea->fetch(PDO::FETCH_ASSOC);
+        $deletePrograma = $connection->prepare("SELECT * FROM programas_formacion WHERE id_programa = :id_programa");
+        $deletePrograma->bindParam(":id_programa", $id_programa);
+        $deletePrograma->execute();
+        $deleteProgramaSelect = $deletePrograma->fetch(PDO::FETCH_ASSOC);
 
-        if ($deleteAreaSelect) {
-            $delete = $connection->prepare("DELETE  FROM areas WHERE id_area = :id_area");
-            $delete->bindParam(':id_area', $id_area);
+        if ($deleteProgramaSelect) {
+            $delete = $connection->prepare("DELETE FROM programas_formacion WHERE id_programa = :id_programa");
+            $delete->bindParam(':id_programa', $id_programa);
             $delete->execute();
             if ($delete) {
-                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "areas.php");
+                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "programas.php");
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "areas.php");
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "programas.php");
             }
         }
     }
