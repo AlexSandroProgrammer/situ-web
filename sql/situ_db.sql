@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-05-2024 a las 22:48:20
+-- Tiempo de generación: 30-05-2024 a las 22:54:44
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -113,8 +113,7 @@ CREATE TABLE `programas_formacion` (
 
 INSERT INTO `programas_formacion` (`id_programa`, `nombre_programa`, `descripcion`, `id_estado`) VALUES
 (4, 'Analisis y Desarrollo de Software', 'Esta es una descripción para un programa de formación relacionado con el analisis y desarrollo de software', 1),
-(5, 'Gestion de Empresas Pecuarias', 'Esta es la descripcion de un programa relacionado con empresas pecuarias', 1),
-(6, 'Gestion de Produccion Agricola', 'esta es una descripcion sencilla del programa de formacion gestion de produccion agricola', 1);
+(5, 'Gestion de Empresas Pecuarias', 'Esta es la descripcion de un programa relacionado con empresas pecuarias', 1);
 
 -- --------------------------------------------------------
 
@@ -179,12 +178,21 @@ CREATE TABLE `unidad` (
   `id_unidad` int(11) NOT NULL,
   `nombre_unidad` varchar(200) NOT NULL,
   `id_area` int(11) NOT NULL,
-  `hora_inicio` date NOT NULL,
-  `hora_finalizacion` date NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_finalizacion` time NOT NULL,
   `cantidad_aprendices` int(11) NOT NULL,
   `id_estado` int(11) NOT NULL,
   `id_estado_trimestre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `unidad`
+--
+
+INSERT INTO `unidad` (`id_unidad`, `nombre_unidad`, `id_area`, `hora_inicio`, `hora_finalizacion`, `cantidad_aprendices`, `id_estado`, `id_estado_trimestre`) VALUES
+(1, 'Mercasena 2 Pan y Cafe', 5, '07:00:00', '16:00:00', 5, 1, 1),
+(2, 'Unidad de Porcinos', 5, '07:00:00', '08:55:00', 4, 1, 2),
+(3, 'Unidad de Caprinos', 3, '06:21:00', '07:26:00', 2, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -330,7 +338,7 @@ ALTER TABLE `turno_rutinario`
 -- AUTO_INCREMENT de la tabla `unidad`
 --
 ALTER TABLE `unidad`
-  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
