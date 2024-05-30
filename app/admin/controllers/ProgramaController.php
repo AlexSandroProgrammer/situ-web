@@ -24,7 +24,6 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "programas.php");
         exit();
     } else {
-
         // Inserta los datos en la base de datos
         $programRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, id_estado, descripcion) VALUES(:nombrePrograma, :estadoInicial, :descripcion)");
         $programRegister->bindParam(':nombrePrograma', $nombrePrograma);

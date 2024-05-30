@@ -28,13 +28,13 @@ $areas = $getAreas->fetchAll(PDO::FETCH_ASSOC);
                                 name="formRegisterArea">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel1">Registro de Programa</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel1">Registro de Area</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label class="form-label" for="nombre_area">Nombre de Programa</label>
+                                            <label class="form-label" for="nombre_area">Nombre de Area</label>
                                             <div class="input-group input-group-merge">
                                                 <span id="nombre_area-span" class="input-group-text"><i
                                                         class="fas fa-layer-group"></i> </span>
@@ -58,10 +58,14 @@ $areas = $getAreas->fetchAll(PDO::FETCH_ASSOC);
                                                     $listEstados = $connection->prepare("SELECT * FROM estados");
                                                     $listEstados->execute();
                                                     $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
-
-                                                    // Iterar sobre los procedimientos
-                                                    foreach ($estados as $estado) {
-                                                        echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
+                                                    // Verificar si no hay datos
+                                                    if (empty($estados)) {
+                                                        echo "<option value=''>No hay datos...</option>";
+                                                    } else {
+                                                        // Iterar sobre los estados
+                                                        foreach ($estados as $estado) {
+                                                            echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
+                                                        }
                                                     }
                                                     ?>
                                                 </select>

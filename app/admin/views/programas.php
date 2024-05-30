@@ -1,7 +1,6 @@
 <?php
 $titlePage = "Listado de Programas";
 require_once("../components/sidebar.php");
-
 $getProgramas = $connection->prepare("SELECT * FROM programas_formacion INNER JOIN estados ON programas_formacion.id_estado = estados.id_estado WHERE programas_formacion.id_estado = estados.id_estado");
 $getProgramas->execute();
 $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
@@ -42,7 +41,6 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                     placeholder="Ingresa el nombre del area" />
                                             </div>
                                         </div>
-
                                         <div class="mb-3">
                                             <label for="estadoInicial" class="form-label">Estado
                                                 Inicial</label>
@@ -54,13 +52,17 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                     <option value="">Seleccionar Estado...</option>
                                                     <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
-                                                    $listEstados = $connection->prepare("SELECT * FROM estados");
-                                                    $listEstados->execute();
-                                                    $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
-
-                                                    // Iterar sobre los procedimientos
-                                                    foreach ($estados as $estado) {
-                                                        echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
+                                                    $listAreas = $connection->prepare("SELECT * FROM estados");
+                                                    $listAreas->execute();
+                                                    $estados = $listAreas->fetchAll(PDO::FETCH_ASSOC);
+                                                    // Verificar si no hay datos
+                                                    if (empty($estados)) {
+                                                        echo "<option value=''>No hay datos...</option>";
+                                                    } else {
+                                                        // Iterar sobre los estados
+                                                        foreach ($estados as $estado) {
+                                                            echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
+                                                        }
                                                     }
                                                     ?>
                                                 </select>
@@ -70,7 +72,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             <label class="form-label" for="input-programa">Descripcion del
                                                 Programa</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="basic-icon-default-message2" class="input-group-text"><i
+                                                <span id="icon-area" class="input-group-text"><i
                                                         class="fas fa-layer-group"></i></span>
                                                 <textarea id="input-programa" rows="5" name="descripcion"
                                                     class="form-control"

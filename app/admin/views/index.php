@@ -17,16 +17,13 @@ require_once("../components/sidebar.php");
                                     En este Panel de Administrador puedes gestionar los diferentes turnos rutinarios que
                                     se manejan en el Centro Agropecuario La Granja
                                 </p>
-
                                 <a href="javascript:;" class="btn btn-sm btn-outline-primary">Ver Turnos de Esta
                                     Semana</a>
                             </div>
                         </div>
                         <div class="col-sm-5 text-center text-sm-left">
                             <div class="card-body pb-0 px-0 px-md-4">
-                                <img src="../../assets/img/illustrations/man-with-laptop-light.png" height="140"
-                                    alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png"
-                                    data-app-light-img="illustrations/man-with-laptop-light.png" />
+                                <img src="../../assets/img/illustrations/man-with-laptop-light.png" height="140" alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png" data-app-light-img="illustrations/man-with-laptop-light.png" />
                             </div>
                         </div>
                     </div>
@@ -45,8 +42,7 @@ require_once("../components/sidebar.php");
                         <ul class="p-0 m-0">
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-success"><i
-                                            class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-success"><i class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -60,8 +56,7 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-danger"><i
-                                            class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-danger"><i class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -75,8 +70,7 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-secondary"><i
-                                            class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-secondary"><i class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -91,8 +85,7 @@ require_once("../components/sidebar.php");
 
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-warning"><i
-                                            class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -107,8 +100,7 @@ require_once("../components/sidebar.php");
 
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-primary"><i
-                                            class="bx bx-user"></i></span>
+                                    <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-user"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -121,7 +113,8 @@ require_once("../components/sidebar.php");
                                 </div>
                             </li>
 
-                            <div class="text-center"><a href="" class="btn btn-outline-primary">Ver Aprendices</a></div>
+                            <div class="text-center"><a href="aprendices.php" class="btn btn-outline-primary">Ver
+                                    Aprendices</a></div>
                         </ul>
                     </div>
                 </div>
@@ -139,8 +132,7 @@ require_once("../components/sidebar.php");
                         <ul class="p-0 m-0">
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-warning"><i
-                                            class="bx bxs-user-account"></i></span>
+                                    <span class="avatar-initial rounded bg-label-warning"><i class="bx bxs-user-account"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -154,8 +146,7 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-success"><i
-                                            class="bx bxs-user-account"></i></span>
+                                    <span class="avatar-initial rounded bg-label-success"><i class="bx bxs-user-account"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -169,8 +160,7 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-secondary"><i
-                                            class="bx bxs-user-account"></i></span>
+                                    <span class="avatar-initial rounded bg-label-secondary"><i class="bx bxs-user-account"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -184,8 +174,7 @@ require_once("../components/sidebar.php");
                             </li>
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-danger"><i
-                                            class="bx bxs-user-account"></i></span>
+                                    <span class="avatar-initial rounded bg-label-danger"><i class="bx bxs-user-account"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -200,8 +189,7 @@ require_once("../components/sidebar.php");
 
                             <li class="d-flex mb-4 pb-1">
                                 <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-primary"><i
-                                            class="bx bxs-user-account"></i></span>
+                                    <span class="avatar-initial rounded bg-label-primary"><i class="bx bxs-user-account"></i></span>
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="me-2">
@@ -213,7 +201,8 @@ require_once("../components/sidebar.php");
                                     </div>
                                 </div>
                             </li>
-                            <div class="text-center"><a href="" class="btn btn-outline-primary">Ver Fichas</a></div>
+                            <div class="text-center"><a href="fichas.php" class="btn btn-outline-primary">Ver Fichas</a>
+                            </div>
                         </ul>
                     </div>
                 </div>
