@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-05-2024 a las 22:54:44
+-- Tiempo de generación: 31-05-2024 a las 22:58:38
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -74,7 +74,7 @@ INSERT INTO `estados` (`id_estado`, `estado`) VALUES
 CREATE TABLE `fichas` (
   `codigoFicha` int(11) NOT NULL,
   `id_programa` int(11) NOT NULL,
-  `cantidad_aprendices` int(11) NOT NULL,
+  `cantidad_aprendices` int(11) DEFAULT NULL,
   `inicio_formacion` date NOT NULL,
   `fin_formacion` date NOT NULL,
   `id_estado` int(11) NOT NULL,
@@ -191,8 +191,8 @@ CREATE TABLE `unidad` (
 
 INSERT INTO `unidad` (`id_unidad`, `nombre_unidad`, `id_area`, `hora_inicio`, `hora_finalizacion`, `cantidad_aprendices`, `id_estado`, `id_estado_trimestre`) VALUES
 (1, 'Mercasena 2 Pan y Cafe', 5, '07:00:00', '16:00:00', 5, 1, 1),
-(2, 'Unidad de Porcinos', 5, '07:00:00', '08:55:00', 4, 1, 2),
-(3, 'Unidad de Caprinos', 3, '06:21:00', '07:26:00', 2, 1, 2);
+(2, 'Unidad de Porcinos', 5, '07:00:00', '08:55:00', 5, 1, 2),
+(5, 'Unidad de Caprinos', 3, '05:57:00', '06:57:00', 4, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -338,7 +338,7 @@ ALTER TABLE `turno_rutinario`
 -- AUTO_INCREMENT de la tabla `unidad`
 --
 ALTER TABLE `unidad`
-  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
