@@ -1,9 +1,15 @@
 <?php
-$titlePage = "Actualizacion Unidad ";
+$titlePage = "Actualizacion Unidad";
 require_once("../components/sidebar.php");
 if (!empty($_GET['id_unidad-edit'])) {
     $id_unidad = $_GET['id_unidad-edit'];
-    $getFindByIdUnity = $connection->prepare("SELECT * FROM unidad INNER JOIN areas INNER JOIN estados ON unidad.id_area = area.id_area ON unidad.id_estado = estados.id_estado WHERE id_unidad = :id_unidad");
+    $getFindByIdUnity = $connection->prepare("SELECT *
+    FROM 
+    unidad
+    INNER JOIN 
+    estados ON unidad.id_estado = estados.id_estado
+    INNER JOIN 
+    areas ON unidad.id_area = areas.id_area WHERE unidad.id_unidad = :id_unidad");
     $getFindByIdUnity->bindParam(":id_unidad", $id_unidad);
     $getFindByIdUnity->execute();
     $unidadFindById = $getFindByIdUnity->fetch(PDO::FETCH_ASSOC);
@@ -23,7 +29,9 @@ if (!empty($_GET['id_unidad-edit'])) {
                             <h5 class="mb-0">Edita los datos que necesites.</h5>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="" autocomplete="off" name="formRegisterUnidad">
+                            <form method="post" action="" autocomplete="off" name="formUpdateUnity">
+                                <input type="hidden" name="id_unidad" value="<?php echo $unidadFindById['id_unidad'] ?>"
+                                    id="">
                                 <div class="mb-3">
                                     <label class="form-label" for="nombre_unidad">Nombre de la Unidad</label>
                                     <div class="input-group input-group-merge">
@@ -77,10 +85,10 @@ if (!empty($_GET['id_unidad-edit'])) {
                                 <div class="mb-3">
                                     <label class="form-label" for="horario_inicial">Horario Apertura Unidad</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="horario_inicial_icon"
-                                            value="<?php echo $unidadFindById['hora_inicio'] ?>"
-                                            class="input-group-text"><i class="bx bx-timer"></i></span>
-                                        <input type="time" name="horario_inicial" id="horario_inicial"
+                                        <span id="horario_inicial_icon" class="input-group-text"><i
+                                                class="bx bx-timer"></i></span>
+                                        <input type="time" name="horario_inicial"
+                                            value="<?php echo $unidadFindById['hora_inicio'] ?>" id="horario_inicial"
                                             class="form-control"
                                             placeholder="Ingresa el horario de apertura de la unidad"
                                             aria-label="Ingresa el horario de apertura de la unidad"
@@ -104,9 +112,9 @@ if (!empty($_GET['id_unidad-edit'])) {
                                         Inicial</label>
                                     <div class="input-group input-group-merge">
                                         <span class="input-group-text"><i class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="estadoInicial" name="estadoInicial" required>
+                                        <select class="form-select" id="estadoInicial" name="estado_unidad" required>
                                             <option value="<?php echo $unidadFindById['id_estado'] ?>">
-                                                value="<?php echo $unidadFindById['estado'] ?>" </option>
+                                                <?php echo $unidadFindById['estado'] ?></option>
                                             <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
                                                     $listEstados = $connection->prepare("SELECT * FROM estados");
@@ -131,9 +139,9 @@ if (!empty($_GET['id_unidad-edit'])) {
                                         <span id="estadoInicial-2" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
                                         <select class="form-select" id="estadoTrimestre" required
-                                            name="estadoTrimestre">
+                                            name="estado_trimestre">
                                             <option value="<?php echo $unidadFindById['id_estado_trimestre'] ?>">
-                                                value="<?php echo $unidadFindById['estado_trimestre'] ?>"</option>
+                                                Cambiar Estado para Trimestre...</option>
                                             <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
                                                     $listadoEstadoTrimestre = $connection->prepare("SELECT * FROM estados");
@@ -156,9 +164,9 @@ if (!empty($_GET['id_unidad-edit'])) {
                                     <a href="unidades.php" class="btn btn-danger">
                                         Cancelar
                                     </a>
-                                    <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                    <input type="hidden" class="btn btn-info" value="formRegisterUnidad"
-                                        name="MM_formRegisterUnidad"></input>
+                                    <input type="submit" class="btn btn-primary" value="Actualizar"></input>
+                                    <input type="hidden" class="btn btn-info" value="formUpdateUnity"
+                                        name="MM_formUpdateUnity"></input>
                                 </div>
                             </form>
                         </div>

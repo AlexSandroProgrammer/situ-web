@@ -1,4 +1,5 @@
 <?php
+$titlePage = "Registro de Ficha";
 require_once("../components/sidebar.php");
 ?>
 <!-- Content wrapper -->
@@ -15,103 +16,124 @@ require_once("../components/sidebar.php");
                             <h5 class="mb-0">Ingresa por favor los siguientes datos.</h5>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form method="post" action="" autocomplete="off" name="formRegisterFicha">
                                 <div class="mb-3">
-                                    <label class="form-label" for="codigo-ficha">Codigo de Ficha</label>
+                                    <label class="form-label" for="codigo_ficha">Codigo de Ficha</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="codigo-ficha-2" class="input-group-text"><i
-                                                class="bx bx-user"></i></span>
-                                        <input type="text" onkeypress="return(multiplenumber(event));"
-                                            oninput="maxlengthNumber(this);" minlength="5" maxlength="20" autofocus
-                                            class="form-control" id="codigo-ficha"
-                                            placeholder="Ingresa el codigo de ficha"
-                                            aria-describedby="codigo-ficha-2" />
+                                        <span id="codigo_ficha_icon" class="input-group-text"><i
+                                                class="bx bx-unite"></i></span>
+                                        <input type="text" name="codigo_ficha" required minlength="2" maxlength="20"
+                                            autofocus class="form-control" id="codigo_ficha"
+                                            placeholder="Ingresa el codigo de ficha" />
                                     </div>
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="exampleFormControlSelect1" class="form-label">Programacion de
-                                        Formacion</label>
+                                    <label for="id_programa" class="form-label">Programa de Formacion</label>
                                     <div class="input-group input-group-merge">
                                         <span id="codigo-ficha-2" class="input-group-text"><i
-                                                class="bx bx-user"></i></span>
-                                        <select class="form-select" id="exampleFormControlSelect1"
-                                            aria-label="Default select example">
-                                            <option selected>Seleccionar Programa...</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
+                                                class="bx bx-unite"></i></span>
+                                        <select class="form-select" id="id_programa" required name="id_programa">
+                                            <option value="">Seleccionar Programa de Formacion...</option>
+                                            <?php
+                                            // CONSUMO DE DATOS DE LOS PROCESOS
+                                            $getProgramas_formacion = $connection->prepare("SELECT * FROM programas_formacion");
+                                            $getProgramas_formacion->execute();
+                                            $programas_formacion = $getProgramas_formacion->fetchAll(PDO::FETCH_ASSOC);
+                                            // Verificar si no hay datos
+                                            if (empty($programas_formacion)) {
+                                                echo "<option value=''>No hay datos...</option>";
+                                            } else {
+                                                // Iterar sobre los estados
+                                                foreach ($programas_formacion as $programa) {
+                                                    echo "<option value='{$programa['id_programa']}'>{$programa['nombre_programa']}</option>";
+                                                }
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="mb-3">
-                                    <label class="form-label" for="cantidad_aprendices">Cantidad de Aprendices</label>
+                                    <label class="form-label" for="inicio_formacion">Inicio de Formacion</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="codigo-ficha-2" class="input-group-text"><i
-                                                class="bx bx-user"></i></span>
-                                        <input type="text" class="form-control"
-                                            onkeypress="return(multiplenumber(event));" minlength="1" maxlength="5"
-                                            oninput="maxlengthNumber(this);" id="cantidad_aprendices"
-                                            placeholder="Ingresa el codigo de ficha"
-                                            aria-describedby="codigo-ficha-2" />
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="basic-icon-default-company">Fecha Inicio</label>
-                                    <div class="input-group input-group-merge">
-                                        <span id="basic-icon-default-company2" class="input-group-text"><i
-                                                class="bx bx-date"></i></span>
-                                        <input type="date" id="basic-icon-default-one-date" class="form-control"
-                                            placeholder="ACME Inc." aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2" />
+                                        <span id="inicio_formacion_icon" class="input-group-text"><i
+                                                class="bx bx-timer"></i></span>
+                                        <input type="time" name="inicio_formacion" id="inicio_formacion"
+                                            class="form-control"
+                                            placeholder="Ingresa el horario de apertura de la unidad"
+                                            aria-label="Ingresa el horario de apertura de la unidad"
+                                            aria-describedby="horario_inicial_icon" />
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="basic-icon-default-company">Fecha Fin</label>
+                                    <label class="form-label" for="cierre_formacion_label">Cierre de Formacion</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="basic-icon-default-company2" class="input-group-text"><i
-                                                class="bx bx-date"></i></span>
-                                        <input type="date" id="basic-icon-default-two-date" class="form-control"
-                                            placeholder="ACME Inc." aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2" />
+                                        <span id="cierre_formacion_icon" class="input-group-text"><i
+                                                class="bx bx-timer"></i></span>
+                                        <input type="time" id="cierre_formacion_label" name="cierre_formacion"
+                                            class="form-control" placeholder="Ingresa el horario de cierre de la unidad"
+                                            aria-label="Ingresa el horario de cierre de la unidad"
+                                            aria-describedby="cierre_formacion_icon" />
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="basic-icon-default-email">Email</label>
+                                    <label for="estadoInicial" class="form-label">Estado
+                                        Inicial</label>
                                     <div class="input-group input-group-merge">
-                                        <span class="input-group-text"><i class="bx bx-envelope"></i></span>
-                                        <input type="text" id="basic-icon-default-email" class="form-control"
-                                            placeholder="john.doe" aria-label="john.doe"
-                                            aria-describedby="basic-icon-default-email2" />
-                                        <span id="basic-icon-default-email2"
-                                            class="input-group-text">@example.com</span>
+                                        <span class="input-group-text"><i class="bx bx-unite"></i></span>
+                                        <select class="form-select" id="estadoInicial" name="estadoInicial" required>
+                                            <option value="">Seleccionar Estado...</option>
+                                            <?php
+                                            // CONSUMO DE DATOS DE LOS PROCESOS
+                                            $listEstados = $connection->prepare("SELECT * FROM estados");
+                                            $listEstados->execute();
+                                            $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
+                                            // Verificar si no hay datos
+                                            if (empty($estados)) {
+                                                echo "<option value=''>No hay datos...</option>";
+                                            } else {
+                                                // Iterar sobre los estados
+                                                foreach ($estados as $estado) {
+                                                    echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
-                                    <div class="form-text">You can use letters, numbers & periods</div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="basic-icon-default-phone">Phone No</label>
+                                    <label for="estadoTrimestre" class="form-label">Estado Trimestre</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="basic-icon-default-phone2" class="input-group-text"><i
-                                                class="bx bx-phone"></i></span>
-                                        <input type="text" id="basic-icon-default-phone" class="form-control phone-mask"
-                                            placeholder="658 799 8941" aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2" />
+                                        <span id="estadoInicial-2" class="input-group-text"><i
+                                                class="bx bx-unite"></i></span>
+                                        <select class="form-select" id="estadoTrimestre" required
+                                            name="estadoTrimestre">
+                                            <option value="">Seleccionar Estado...</option>
+                                            <?php
+                                            // CONSUMO DE DATOS DE LOS PROCESOS
+                                            $listadoEstadoTrimestre = $connection->prepare("SELECT * FROM estados");
+                                            $listadoEstadoTrimestre->execute();
+                                            $estadosTrimestre = $listadoEstadoTrimestre->fetchAll(PDO::FETCH_ASSOC);
+                                            // Verificar si no hay datos
+                                            if (empty($estados)) {
+                                                echo "<option value=''>No hay datos...</option>";
+                                            } else {
+                                                // Iterar sobre los estados
+                                                foreach ($estadosTrimestre as $estadoTrimestre) {
+                                                    echo "<option value='{$estadoTrimestre['id_estado']}'>{$estadoTrimestre['estado']}</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label" for="basic-icon-default-message">Message</label>
-                                    <div class="input-group input-group-merge">
-                                        <span id="basic-icon-default-message2" class="input-group-text"><i
-                                                class="bx bx-comment"></i></span>
-                                        <textarea id="basic-icon-default-message" class="form-control"
-                                            placeholder="Hi, Do you have a moment to talk Joe?"
-                                            aria-label="Hi, Do you have a moment to talk Joe?"
-                                            aria-describedby="basic-icon-default-message2"></textarea>
-                                    </div>
+                                <div class="mt-4">
+                                    <a href="unidades.php" class="btn btn-danger">
+                                        Cancelar
+                                    </a>
+                                    <input type="submit" class="btn btn-primary" value="Registrar"></input>
+                                    <input type="hidden" class="btn btn-info" value="formRegisterFicha"
+                                        name="MM_formRegisterFicha"></input>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Send</button>
                             </form>
                         </div>
                     </div>

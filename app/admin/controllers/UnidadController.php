@@ -55,67 +55,89 @@ if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"]
 
 
 //  REGISTRO DE AREA
-if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
+if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "formUpdateUnity")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
-    $nombre_area = $_POST['nombre_area'];
-    $estado_area = $_POST['estado_area'];
-    $id_area = $_POST['id_area'];
+    $nombre_unidad = $_POST['nombre_unidad'];
+    $id_unidad = $_POST['id_unidad'];
+    $areaPerteneciente = $_POST['id_area'];
+    $cantidad_aprendices = $_POST['cantidad_aprendices'];
+    $horario_inicial = $_POST['horario_inicial'];
+    $horario_final = $_POST['horario_final'];
+    $estado_unidad = $_POST['estado_unidad'];
+    $estado_trimestre = $_POST['estado_trimestre'];
 
     // // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_area, $estado_area, $id_area])) {
-        showErrorFieldsEmpty("areas.php?id_area=" . $id_area);
+    if (isEmpty([$nombre_unidad, $id_unidad, $areaPerteneciente, $cantidad_aprendices, $horario_inicial, $horario_final, $estado_unidad, $estado_trimestre])) {
+        showErrorFieldsEmpty("editar-unidad.php?id_unidad-edit=" . $id_unidad);
         exit();
     }
 
     // validamos que no se repitan los datos del nombre del area
     // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaQueryUpdate = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea AND id_area <> :id_area");
-    $areaQueryUpdate->bindParam(':nombreArea', $nombre_area);
-    $areaQueryUpdate->bindParam(':id_area', $id_area);
-    $areaQueryUpdate->execute();
+    $unidadQueryUpdate = $connection->prepare("SELECT * FROM unidad WHERE nombre_unidad = :nombre_unidad AND id_unidad <> :id_unidad");
+    $unidadQueryUpdate->bindParam(':nombre_unidad', $nombre_unidad);
+    $unidadQueryUpdate->bindParam(':id_unidad', $id_unidad);
+    $unidadQueryUpdate->execute();
     // Obtener todos los resultados en un array
-    $queryAreas = $areaQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
+    $unidadQuery = $unidadQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($queryAreas) {
+    if ($unidadQuery) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "areas.php");
+        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "editar-unidad.php?id_unidad-edit=" . $id_unidad);
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado WHERE id_area = :idArea");
-        $updateDocument->bindParam(':nombreArea', $nombre_area);
-        $updateDocument->bindParam(':id_estado', $estado_area);
-        $updateDocument->bindParam(':idArea', $id_area);
+        $updateDocument = $connection->prepare("UPDATE unidad SET 
+        nombre_unidad = :nombre_unidad, 
+        id_area = :areaPerteneciente, 
+        hora_inicio = :horario_inicial, 
+        hora_finalizacion = :horario_final, 
+        id_estado = :estado_unidad, 
+        id_estado_trimestre = :estado_trimestre, 
+        cantidad_aprendices = :cantidad_aprendices 
+        WHERE id_unidad = :id_unidad");
+        $updateDocument->bindParam(':nombre_unidad', $nombre_unidad);
+        $updateDocument->bindParam(':areaPerteneciente', $areaPerteneciente);
+        $updateDocument->bindParam(':horario_inicial', $horario_inicial);
+        $updateDocument->bindParam(':horario_final', $horario_final);
+        $updateDocument->bindParam(':estado_unidad', $estado_unidad);
+        $updateDocument->bindParam(':estado_trimestre', $estado_trimestre);
+        $updateDocument->bindParam(':cantidad_aprendices', $cantidad_aprendices);
+        $updateDocument->bindParam(':id_unidad', $id_unidad);
         $updateDocument->execute();
         if ($updateDocument) {
-            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "areas.php");
+            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "unidades.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "unidades.php");
         }
     }
 }
 
 // ELIMINAR PROCESO
-if (isset($_GET['id_area-delete'])) {
-    $id_area = $_GET["id_area-delete"];
-    if ($id_area == null) {
-        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "areas.php");
-    } else {
-        $deleteArea = $connection->prepare("SELECT * FROM areas WHERE id_area = :id_area");
-        $deleteArea->bindParam(":id_area", $id_area);
-        $deleteArea->execute();
-        $deleteAreaSelect = $deleteArea->fetch(PDO::FETCH_ASSOC);
-
-        if ($deleteAreaSelect) {
-            $delete = $connection->prepare("DELETE  FROM areas WHERE id_area = :id_area");
-            $delete->bindParam(':id_area', $id_area);
+if (isset($_GET['id_unidad-delete'])) {
+    $id_unidad = $_GET["id_unidad-delete"];
+    if ($id_unidad !== null) {
+        $unidadDelete = $connection->prepare("SELECT * FROM unidad WHERE id_unidad = :id_unidad");
+        $unidadDelete->bindParam(":id_unidad", $id_unidad);
+        $unidadDelete->execute();
+        $unidadDeleteSelect = $unidadDelete->fetch(PDO::FETCH_ASSOC);
+        if ($unidadDeleteSelect) {
+            $delete = $connection->prepare("DELETE  FROM unidad WHERE id_unidad = :id_unidad");
+            $delete->bindParam(':id_unidad', $id_unidad);
             $delete->execute();
             if ($delete) {
-                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "areas.php");
+                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "unidades.php");
+                exit();
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "areas.php");
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "unidades.php");
+                exit();
             }
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de peticion", "El registro seleccionado no existe.", "unidades.php");
+            exit();
         }
     }
+    showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "unidades.php");
+    exit();
 }
