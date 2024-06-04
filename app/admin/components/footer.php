@@ -5,20 +5,18 @@
         <!-- Footer with components -->
         <section id="component-footer">
             <footer class="footer bg-light">
-                <div
-                    class="container-fluid d-flex flex-lg-row flex-column justify-content-between align-items-md-center gap-1 container-p-x py-3">
+                <div class="container-fluid d-flex flex-lg-row flex-column justify-content-between align-items-md-center gap-1 container-p-x py-3">
                     <div class="mb-2 mb-md-0">
                         ©
                         <script>
-                        document.write(new Date().getFullYear());
+                            document.write(new Date().getFullYear());
                         </script>
                         , Todos los derechos reservados, diseñado y desarrollado por
                         <a href="#" target="_blank" class="footer-link fw-bolder">Luis
                             Alejandro Muñoz Garcia</a>
                     </div>
                     <div>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"><i
-                                class="bx bx-log-out-circle"></i>Cerrar Sesion</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"><i class="bx bx-log-out-circle"></i>Cerrar Sesion</a>
                     </div>
                 </div>
             </footer>
@@ -50,8 +48,6 @@
 
     <!-- jQuery, Popper.js, Bootstrap JS -->
     <script src="../../libraries/jquery/jquery-3.3.1.min.js"></script>
-    <script src="popper/popper.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
 
     <!-- datatables JS -->
     <script type="text/javascript" src="../../libraries/datatables/datatables.min.js"></script>
