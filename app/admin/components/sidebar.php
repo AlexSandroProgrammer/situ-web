@@ -181,12 +181,12 @@
                         <ul class="menu-sub">
                             <li class="menu-item">
                                 <a href="funcionarios.php" class="menu-link">
-                                    <div data-i18n="Error">Listado de Memorandos</div>
+                                    <div data-i18n="Error">Lista de Funcionarios</div>
                                 </a>
                             </li>
                             <li class="menu-item">
                                 <a href="registrar-ficha.php" class="menu-link">
-                                    <div data-i18n="Under Maintenance">Registrar Memorando</div>
+                                    <div data-i18n="Under Maintenance">Registrar Funcionario</div>
                                 </a>
                             </li>
                         </ul>

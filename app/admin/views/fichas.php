@@ -69,7 +69,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <a class="btn btn-danger" href="fichas.php">
                                             Cancelar
                                         </a>
-                                        <input type="submit" class="btn btn-primary" value="Actualizar"></input>
+                                        <input type="submit" class="btn btn-primary" value="Registrar"></input>
                                         <input type="hidden" class="btn btn-info" value="formRegisterFichaCsv"
                                             name="MM_formRegisterFichaCsv"></input>
                                     </div>
