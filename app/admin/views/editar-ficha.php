@@ -170,10 +170,10 @@ if (!empty($_GET['id_unidad-edit'])) {
     <?php
         require_once("../components/footer.php");
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de Ruta", "Los datos no fueron encontrados", "unidades.php");
+        showErrorOrSuccessAndRedirect("error", "Error de Ruta", "Los datos no fueron encontrados", "fichas.php");
     }
 } else {
 
-    showErrorOrSuccessAndRedirect("error", "Error de Consulta", "Error al momento de obtener los datos del registro.", "unidades.php");
+    showErrorOrSuccessAndRedirect("error", "Error de Consulta", "Error al momento de obtener los datos del registro.", "fichas.php");
 }
     ?>
