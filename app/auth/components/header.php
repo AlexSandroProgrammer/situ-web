@@ -8,13 +8,11 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
 ?>
 
 <!DOCTYPE html>
-<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
-    data-template="vertical-menu-template-free">
+<html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../assets/" data-template="vertical-menu-template-free">
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>Login || Sistema de Turnos Rutinarios</title>
     <meta name="description" content="" />
@@ -23,9 +21,7 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
     <!-- Icons. Uncomment required icon fonts -->
     <link rel="stylesheet" href="../../assets/vendor/fonts/boxicons.css" />
 
@@ -59,8 +55,7 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
                 <nav class="navbar navbar-example navbar-expand-lg bg-light">
                     <div class="container-fluid">
                         <a class="navbar-brand" href="javascript:void(0)">SITU.</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbar-ex-3">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-ex-3">
                             <span class="navbar-toggler-icon"></span>
                         </button>
 
@@ -70,10 +65,9 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
                                     Usuarios</a>
                             </div>
                             <form id="navigationForm">
-                                <button class="btn btn-primary" type="button"
-                                    onclick="navigateTo('usuario-invitado')">Usuario Invitado</button>
-                                <button class="btn btn-success" type="button"
-                                    onclick="navigateTo('volver-al-blog')">Volver al Blog</button>
+                                <button class="btn btn-primary" type="button" onclick="navigateTo('consultar')">Usuario
+                                    Invitado</button>
+                                <button class="btn btn-success" type="button" onclick="navigateTo('volver-al-blog')">Volver al Blog</button>
                             </form>
 
                         </div>
