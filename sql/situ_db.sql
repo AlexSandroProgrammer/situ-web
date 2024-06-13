@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-05-2024 a las 22:58:38
+-- Tiempo de generación: 13-06-2024 a las 22:45:08
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -44,7 +44,18 @@ INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`) VALUES
 (6, 'Ambiental', 1),
 (7, 'Agricola', 1),
 (8, 'Mecanizacion', 1),
-(11, 'Innovacion', 2);
+(11, 'Innovacion', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cargos`
+--
+
+CREATE TABLE `cargos` (
+  `id_cargo` int(11) NOT NULL,
+  `tipo_cargo` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -82,6 +93,14 @@ CREATE TABLE `fichas` (
   `id_estado_trimestre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `fichas`
+--
+
+INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `cantidad_aprendices`, `inicio_formacion`, `fin_formacion`, `id_estado`, `id_estado_se`, `id_estado_trimestre`) VALUES
+(2309101, 5, NULL, '2024-06-15', '2024-06-22', 1, 2, 1),
+(2500591, 4, NULL, '2024-06-15', '2024-06-29', 1, 2, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -113,7 +132,9 @@ CREATE TABLE `programas_formacion` (
 
 INSERT INTO `programas_formacion` (`id_programa`, `nombre_programa`, `descripcion`, `id_estado`) VALUES
 (4, 'Analisis y Desarrollo de Software', 'Esta es una descripción para un programa de formación relacionado con el analisis y desarrollo de software', 1),
-(5, 'Gestion de Empresas Pecuarias', 'Esta es la descripcion de un programa relacionado con empresas pecuarias', 1);
+(5, 'Gestion de Empresas Pecuarias', 'Esta es la descripcion de un programa relacionado con empresas pecuarias', 1),
+(7, 'Gestion de Produccion Agricola', 'Esta es la descripcion de un programa relacionado con la produccion agricola', 1),
+(8, 'Gestion Agroempresarial', 'descripcion corta del tecnologo gestion agroempresarial', 1);
 
 -- --------------------------------------------------------
 
@@ -208,7 +229,7 @@ CREATE TABLE `usuarios` (
   `foto_data` varchar(255) NOT NULL,
   `celular` varchar(20) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `sexo` varchar(100) NOT NULL,
+  `sexo` varchar(100) DEFAULT NULL,
   `id_estado_se` int(11) DEFAULT NULL,
   `id_estado_trimestre` int(11) DEFAULT NULL,
   `id_ficha` int(11) DEFAULT NULL,
@@ -222,7 +243,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_estado_trimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`) VALUES
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, '', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1);
+(1002340230, 'Natalia', 'Olmos', 'Lider de Talento Humano', 'logonegro.png', '3103452301', NULL, NULL, NULL, NULL, NULL, 3, 'nataliaolmos02@gmail.com', 1),
+(1110460410, 'Daniel ', 'Cardenas', 'Lider Sena Empresa', 'LideresSenaEmpresa.PNG', '3112301201', NULL, NULL, NULL, NULL, NULL, 3, 'danielcardenas@gmail.com', 1),
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1);
 
 --
 -- Índices para tablas volcadas
@@ -233,6 +256,12 @@ INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`
 --
 ALTER TABLE `areas`
   ADD PRIMARY KEY (`id_area`);
+
+--
+-- Indices de la tabla `cargos`
+--
+ALTER TABLE `cargos`
+  ADD PRIMARY KEY (`id_cargo`);
 
 --
 -- Indices de la tabla `estados`
@@ -296,7 +325,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT de la tabla `cargos`
+--
+ALTER TABLE `cargos`
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
@@ -314,7 +349,7 @@ ALTER TABLE `intentos_fallidos`
 -- AUTO_INCREMENT de la tabla `programas_formacion`
 --
 ALTER TABLE `programas_formacion`
-  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_usuario`

@@ -53,6 +53,12 @@
     require_once("../../functions/functions.php");
     require_once("../controllers/index.php");
 
+    $documento = $_SESSION['documento'];
+
+    $documentoUserSession = $connection->prepare("SELECT * FROM usuarios WHERE documento = '$documento'");
+    $documentoUserSession->execute();
+    $documentoSession = $documentoUserSession->fetch(PDO::FETCH_ASSOC);
+
     ?>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
