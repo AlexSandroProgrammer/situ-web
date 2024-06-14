@@ -3,8 +3,6 @@ $titlePage = "Mis Datos";
 require_once("../components/sidebar.php");
 
 if ($documentoSession) {
-
-
 ?>
 
 <!-- Content wrapper -->
