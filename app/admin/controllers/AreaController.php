@@ -105,3 +105,76 @@ if (isset($_GET['id_area-delete'])) {
         }
     }
 }
+
+if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"] == "registroArchivoCSV")) {
+    // recibimos el archivo
+    $documentoCsv = $_FILES['area_csv'];
+    // validamos que no llegue vacio
+    if (isEmpty($documentoCsv)) {
+        showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "areas.php?importarExcel");
+        exit();
+    }
+    // Verificar si el archivo subido es un CSV
+    $fileType = pathinfo($documentoCsv['name'], PATHINFO_EXTENSION);
+    if ($fileType != 'csv') {
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de registrar los datos, solo puedes subir archivos con extensión csv.", "areas.php?importarExcel");
+        exit();
+    }
+    // Procesar el archivo CSV
+    if (($initialUpload = fopen($documentoCsv['tmp_name'], "r")) !== FALSE) {
+        try {
+            // Preparar la consulta de verificación
+            $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
+            // Preparar la consulta de inserción
+            $stmtInsert = $connection->prepare("INSERT INTO areas (nombreArea, id_estado) VALUES (:nombreArea, :estadoInicial)");
+            $firstLine = true;
+            while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
+                if ($firstLine) {
+                    // Ignorar la primera línea (encabezados)
+                    $firstLine = false;
+                    continue;
+                }
+                // Verificar que la fila tiene al menos dos columnas
+                if (count($data) >= 2) {
+                    $nombreArea = $data[0];
+                    $estadoArea = $data[1];
+                    // Verificar que los valores no sean nulos
+                    if (!empty($nombreArea) && !empty($estadoArea)) {
+                        // Verificar si el nombreArea ya existe
+                        $stmtCheck->bindParam(':nombreArea', $nombreArea);
+                        $stmtCheck->execute();
+                        $exists = $stmtCheck->fetchColumn();
+                        if ($exists) {
+                            // Manejo de datos duplicados
+                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "El área ya está registrada en la base de datos.", "areas.php?importarExcel");
+                            exit();
+                        }
+                        // Bindear los parámetros y ejecutar la inserción
+                        $stmtInsert->bindParam(':nombreArea', $nombreArea);
+                        $stmtInsert->bindParam(':estadoInicial', $estadoArea);
+                        $stmtInsert->execute();
+                    } else {
+                        // Manejo de datos inválidos (opcional)
+                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "areas.php?importarExcel");
+                        exit();
+                    }
+                } else {
+                    // Manejo de fila incompleta
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "areas.php?importarExcel");
+                    exit();
+                }
+            }
+
+            // Cerrar el archivo
+            fclose($initialUpload);
+
+            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "areas.php");
+        } catch (PDOException $e) {
+            // Manejo de errores de conexión o ejecución
+            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "areas.php?importarExcel");
+        }
+    } else {
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "areas.php?importarExcel");
+        exit();
+    }
+}

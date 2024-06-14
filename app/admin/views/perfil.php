@@ -7,9 +7,6 @@ if ($documentoSession) {
 
 <!-- Content wrapper -->
 <div class="content-wrapper">
-    <!-- Content -->
-
-    <!-- Content wrapper -->
     <div class="content-wrapper">
         <!-- Content -->
 
