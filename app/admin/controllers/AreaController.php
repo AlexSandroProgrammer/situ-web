@@ -110,7 +110,7 @@ if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"]
     // recibimos el archivo
     $documentoCsv = $_FILES['area_csv'];
     // validamos que no llegue vacio
-    if (isEmpty($documentoCsv)) {
+    if (isEmpty([$documentoCsv])) {
         showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "areas.php?importarExcel");
         exit();
     }
