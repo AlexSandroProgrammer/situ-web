@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-06-2024 a las 22:45:08
+-- Tiempo de generación: 17-06-2024 a las 22:45:05
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -60,6 +60,27 @@ CREATE TABLE `cargos` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `clientes`
+--
+
+CREATE TABLE `clientes` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(250) NOT NULL,
+  `correo` varchar(250) NOT NULL,
+  `celular` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`id`, `nombre`, `correo`, `celular`) VALUES
+(2778, 'Urian Viera', 'urian@gmail.com', '123\r\n'),
+(2779, 'Saul R', 'saul@gmail.com', '456\r\n');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `estados`
 --
 
@@ -100,6 +121,26 @@ CREATE TABLE `fichas` (
 INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `cantidad_aprendices`, `inicio_formacion`, `fin_formacion`, `id_estado`, `id_estado_se`, `id_estado_trimestre`) VALUES
 (2309101, 5, NULL, '2024-06-15', '2024-06-22', 1, 2, 1),
 (2500591, 4, NULL, '2024-06-15', '2024-06-29', 1, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `formatos`
+--
+
+CREATE TABLE `formatos` (
+  `id_formato` int(11) NOT NULL,
+  `nombreFormato` varchar(255) NOT NULL,
+  `nombreFormatoMagnetico` varchar(255) NOT NULL,
+  `estado` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `formatos`
+--
+
+INSERT INTO `formatos` (`id_formato`, `nombreFormato`, `nombreFormatoMagnetico`, `estado`) VALUES
+(1, 'Formato registro de area', 'formatoarea.csv', 1);
 
 -- --------------------------------------------------------
 
@@ -264,6 +305,12 @@ ALTER TABLE `cargos`
   ADD PRIMARY KEY (`id_cargo`);
 
 --
+-- Indices de la tabla `clientes`
+--
+ALTER TABLE `clientes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `estados`
 --
 ALTER TABLE `estados`
@@ -274,6 +321,12 @@ ALTER TABLE `estados`
 --
 ALTER TABLE `fichas`
   ADD PRIMARY KEY (`codigoFicha`);
+
+--
+-- Indices de la tabla `formatos`
+--
+ALTER TABLE `formatos`
+  ADD PRIMARY KEY (`id_formato`);
 
 --
 -- Indices de la tabla `intentos_fallidos`
@@ -325,7 +378,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `cargos`
@@ -334,10 +387,22 @@ ALTER TABLE `cargos`
   MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `clientes`
+--
+ALTER TABLE `clientes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2780;
+
+--
 -- AUTO_INCREMENT de la tabla `estados`
 --
 ALTER TABLE `estados`
   MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `formatos`
+--
+ALTER TABLE `formatos`
+  MODIFY `id_formato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `intentos_fallidos`
