@@ -22,33 +22,26 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                         </button>
                         <!-- Modal -->
                         <div class="modal fade" id="formArea" tabindex="-1" aria-hidden="true">
-                            <form class="modal-dialog" action="" method="POST" autocomplete="off"
-                                name="formRegisterPrograma">
+                            <form class="modal-dialog" action="" method="POST" autocomplete="off" name="formRegisterPrograma">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel1">Registro de Programas</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label class="form-label" for="nombre_programa">Nombre de Programa</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="nombre_programa-span" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i> </span>
-                                                <input type="text" required minlength="2" maxlength="200" autofocus
-                                                    class="form-control" name="nombrePrograma" id="nombre_programa"
-                                                    placeholder="Ingresa el nombre del area" />
+                                                <span id="nombre_programa-span" class="input-group-text"><i class="fas fa-layer-group"></i> </span>
+                                                <input type="text" required minlength="2" maxlength="200" autofocus class="form-control" name="nombrePrograma" id="nombre_programa" placeholder="Ingresa el nombre del area" />
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="estadoInicial" class="form-label">Estado
                                                 Inicial</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="estadoInicial-2" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i></span>
-                                                <select class="form-select" name="estadoInicial" required
-                                                    name="estadoInicial">
+                                                <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                <select class="form-select" name="estadoInicial" required name="estadoInicial">
                                                     <option value="">Seleccionar Estado...</option>
                                                     <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
@@ -72,11 +65,8 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             <label class="form-label" for="input-programa">Descripcion del
                                                 Programa</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="icon-area" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i></span>
-                                                <textarea id="input-programa" rows="5" name="descripcion"
-                                                    class="form-control"
-                                                    placeholder="Ingresa una descripcion caracterizada del programa"></textarea>
+                                                <span id="icon-area" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                <textarea id="input-programa" rows="5" name="descripcion" class="form-control" placeholder="Ingresa una descripcion caracterizada del programa"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -85,8 +75,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </button>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterPrograma"
-                                            name="MM_formRegisterPrograma"></input>
+                                        <input type="hidden" class="btn btn-info" value="formRegisterPrograma" name="MM_formRegisterPrograma"></input>
                                     </div>
                                 </div>
                             </form>
@@ -95,8 +84,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Vertically Centered Modal -->
                     <div class="col-lg-4 col-md-6">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                            data-bs-target="#modalCenter">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCenter">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </button>
                     </div>
@@ -111,36 +99,31 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                     $programaSeleccionado = $listPrograma->fetch(PDO::FETCH_ASSOC);
                     if ($programaSeleccionado) {
                 ?>
-                <div class="row">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Actualizacion datos Programa
-                                    <?php echo $programaSeleccionado['nombre_programa'] ?>
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" autocomplete="off" name="formUpdatePrograma">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="codigo-ficha">Nombre del Programa</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="nombre-area" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <input type="text" minlength="5" maxlength="200" autofocus
-                                                class="form-control" required name="nombre_programa"
-                                                id="nombre_programa" placeholder="Ingresa el nombre del programa"
-                                                value="<?php echo $programaSeleccionado['nombre_programa']  ?>" />
-                                        </div>
+                        <div class="row">
+                            <div class="col-xl">
+                                <div class="card mb-4">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Actualizacion datos Programa
+                                            <?php echo $programaSeleccionado['nombre_programa'] ?>
+                                        </h5>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="estadoInicial" class="form-label">Estado Inicial</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="estadoInicial-2" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <select class="form-select" required name="estado_programa">
-                                                <option value="<?php echo $programaSeleccionado['id_estado'] ?>">
-                                                    <?php echo $programaSeleccionado['estado'] ?></option>
-                                                <?php
+                                    <div class="card-body">
+                                        <form action="" method="POST" autocomplete="off" name="formUpdatePrograma">
+                                            <div class=" mb-3">
+                                                <label class="form-label" for="codigo-ficha">Nombre del Programa</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="nombre-area" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                    <input type="text" minlength="5" maxlength="200" autofocus class="form-control" required name="nombre_programa" id="nombre_programa" placeholder="Ingresa el nombre del programa" value="<?php echo $programaSeleccionado['nombre_programa']  ?>" />
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="estadoInicial" class="form-label">Estado Inicial</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                    <select class="form-select" required name="estado_programa">
+                                                        <option value="<?php echo $programaSeleccionado['id_estado'] ?>">
+                                                            <?php echo $programaSeleccionado['estado'] ?></option>
+                                                        <?php
                                                         // CONSUMO DE DATOS DE LOS PROCESOS
                                                         $listEstados = $connection->prepare("SELECT * FROM estados");
                                                         $listEstados->execute();
@@ -150,36 +133,30 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                             echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
                                                         }
                                                         ?>
-                                            </select>
-                                        </div>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="input-programa">Descripcion del
+                                                    Programa</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-message2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                    <textarea inputmode="text" id="input-programa" rows="5" name="descripcion" class="form-control" placeholder="Ingresa una descripcion caracterizada del programa"><?php echo $programaSeleccionado['descripcion'] ?></textarea>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" minlength="5" maxlength="20" autofocus class="form-control" id="id_programa" name="id_programa" value="<?php echo $programaSeleccionado['id_programa']  ?>" />
+                                            <div class="modal-footer">
+                                                <a class="btn btn-danger" href="programas.php">
+                                                    Cancelar
+                                                </a>
+                                                <input type="submit" class="btn btn-primary" value="Actualizar"></input>
+                                                <input type="hidden" class="btn btn-info" value="formUpdatePrograma" name="MM_formUpdatePrograma"></input>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label" for="input-programa">Descripcion del
-                                            Programa</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="basic-icon-default-message2" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <textarea inputmode="text" id="input-programa" rows="5" name="descripcion"
-                                                class="form-control"
-                                                placeholder="Ingresa una descripcion caracterizada del programa"><?php echo $programaSeleccionado['descripcion'] ?></textarea>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" minlength="5" maxlength="20" autofocus class="form-control"
-                                        id="id_programa" name="id_programa"
-                                        value="<?php echo $programaSeleccionado['id_programa']  ?>" />
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="programas.php">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formUpdatePrograma"
-                                            name="MM_formUpdatePrograma"></input>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
                 <?php
                     } else {
                         showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "programas.php");
@@ -190,8 +167,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="col-lg-12 mt-3">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0"
-                                width="100%">
+                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
@@ -204,30 +180,23 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                     <?php
                                     foreach ($programas as $programa) {
                                     ?>
-                                    <tr>
-                                        <td>
-                                            <form method="GET" action="">
-                                                <input type="hidden" name="id_programa-delete"
-                                                    value="<?= $programa['id_programa'] ?>">
-                                                <button class="btn btn-danger mt-2"
-                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
-                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                            </form>
-                                            <form method="GET" class="mt-2" action="">
-                                                <input type="hidden" name="id_programa"
-                                                    value="<?= $programa['id_programa'] ?>">
-                                                <button class="btn btn-success"
-                                                    onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
-                                                    type="submit"><i class="bx bx-refresh"
-                                                        title="Actualizar"></i></button>
-                                            </form>
-                                        </td>
-                                        <td><?php echo $programa['nombre_programa'] ?></td>
-                                        <td><?php echo $programa['estado'] ?></td>
-                                        <td><?php echo $programa['descripcion'] ?></td>
+                                        <tr>
+                                            <td>
+                                                <form method="GET" action="">
+                                                    <input type="hidden" name="id_programa-delete" value="<?= $programa['id_programa'] ?>">
+                                                    <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                                </form>
+                                                <form method="GET" class="mt-2" action="">
+                                                    <input type="hidden" name="id_programa" value="<?= $programa['id_programa'] ?>">
+                                                    <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
+                                                </form>
+                                            </td>
+                                            <td><?php echo $programa['nombre_programa'] ?></td>
+                                            <td><?php echo $programa['estado'] ?></td>
+                                            <td><?php echo $programa['descripcion'] ?></td>
 
 
-                                    </tr>
+                                        </tr>
                                     <?php
 
                                     }

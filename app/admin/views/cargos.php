@@ -1,7 +1,7 @@
 <?php
-$titlePage = "Listado de Formatos";
+$titlePage = "Listado de Cargos";
 require_once("../components/sidebar.php");
-$getCargos = $connection->prepare("SELECT * FROM formatos INNER JOIN estados ON formatos.estado = estados.id_estado WHERE formatos.estado = estados.id_estado");
+$getCargos = $connection->prepare("SELECT * FROM cargos INNER JOIN estados ON cargos.estado = estados.id_estado WHERE cargos.estado = estados.id_estado");
 $getCargos->execute();
 $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -11,44 +11,35 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
     <div class="container-xxl flex-grow-1 container-p-y">
         <!-- Bootstrap modals -->
         <div class="card mb-4">
-            <h2 class="card-header font-bold">Listado de Formatos</h2>
+            <h2 class="card-header font-bold">Listado de Cargos</h2>
             <div class="card-body">
                 <div class="row gy-3 mb-3">
                     <!-- Default Modal -->
                     <div class="col-lg-2 col-md-6">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#formRegisterFormato">
+                            data-bs-target="#formRegisterCargoModal">
                             <i class="fas fa-layer-group"></i> Registrar
                         </button>
                         <!-- Modal -->
-                        <div class="modal fade" id="formRegisterFormato" tabindex="-1" aria-hidden="true">
-                            <form class="modal-dialog" action="" method="POST" enctype="multipart/form-data"
-                                autocomplete="off" name="formRegisterFormat">
+                        <div class="modal fade" id="formRegisterCargoModal" tabindex="-1" aria-hidden="true">
+                            <form class="modal-dialog" action="" method="POST" autocomplete="off"
+                                name="formRegisterCargo">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel1">Registro de Formato</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel1">Registro de Cargo</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label class="form-label" for="nombre_formato">Nombre del Formato</label>
+                                            <label class="form-label" for="nombre_cargo">Nombre del Cargo</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="nombre_formato-span" class="input-group-text"><i
+                                                <span id="nombre_cargo-span" class="input-group-text"><i
                                                         class="fas fa-layer-group"></i> </span>
-                                                <input type="text" required minlength="2" maxlength="100" autofocus
-                                                    class="form-control" name="nombre_formato" id="nombre_formato"
-                                                    placeholder="Ingresa el nombre del formato" />
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="archivoCsv">Importar Archivo</label>
-                                            <div class="input-group input-group-merge">
-                                                <span id="archivoCsv-span" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i> </span>
-                                                <input type="file" required minlength="2" maxlength="100"
-                                                    class="form-control" name="formatoRegistroCsv" id="archivoCsv" />
+                                                <input type="text" required minlength="2" maxlength="20" autofocus
+                                                    class="form-control" name="nombreCargo" id="nombre_cargo"
+                                                    placeholder="Ingresa el nombre del cargo" />
                                             </div>
                                         </div>
                                         <div class="mb-3">
@@ -58,7 +49,7 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                                 <span id="estadoInicial-2" class="input-group-text"><i
                                                         class="fas fa-layer-group"></i></span>
                                                 <select class="form-select" name="estadoInicial" required
-                                                    id="estadoInicial">
+                                                    name="estadoInicial">
                                                     <option value="">Seleccionar Estado...</option>
                                                     <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
@@ -84,8 +75,8 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </button>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterFormat"
-                                            name="MM_formRegisterFormat"></input>
+                                        <input type="hidden" class="btn btn-info" value="formRegisterCargo"
+                                            name="MM_formRegisterCargo"></input>
                                     </div>
                                 </div>
                             </form>
@@ -125,7 +116,7 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                             <span id="nombre-area" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
                                             <input type="text" minlength="5" maxlength="20" autofocus
-                                                class="form-control" required name="nombre_formato" id="nombre-area"
+                                                class="form-control" required name="nombre_cargo" id="nombre-area"
                                                 placeholder="Ingresa el nombre del area"
                                                 value="<?php echo $areaSeleccionada['nombreArea']  ?>"
                                                 aria-describedby="codigo-ficha-2" />
@@ -268,7 +259,9 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
     <?php
