@@ -1,9 +1,9 @@
 <?php
 $titlePage = "Listado de Formatos";
 require_once("../components/sidebar.php");
-$getCargos = $connection->prepare("SELECT * FROM formatos INNER JOIN estados ON formatos.estado = estados.id_estado WHERE formatos.estado = estados.id_estado");
-$getCargos->execute();
-$cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
+$getFormatos = $connection->prepare("SELECT * FROM formatos INNER JOIN estados ON formatos.estado = estados.id_estado WHERE formatos.estado = estados.id_estado");
+$getFormatos->execute();
+$formatosFetch = $getFormatos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Content wrapper -->
 <div class="content-wrapper">
@@ -120,14 +120,26 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                             <div class="card-body">
                                 <form action="" method="POST" autocomplete="off" name="formUpdateFormat">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="codigo-ficha">Nombre de Formato</label>
+                                        <label class="form-label" for="nombre_formato">Nombre de Formato</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="nombre_formato-2" class="input-group-text"><i
+                                                    class="fas fa-layer-group"></i></span>
+                                            <input type="text" minlength="5" maxlength="20" autofocus
+                                                class="form-control" required name="nombre_formato" id="nombre_formato"
+                                                placeholder="Ingresa el nombre del area"
+                                                value="<?php echo $formatoSeleccionado['nombreFormato']  ?>"
+                                                aria-describedby="nombre_formato-2" />
+                                        </div>
+                                    </div>
+                                    <div class=" mb-3">
+                                        <label class="form-label" for="fecha_registro">Fecha de Registro</label>
                                         <div class="input-group input-group-merge">
                                             <span id="nombre-area" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
-                                            <input type="text" minlength="5" maxlength="20" autofocus
-                                                class="form-control" required name="nombre_formato" id="nombre-area"
+                                            <input type="datetime" readonly class="form-control" required
+                                                name="fecha_registro" id="fecha_registro"
                                                 placeholder="Ingresa el nombre del area"
-                                                value="<?php echo $formatoSeleccionado['nombreFormato']  ?>"
+                                                value="<?php echo $formatoSeleccionado['horario_registro']  ?>"
                                                 aria-describedby="codigo-ficha-2" />
                                         </div>
                                     </div>
@@ -170,7 +182,7 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                         id="id_area" name="id_formato"
                                         value="<?php echo $formatoSeleccionado['id_formato']  ?>" />
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="cargos.php">
+                                        <a class="btn btn-danger" href="formatos.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-primary" value="Actualizar"></input>
@@ -235,44 +247,47 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
-                                        <th>Nombre del Cargo</th>
+                                        <th>Nombre del Formato</th>
                                         <th>Nombre Formato Magnetico</th>
                                         <th>Estado</th>
+                                        <th>Fecha de registro</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($cargos as $cargo) {
+                                    foreach ($formatosFetch as $formato) {
                                     ?>
                                     <tr>
                                         <!--  -->
                                         <td>
                                             <div class="mt-2">
-                                                <a href="../assets/formatos/<?= $cargo['nombreFormatoMagnetico'] ?>"
+                                                <a href="../assets/formatos/<?= $formato['nombreFormatoMagnetico'] ?>"
                                                     class="btn btn-info"><i class="bx bx-download"
                                                         title="Descargar"></i></a>
                                             </div>
-                                            <form method="GET" action="">
-                                                <input type="hidden" name="id_formato-delete"
-                                                    value="<?= $cargo['id_formato'] ?>">
-                                                <button class="btn btn-danger mt-2"
-                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
-                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                            </form>
                                             <form method="GET" class="mt-2" action="">
                                                 <input type="hidden" name="id_formato"
-                                                    value="<?= $cargo['id_formato'] ?>">
+                                                    value="<?= $formato['id_formato'] ?>">
                                                 <button class="btn btn-success"
                                                     onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                     type="submit"><i class="bx bx-refresh"
                                                         title="Actualizar"></i></button>
                                             </form>
+                                            <form method="GET" action="">
+                                                <input type="hidden" name="id_formato-delete"
+                                                    value="<?= $formato['id_formato'] ?>">
+                                                <button class="btn btn-danger mt-2"
+                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                            </form>
                                         </td>
-                                        <td><?php echo $cargo['nombreFormato'] ?></td>
+                                        <td><?php echo $formato['nombreFormato'] ?></td>
                                         <td><a
-                                                href="../assets/formatos/<?= $cargo['nombreFormatoMagnetico'] ?>"><?= $cargo['nombreFormatoMagnetico'] ?></a>
+                                                href="../assets/formatos/<?= $formato['nombreFormatoMagnetico'] ?>"><?= $formato['nombreFormatoMagnetico'] ?></a>
                                         </td>
-                                        <td><?php echo $cargo['estado'] ?></td>
+                                        <td><?php echo $formato['estado'] ?></td>
+                                        <td><?php echo $formato['horario_registro'] ?></td>
+
                                     </tr>
                                     <?php
 

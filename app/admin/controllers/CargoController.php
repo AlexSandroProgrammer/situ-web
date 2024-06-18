@@ -10,9 +10,8 @@ if ((isset($_POST["MM_formRegisterCargo"])) && ($_POST["MM_formRegisterCargo"] =
         showErrorFieldsEmpty("cargos.php");
         exit();
     }
-
     // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
+    // CONSULTA SQL PARA VERIFICR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $queryFetchAllCargos = $connection->prepare("SELECT * FROM cargos WHERE tipo_cargo = :nombreCargo");
     $queryFetchAllCargos->bindParam(':nombreCargo', $nombreCargo);
     $queryFetchAllCargos->execute();
@@ -38,8 +37,6 @@ if ((isset($_POST["MM_formRegisterCargo"])) && ($_POST["MM_formRegisterCargo"] =
         }
     }
 }
-
-
 //  REGISTRO DE AREA
 if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
@@ -106,11 +103,11 @@ if (isset($_GET['id_area-delete'])) {
     }
 }
 
-if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"] == "registroArchivoCSV")) {
+if ((isset($_POST["MM_registroCsvCargos"])) && ($_POST["MM_registroCsvCargos"] == "registroCsvCargos")) {
     // recibimos el archivo
-    $documentoCsv = $_FILES['area_csv'];
+    $documentoCsv = $_FILES['cargos_csv'];
     // validamos que no llegue vacio
-    if (isEmpty($documentoCsv)) {
+    if (isEmpty([$documentoCsv])) {
         showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "areas.php?importarExcel");
         exit();
     }

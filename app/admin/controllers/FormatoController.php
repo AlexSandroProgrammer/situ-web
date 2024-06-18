@@ -1,4 +1,6 @@
 <?php
+
+date_default_timezone_set("America/Bogota");
 // REGISTRO DE FORMATOS
 if (isset($_POST["MM_formRegisterFormat"]) && $_POST["MM_formRegisterFormat"] == "formRegisterFormat") {
     // ASIGNACION VALORES DE DATOS
@@ -44,9 +46,11 @@ if (isset($_POST["MM_formRegisterFormat"]) && $_POST["MM_formRegisterFormat"] ==
                     $resultado = moveUploadedFile($_FILES["formatoRegistroCsv"], $formato);
                     if ($resultado) {
                         // Inserta los datos en la base de datos
-                        $registerDocument = $connection->prepare("INSERT INTO formatos(nombreFormato, nombreFormatoMagnetico,estado) VALUES(:nombre_formato, :nombreFormatoMagnetico,NOW())");
+                        $registerDocument = $connection->prepare("INSERT INTO formatos(nombreFormato, nombreFormatoMagnetico,estado, horario_registro) VALUES(:nombre_formato, :nombreFormatoMagnetico,:estado,NOW())");
                         $registerDocument->bindParam(':nombre_formato', $nombre_formato);
                         $registerDocument->bindParam(':nombreFormatoMagnetico', $nombreFormatoMagnetico);
+                        $registerDocument->bindParam(':estado', $estadoInicial);
+
                         $registerDocument->execute();
                         if ($registerDocument) {
                             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos han sido registrados correctamente.", "formatos.php");
@@ -142,30 +146,30 @@ if (isset($_POST["MM_formUpdateFormat"]) && $_POST["MM_formUpdateFormat"] == "fo
                                 $updateDocument->bindParam(':idDocument', $id_document);
                                 $updateDocument->execute();
                                 if ($updateDocument) {
-                                    showSuccessAndRedirect("Se ha actualizado correctamente los datos", "../views/lista-documentos.php");
+                                    showErrorOrSuccessAndRedirect("", "", "Se ha actualizado correctamente los datos", "../views/lista-documentos.php");
                                 } else {
-                                    showErrorAndRedirect("Error en la actualizacion de los datos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
+                                    showErrorOrSuccessAndRedirect("", "", "Error en la actualizacion de los datos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
                                 }
                             } else {
-                                showErrorAndRedirect("Error al momento de archivar el archivo en cuarentena.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
+                                showErrorOrSuccessAndRedirect("", "", "Error al momento de archivar el archivo en cuarentena.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
                             }
                         } else {
-                            showErrorAndRedirect("Error al momento de actualizar los datos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
+                            showErrorOrSuccessAndRedirect("", "", "Error al momento de actualizar los datos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
                         }
                     } else {
-                        showErrorAndRedirect("Error al momento de cargar el archivo.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
+                        showErrorOrSuccessAndRedirect("", "", "Error al momento de cargar el archivo.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
                     }
                 } else {
-                    showErrorAndRedirect("Error al momento de cargar el archivo.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
+                    showErrorOrSuccessAndRedirect("", "", "Error al momento de cargar el archivo.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
                 }
             } else {
-                showErrorAndRedirect("Error al momento de cargar el archivo, asegúrate de que sea de tipo PDF, WORD o formatos de excel y que su tamaño sea menor o igual a 10 MB.", "../views/crear-documento.php?id_archive_document=" . $id_document);
+                showErrorOrSuccessAndRedirect("", "", "Error al momento de cargar el archivo, asegúrate de que sea de tipo PDF, WORD o formatos de excel y que su tamaño sea menor o igual a 10 MB.", "../views/crear-documento.php?id_archive_document=" . $id_document);
             }
         } else {
-            showErrorAndRedirect("Error al cargar el documento. Asegúrate de seleccionar un archivo valido.", "../views/crear-documento.php?id_archive_document=" . $id_document);
+            showErrorOrSuccessAndRedirect("", "", "Error al cargar el documento. Asegúrate de seleccionar un archivo valido.", "../views/crear-documento.php?id_archive_document=" . $id_document);
         }
     } else {
-        showErrorAndRedirect("Error en la seleccion de procesos y procedimientos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
+        showErrorOrSuccessAndRedirect("", "", "Error en la seleccion de procesos y procedimientos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
     }
 }
 
@@ -235,3 +239,48 @@ if (isset($_POST["MM_formUpdateFormat"]) && $_POST["MM_formUpdateFormat"] == "fo
 //         }
 //     }
 // }
+
+// ELIMINAR FORMATO
+if (isset($_GET['id_formato-delete'])) {
+    $id_formato = $_GET["id_formato-delete"];
+    if ($id_formato == null) {
+        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "formatos.php");
+    } else {
+        $deleteFormat = $connection->prepare("SELECT * FROM formatos WHERE id_formato = :id_formato");
+        $deleteFormat->bindParam(":id_formato", $id_formato);
+        $deleteFormat->execute();
+        $deleteFormatSelect = $deleteFormat->fetch(PDO::FETCH_ASSOC);
+        if ($deleteFormatSelect) {
+            try {
+                $delete = $connection->prepare("DELETE FROM formatos WHERE id_formato = :id_formato");
+                $delete->bindParam(':id_formato', $id_formato);
+                $delete->execute();
+                if ($delete) {
+                    // ruta del directorio 
+                    $ruta = "../assets/formatos/";
+                    $nombreFormatoMagnetico = $deleteFormatSelect['nombreFormatoMagnetico'];
+                    // concatenamos la ruta y el nombre del archivo
+                    $rutaFormato = $ruta . $nombreFormatoMagnetico;
+                    // verificamos si el archivo no existe en el servidor
+                    if (!file_exists($rutaFormato)) {
+                        showErrorOrSuccessAndRedirect("info", "Error", "Error al momento de eliminar el archivo del servidor, el archivo no fue encontrado", "formatos.php");
+                        exit();
+                    }
+                    if (unlink($rutaFormato)) {
+                        showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "formatos.php");
+                        exit();
+                    } else {
+                        showErrorOrSuccessAndRedirect("info", "Error", "Error al momento de eliminar el archivo del servidor", "formatos.php");
+                        exit();
+                    }
+                } else {
+                    showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "formatos.php");
+                }
+            } catch (Exception $e) {
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "formatos.php");
+            }
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de peticion", "El registro seleccionado no existe.", "formatos.php");
+        }
+    }
+}

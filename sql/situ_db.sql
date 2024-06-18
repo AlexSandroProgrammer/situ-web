@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-06-2024 a las 22:45:05
+-- Tiempo de generación: 18-06-2024 a las 22:50:05
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -54,8 +54,17 @@ INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`) VALUES
 
 CREATE TABLE `cargos` (
   `id_cargo` int(11) NOT NULL,
-  `tipo_cargo` varchar(255) NOT NULL
+  `tipo_cargo` varchar(255) NOT NULL,
+  `estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `cargos`
+--
+
+INSERT INTO `cargos` (`id_cargo`, `tipo_cargo`, `estado`) VALUES
+(1, 'Lider Sena Empresa', 1),
+(2, 'Lider Pecuario', 1);
 
 -- --------------------------------------------------------
 
@@ -132,15 +141,16 @@ CREATE TABLE `formatos` (
   `id_formato` int(11) NOT NULL,
   `nombreFormato` varchar(255) NOT NULL,
   `nombreFormatoMagnetico` varchar(255) NOT NULL,
-  `estado` int(11) NOT NULL
+  `estado` int(11) NOT NULL,
+  `horario_registro` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `formatos`
 --
 
-INSERT INTO `formatos` (`id_formato`, `nombreFormato`, `nombreFormatoMagnetico`, `estado`) VALUES
-(1, 'Formato registro de area', 'formatoarea.csv', 1);
+INSERT INTO `formatos` (`id_formato`, `nombreFormato`, `nombreFormatoMagnetico`, `estado`, `horario_registro`) VALUES
+(4, 'Formato registro de area', 'formatoarea.csv', 1, '2024-06-18 14:12:23');
 
 -- --------------------------------------------------------
 
@@ -384,7 +394,7 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `cargos`
 --
 ALTER TABLE `cargos`
-  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
@@ -402,7 +412,7 @@ ALTER TABLE `estados`
 -- AUTO_INCREMENT de la tabla `formatos`
 --
 ALTER TABLE `formatos`
-  MODIFY `id_formato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_formato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `intentos_fallidos`

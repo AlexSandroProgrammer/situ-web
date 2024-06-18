@@ -59,6 +59,12 @@
     $documentoUserSession->execute();
     $documentoSession = $documentoUserSession->fetch(PDO::FETCH_ASSOC);
 
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        header("Location:../../");
+        exit();
+    }
+
     ?>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
@@ -319,7 +325,7 @@
                     </li>
 
                     <li class="menu-item">
-                        <a href="#" target="_blank" class="menu-link">
+                        <a href="index.php?logout" target="_blank" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-power-off"></i>
                             <div data-i18n="Documentation">Cerrar Sesion</div>
                         </a>
@@ -376,7 +382,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="auth-login-basic.html">
+                                        <a class="dropdown-item" href="index.php?logout">
                                             <i class="bx bx-power-off me-2"></i>
                                             <span class="align-middle">Cerrar Sesion</span>
                                         </a>

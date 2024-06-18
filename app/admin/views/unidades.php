@@ -31,12 +31,49 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Vertically Centered Modal -->
                     <div class="col-lg-4 col-md-6">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                            data-bs-target="#modalCenter">
+                        <a href="unidades.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
-                        </button>
+                        </a>
                     </div>
                 </div>
+                <?php
+                if (isset($_GET['importarExcel'])) {
+                ?>
+                <div class="row">
+                    <div class="col-xl">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Importacion de Archivo Excel
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
+                                    name="registroUnidadCsv">
+                                    <div class=" mb-3">
+                                        <label class="form-label" for="unidad_csv">Subir Archivo</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="span_csv" class="input-group-text"><i
+                                                    class="fas fa-layer-group"></i></span>
+                                            <input type="file" autofocus class="form-control" required name="unidad_csv"
+                                                id="unidad_csv" placeholder="cargar archivo" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" href="unidades.php">
+                                            Cancelar
+                                        </a>
+                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroUnidadCsv"
+                                            name="MM_registroUnidadCsv"></input>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                }
+                ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
                         <div class="table-responsive">
@@ -47,7 +84,7 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                         <th>Acciones</th>
                                         <th>Nombre de Programa</th>
                                         <th>Area</th>
-                                        <th>Cantidad de Aprendices</th>
+                                        <th>Aprendices Requeridos</th>
                                         <th>Fecha Apertura</th>
                                         <th>Fecha Cierre</th>
                                         <th>Estado</th>

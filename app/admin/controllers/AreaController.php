@@ -82,7 +82,7 @@ if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "for
     }
 }
 
-// ELIMINAR PROCESO
+// ELIMINAR AREA
 if (isset($_GET['id_area-delete'])) {
     $id_area = $_GET["id_area-delete"];
     if ($id_area == null) {
@@ -102,6 +102,8 @@ if (isset($_GET['id_area-delete'])) {
             } else {
                 showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "areas.php");
             }
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "areas.php");
         }
     }
 }
