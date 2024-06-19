@@ -98,20 +98,6 @@ require_once("../components/sidebar.php");
                                 </div>
                             </li>
 
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-user"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Nuevo en el Ultimo Mes</h6>
-                                        <small class="text-muted">Aprendices Nuevos</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">849k</small>
-                                    </div>
-                                </div>
-                            </li>
 
                             <div class="text-center"><a href="aprendices.php" class="btn btn-outline-primary">Ver
                                     Aprendices</a></div>
@@ -207,39 +193,22 @@ require_once("../components/sidebar.php");
                     </div>
                 </div>
             </div>
+            <?php
+            // card para mostrar cantidad de areas
+            cardStadicts("conteo", "areas", "areas.php", "Areas");
+            // card para mostrar cantidad de unidades
+            cardStadicts("conteoUnidades", "unidad", "unidades.php", "Unidades");
+            // card para mostrar cantidad de fichas
+            cardStadicts("conteoFichas", "fichas", "fichas.php", "Fichas");
+            // card para mostrar cantidad de programas
+            cardStadicts("conteoProgramas", "programas_formacion", "programas.php", "Programas");
+            // card para mostrar cantidad de formatos csv
+            cardStadicts("conteoFormatos", "formatos", "formatos.php", "Formatos CSV");
+            // card para mostrar cantidad de cargos
+            cardStadicts("conteoCargos", "cargos", "cargos.php", "Cargos");
 
-            <div class="col-lg-6 col-md-12 col-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-title d-flex align-items-start justify-content-between">
-                            <div class="avatar flex-shrink-0 w-50">
-                                <i class="rounded bx bx-layout"></i>
-                            </div>
-                            <div class="dropdown">
-                                <a href="areas.php" class="btn btn-primary">Ver Areas</a>
-                            </div>
-                        </div>
-                        <span class="fw-medium d-block mb-1">Areas Registradas</span>
-                        <h3 class="card-title mb-2">12,628</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-12 col-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-title d-flex align-items-start justify-content-between">
-                            <div class="avatar flex-shrink-0 w-50">
-                                <i class="rounded bx bx-layout"></i>
-                            </div>
-                            <div class="dropdown">
-                                <a href="unidades.php" class="btn btn-primary">Ver Unidades</a>
-                            </div>
-                        </div>
-                        <span class="fw-medium d-block mb-1">Unidades Registradas</span>
-                        <h3 class="card-title mb-2">12,628</h3>
-                    </div>
-                </div>
-            </div>
+            ?>
+
         </div>
 
 

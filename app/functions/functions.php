@@ -34,7 +34,6 @@ function showErrorFieldsEmpty($location)
         });</script>";
 }
 
-
 function isFileUploaded($file)
 {
     return isset($file) && $file['error'] === 0;
@@ -55,6 +54,52 @@ function createDirectoryIfNotExists($directory)
 function moveUploadedFile($file, $destination)
 {
     return move_uploaded_file($file["tmp_name"], $destination);
+}
+
+
+// FUNCION QUE PERMITA PASAR PARAMETROS PARA CREAR UN CARD
+function cardStadicts($item, $table, $route, $nameTitle)
+{
+    require_once("../../../database/connection.php");
+    $db = new Database();
+    $connection = $db->conectar();
+    $countAreas = "SELECT COUNT(*) AS $item FROM $table";
+    try {
+        $resultado = $connection->query($countAreas);
+        $conteo = $resultado->fetch(PDO::FETCH_ASSOC)[$item];
+        if ($conteo >= 1) {
+            echo "
+                <div class='col-md-6 col-12 mb-4'>
+                    <div class='card'>
+                        <div class='card-body'>
+                            <div class='card-title d-flex align-items-start justify-content-between'>
+                                <div class='avatar flex-shrink-0 w-50'>
+                                    <i class='rounded bx bx-layout'></i>
+                                </div>
+                                <div class='dropdown'>
+                                    <a href='$route' class='btn btn-primary'>Ver $nameTitle</a>
+                                </div>
+                            </div>
+                            <span class='fw-medium d-block mb-1'>$nameTitle</span>
+                            <h3 class='card-title mb-2'>" . htmlspecialchars($conteo, ENT_QUOTES, 'UTF-8') . "</h3>
+                        </div>
+                    </div>
+                </div>
+            ";
+        } else {
+            echo "
+                <div class='col-lg-6 col-md-12 col-6 mb-4'>
+                    <div class='card'>
+                        <div class='card-body'>
+                            <span class='fw-medium d-block mb-1'>No hay registros de $nameTitle.</span>
+                        </div>
+                    </div>
+                </div>
+            ";
+        }
+    } catch (PDOException $e) {
+        echo "Error en la consulta: " . $e->getMessage();
+    }
 }
 
 
