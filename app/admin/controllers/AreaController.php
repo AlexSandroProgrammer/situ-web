@@ -130,6 +130,7 @@ if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"]
             // Preparar la consulta de inserción
             $stmtInsert = $connection->prepare("INSERT INTO areas (nombreArea, id_estado) VALUES (:nombreArea, :estadoInicial)");
             $firstLine = true;
+            $rowCount = 0; // Contador de filas de datos
             while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
                 if ($firstLine) {
                     // Ignorar la primera línea (encabezados)
@@ -155,6 +156,7 @@ if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"]
                         $stmtInsert->bindParam(':nombreArea', $nombreArea);
                         $stmtInsert->bindParam(':estadoInicial', $estadoArea);
                         $stmtInsert->execute();
+                        $rowCount++; // Incrementar el contador de filas de datos
                     } else {
                         // Manejo de datos inválidos (opcional)
                         showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "areas.php?importarExcel");
@@ -169,6 +171,12 @@ if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"]
 
             // Cerrar el archivo
             fclose($initialUpload);
+
+            // Verificar si se procesaron filas de datos
+            if ($rowCount == 0) {
+                showErrorOrSuccessAndRedirect("error", "Archivo vacío", "El archivo CSV no contiene filas de datos después del encabezado.", "areas.php?importarExcel");
+                exit();
+            }
 
             showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "areas.php");
         } catch (PDOException $e) {

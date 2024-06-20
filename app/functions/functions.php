@@ -9,6 +9,16 @@ function isEmpty($fields)
     return false;
 }
 
+function isNotEmpty($fields)
+{
+    foreach ($fields as $field) {
+        if (!empty($field)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 function showErrorOrSuccessAndRedirect($icon, $title, $description, $location)
 {

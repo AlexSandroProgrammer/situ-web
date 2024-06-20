@@ -38,45 +38,51 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 if (isset($_GET['importarExcel'])) {
                 ?>
-                    <div class="row">
-                        <div class="col-xl">
-                            <div class="card mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Importacion de Archivo Excel
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="registroUnidadCsv">
-                                        <div class=" mb-3">
-                                            <label class="form-label" for="unidad_csv">Subir Archivo</label>
-                                            <div class="input-group input-group-merge">
-                                                <span id="span_csv" class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                                                <input type="file" autofocus class="form-control" required name="unidad_csv" id="unidad_csv" placeholder="cargar archivo" />
-                                            </div>
+                <div class="row">
+                    <div class="col-xl">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Importacion de Archivo Excel
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
+                                    name="registroUnidadCsv">
+                                    <div class=" mb-3">
+                                        <label class="form-label" for="unidad_csv">Subir Archivo</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="span_csv" class="input-group-text"><i
+                                                    class="fas fa-layer-group"></i></span>
+                                            <input type="file" autofocus class="form-control" required name="unidad_csv"
+                                                id="unidad_csv" placeholder="cargar archivo" />
                                         </div>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" href="unidades.php">
-                                                Cancelar
-                                            </a>
-                                            <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                            <input type="hidden" class="btn btn-info" value="registroUnidadCsv" name="MM_registroUnidadCsv"></input>
-                                        </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" href="unidades.php">
+                                            Cancelar
+                                        </a>
+                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroUnidadCsv"
+                                            name="MM_registroUnidadCsv"></input>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
                 <?php
                 }
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0" width="100%">
+                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0"
+                                width="100%">
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
-                                        <th>Nombre de Programa</th>
+                                        <th>ID</th>
+                                        <th>Nombre de Unidad</th>
                                         <th>Area</th>
                                         <th>Aprendices Requeridos</th>
                                         <th>Fecha Apertura</th>
@@ -89,25 +95,33 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                     <?php
                                     foreach ($unidades as $unidad) {
                                     ?>
-                                        <tr>
-                                            <td>
-                                                <form method="GET" action="">
-                                                    <input type="hidden" name="id_unidad-delete" value="<?= $unidad['id_unidad'] ?>">
-                                                    <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                                </form>
-                                                <form method="GET" class="mt-2" action="editar-unidad.php">
-                                                    <input type="hidden" name="id_unidad-edit" value="<?= $unidad['id_unidad'] ?>">
-                                                    <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
-                                                </form>
-                                            </td>
-                                            <td><?php echo $unidad['nombre_unidad'] ?></td>
-                                            <td><?php echo $unidad['nombreArea'] ?></td>
-                                            <td><?php echo $unidad['cantidad_aprendices'] ?></td>
-                                            <td><?php echo $unidad['hora_inicio'] ?></td>
-                                            <td><?php echo $unidad['hora_finalizacion'] ?></td>
-                                            <td><?php echo $unidad['estado'] ?></td>
-                                            <td><?php echo $unidad['estado'] ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td>
+                                            <form method="GET" action="">
+                                                <input type="hidden" name="id_unidad-delete"
+                                                    value="<?= $unidad['id_unidad'] ?>">
+                                                <button class="btn btn-danger mt-2"
+                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                            </form>
+                                            <form method="GET" class="mt-2" action="editar-unidad.php">
+                                                <input type="hidden" name="id_unidad-edit"
+                                                    value="<?= $unidad['id_unidad'] ?>">
+                                                <button class="btn btn-success"
+                                                    onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
+                                                    type="submit"><i class="bx bx-refresh"
+                                                        title="Actualizar"></i></button>
+                                            </form>
+                                        </td>
+                                        <td><?php echo $unidad['id_unidad'] ?></td>
+                                        <td><?php echo $unidad['nombre_unidad'] ?></td>
+                                        <td><?php echo $unidad['nombreArea'] ?></td>
+                                        <td><?php echo $unidad['cantidad_aprendices'] ?></td>
+                                        <td><?php echo $unidad['hora_inicio'] ?></td>
+                                        <td><?php echo $unidad['hora_finalizacion'] ?></td>
+                                        <td><?php echo $unidad['estado'] ?></td>
+                                        <td><?php echo $unidad['estado'] ?></td>
+                                    </tr>
                                     <?php
 
                                     }

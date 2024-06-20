@@ -227,7 +227,6 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($cargos as $cargo) {
                                     ?>
                                     <tr>
-                                        <!--  -->
                                         <td>
                                             <form method="GET" action="">
                                                 <input type="hidden" name="id_cargo-delete"

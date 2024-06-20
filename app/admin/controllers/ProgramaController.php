@@ -107,3 +107,89 @@ if (isset($_GET['id_programa-delete'])) {
         }
     }
 }
+
+// REGISTRO DE UNIDADES MEDIANTE ARCHIVOS CSV
+if ((isset($_POST["MM_registroArchivoProgramasCSV"])) && ($_POST["MM_registroArchivoProgramasCSV"] == "registroArchivoProgramasCSV")) {
+    // recibimos el archivo
+    $documentoCsv = $_FILES['programas_csv'];
+    // validamos que no llegue vacio
+    if (isEmpty([$documentoCsv])) {
+        showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "programas.php?importarExcel");
+        exit();
+    }
+    // Verificar si el archivo subido es un CSV
+    $fileType = pathinfo($documentoCsv['name'], PATHINFO_EXTENSION);
+    if ($fileType != 'csv') {
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de registrar los datos, solo puedes subir archivos con extensión csv.", "programas.php?importarExcel");
+        exit();
+    }
+    // Procesar el archivo CSV
+    if (($initialUpload = fopen($documentoCsv['tmp_name'], "r")) !== FALSE) {
+        try {
+            // Preparar la consulta de verificación
+            $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM programas_formacion WHERE nombre_programa = :nombre_programa");
+            // Preparar la consulta de inserción
+            $stmtInsert = $connection->prepare("INSERT INTO programas_formacion(
+            nombre_programa, 
+            descripcion, 
+            id_estado) 
+            VALUES (
+            :nombre_programa, 
+            :descripcion, 
+            :id_estado)");
+            $firstLine = true;
+            $rowCount = 0; // Contador de filas de datos
+            while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
+                if ($firstLine) {
+                    // Ignorar la primera línea (encabezados)
+                    $firstLine = false;
+                    continue;
+                }
+                // Verificar que la fila tiene al menos dos columnas
+                if (count($data) >= 3) {
+                    $nombre_programa = $data[0];
+                    $descripcion = $data[1];
+                    $id_estado = $data[2];
+                    // Verificar que los valores no sean nulos
+                    if (isNotEmpty([$nombre_programa, $id_estado])) {
+                        // Verificar si el nombreArea ya existe
+                        $stmtCheck->bindParam(':nombre_programa', $nombre_programa);
+                        $stmtCheck->execute();
+                        $exists = $stmtCheck->fetchColumn();
+                        if ($exists) {
+                            // Manejo de datos duplicados
+                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "El programa de formacion ya está registrado en la base de datos.", "programas.php?importarExcel");
+                            exit();
+                        }
+                        // Bindear los parámetros y ejecutar la inserción
+                        $stmtInsert->bindParam(':nombre_programa', $nombre_programa);
+                        $stmtInsert->bindParam(':descripcion', $descripcion);
+                        $stmtInsert->bindParam(':id_estado', $id_estado);
+                        $stmtInsert->execute();
+                        if ($stmtInsert) {
+                            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "programas.php");
+                            exit();
+                        }
+                    } else {
+                        // Manejo de datos inválidos (opcional)
+                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "programas.php?importarExcel");
+                        exit();
+                    }
+                } else {
+                    // Manejo de fila incompleta
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "programas.php?importarExcel");
+                    exit();
+                }
+            }
+            // Cerrar el archivo
+            fclose($initialUpload);
+            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "programas.php");
+        } catch (PDOException $e) {
+            // Manejo de errores de conexión o ejecución
+            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "programas.php?importarExcel");
+        }
+    } else {
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "programas.php?importarExcel");
+        exit();
+    }
+}

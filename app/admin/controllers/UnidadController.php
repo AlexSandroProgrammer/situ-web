@@ -162,8 +162,24 @@ if ((isset($_POST["MM_registroUnidadCsv"])) && ($_POST["MM_registroUnidadCsv"] =
             // Preparar la consulta de verificación
             $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM unidad WHERE nombre_unidad = :nombre_unidad");
             // Preparar la consulta de inserción
-            $stmtInsert = $connection->prepare("INSERT INTO unidad (nombre_unidad, id_estado) VALUES (:nombreArea, :estadoInicial)");
+            $stmtInsert = $connection->prepare("INSERT INTO unidad (
+            nombre_unidad, 
+            id_area, 
+            hora_inicio, 
+            hora_finalizacion, 
+            cantidad_aprendices, 
+            id_estado,
+            id_estado_trimestre) 
+            VALUES (
+            :nombre_unidad, 
+            :id_area, 
+            :hora_inicio, 
+            :hora_finalizacion, 
+            :cantidad_aprendices, 
+            :id_estado,
+            :id_estado_trimestre)");
             $firstLine = true;
+            $rowCount = 0; // Contador de filas de datos
             while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
                 if ($firstLine) {
                     // Ignorar la primera línea (encabezados)
@@ -171,46 +187,54 @@ if ((isset($_POST["MM_registroUnidadCsv"])) && ($_POST["MM_registroUnidadCsv"] =
                     continue;
                 }
                 // Verificar que la fila tiene al menos dos columnas
-                if (count($data) >= 2) {
-                    $nombreArea = $data[0];
-                    $estadoArea = $data[1];
+                if (count($data) >= 7) {
+                    $nombre_unidad = $data[0];
+                    $id_area = $data[1];
+                    $hora_inicio = $data[2];
+                    $hora_finalizacion = $data[3];
+                    $cantidad_aprendices = $data[4];
+                    $id_estado = $data[5];
+                    $id_estado_trimestre = $data[6];
                     // Verificar que los valores no sean nulos
-                    if (!empty($nombreArea) && !empty($estadoArea)) {
+                    if (isNotEmpty([$nombre_unidad, $id_area, $hora_inicio, $hora_finalizacion, $cantidad_aprendices, $id_estado, $id_estado_trimestre])) {
                         // Verificar si el nombreArea ya existe
-                        $stmtCheck->bindParam(':nombreArea', $nombreArea);
+                        $stmtCheck->bindParam(':nombre_unidad', $nombre_unidad);
                         $stmtCheck->execute();
                         $exists = $stmtCheck->fetchColumn();
                         if ($exists) {
                             // Manejo de datos duplicados
-                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "El área ya está registrada en la base de datos.", "areas.php?importarExcel");
+                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "La unidad ya está registrada en la base de datos.", "unidades.php?importarExcel");
                             exit();
                         }
                         // Bindear los parámetros y ejecutar la inserción
-                        $stmtInsert->bindParam(':nombreArea', $nombreArea);
-                        $stmtInsert->bindParam(':estadoInicial', $estadoArea);
+                        $stmtInsert->bindParam(':nombre_unidad', $nombre_unidad);
+                        $stmtInsert->bindParam(':id_area', $id_area);
+                        $stmtInsert->bindParam(':hora_inicio', $hora_inicio);
+                        $stmtInsert->bindParam(':hora_finalizacion', $hora_finalizacion);
+                        $stmtInsert->bindParam(':cantidad_aprendices', $cantidad_aprendices);
+                        $stmtInsert->bindParam(':id_estado', $id_estado);
+                        $stmtInsert->bindParam(':id_estado_trimestre', $id_estado_trimestre);
                         $stmtInsert->execute();
                     } else {
                         // Manejo de datos inválidos (opcional)
-                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "areas.php?importarExcel");
+                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "unidades.php?importarExcel");
                         exit();
                     }
                 } else {
                     // Manejo de fila incompleta
-                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "areas.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "unidades.php?importarExcel");
                     exit();
                 }
             }
-
             // Cerrar el archivo
             fclose($initialUpload);
-
-            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "areas.php");
+            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "unidades.php");
         } catch (PDOException $e) {
             // Manejo de errores de conexión o ejecución
-            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "areas.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "unidades.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "areas.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "unidades.php?importarExcel");
         exit();
     }
 }
