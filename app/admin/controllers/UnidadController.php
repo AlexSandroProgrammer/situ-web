@@ -13,13 +13,11 @@ if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"]
     // Convertir a formato hora (H:i)
     $horario_inicial = date('H:i', strtotime($horario_inicial));
     $horario_final = date('H:i', strtotime($horario_final));
-
     // validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$nombre_unidad, $id_area, $cantidad_aprendices, $horario_inicial, $horario_final, $estadoInicial, $estadoTrimestre])) {
         showErrorFieldsEmpty("registrar-unidad.php");
         exit();
     }
-
     // validamos que no se repitan los datos del nombre del area
     // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $unidadQuery = $connection->prepare("SELECT * FROM unidad WHERE nombre_unidad = :nombre_unidad");
@@ -32,7 +30,6 @@ if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"]
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "registrar-unidad.php");
         exit();
     } else {
-
         // Inserta los datos en la base de datos
         $unidadRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado, id_estado_trimestre) VALUES(:nombre_unidad, :id_area, :hora_inicial, :hora_final, :cantidad_aprendices, :id_estado, :id_estado_trimestre)");
         $unidadRegister->bindParam(':nombre_unidad', $nombre_unidad);

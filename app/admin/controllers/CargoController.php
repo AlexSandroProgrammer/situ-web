@@ -175,3 +175,89 @@ if ((isset($_POST["MM_registroCsvCargos"])) && ($_POST["MM_registroCsvCargos"] =
         exit();
     }
 }
+
+// REGISTRO DE CARGOS
+
+if ((isset($_POST["MM_registroCargoCsv"])) && ($_POST["MM_registroCargoCsv"] == "registroCargoCsv")) {
+    // recibimos el archivo
+    $documentoCsv = $_FILES['unidad_csv'];
+    // validamos que no llegue vacio
+    if (isEmpty([$documentoCsv])) {
+        showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "cargos.php?importarExcel");
+        exit();
+    }
+    // Verificar si el archivo subido es un CSV
+    $fileType = pathinfo($documentoCsv['name'], PATHINFO_EXTENSION);
+    if ($fileType != 'csv') {
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de registrar los datos, solo puedes subir archivos con extensión csv.", "cargos.php?importarExcel");
+        exit();
+    }
+    // Procesar el archivo CSV
+    if (($initialUpload = fopen($documentoCsv['tmp_name'], "r")) !== FALSE) {
+        try {
+            // Preparar la consulta de verificación
+            $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM cargos WHERE tipo_cargo = :tipo_cargo");
+            // Preparar la consulta de inserción
+            $stmtInsert = $connection->prepare("INSERT INTO cargos (
+            tipo_cargo, 
+            estado) 
+            VALUES (
+            :tipo_cargo, 
+            :id_estado)");
+            $firstLine = true;
+            $rowCount = 0; // Contador de filas de datos
+            while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
+                if ($firstLine) {
+                    // Ignorar la primera línea (encabezados)
+                    $firstLine = false;
+                    continue;
+                }
+                // Verificar que la fila tiene al menos dos columnas
+                if (count($data) >= 2) {
+                    $tipo_cargo = $data[0];
+                    $id_estado = $data[1];
+                    // Verificar que los valores no sean nulos
+                    if (isNotEmpty([$tipo_cargo, $id_estado])) {
+                        // Verificar si el nombreArea ya existe
+                        $stmtCheck->bindParam(':tipo_cargo', $tipo_cargo);
+                        $stmtCheck->execute();
+                        $exists = $stmtCheck->fetchColumn();
+                        if ($exists) {
+                            // Manejo de datos duplicados
+                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "La unidad ya está registrada en la base de datos.", "cargos.php?importarExcel");
+                            exit();
+                        }
+                        // Bindear los parámetros y ejecutar la inserción
+                        $stmtInsert->bindParam(':tipo_cargo', $tipo_cargo);
+                        $stmtInsert->bindParam(':id_estado', $id_estado);
+                        $stmtInsert->execute();
+                        if ($stmtInsert) {
+                            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "cargos.php");
+                            exit();
+                        } else {
+                            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "cargos.php?importarExcel");
+                            exit();
+                        }
+                    } else {
+                        // Manejo de datos inválidos (opcional)
+                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "cargos.php?importarExcel");
+                        exit();
+                    }
+                } else {
+                    // Manejo de fila incompleta
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "cargos.php?importarExcel");
+                    exit();
+                }
+            }
+            // Cerrar el archivo
+            fclose($initialUpload);
+            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "cargos.php");
+        } catch (PDOException $e) {
+            // Manejo de errores de conexión o ejecución
+            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "cargos.php?importarExcel");
+        }
+    } else {
+        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "cargos.php?importarExcel");
+        exit();
+    }
+}
