@@ -75,44 +75,35 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
 
 
 //  REGISTRO DE AREA
-if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
+if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "formUpdateFicha")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
-    $nombre_area = $_POST['nombre_area'];
-    $estado_area = $_POST['estado_area'];
-    $id_area = $_POST['id_area'];
-
+    $codigo_ficha = $_POST['ficha_formacion'];
+    $id_programa = $_POST['id_programa'];
+    $inicio_formacion = $_POST['inicio_formacion'];
+    $cierre_formacion = $_POST['cierre_formacion'];
+    $estado_ficha = $_POST['estado_ficha'];
+    $estado_trimestre = $_POST['estado_trimestre'];
+    $estado_se = $_POST['estado_se'];
     // // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_area, $estado_area, $id_area])) {
-        showErrorFieldsEmpty("areas.php?id_area=" . $id_area);
+    if (isEmpty([$codigo_ficha, $id_programa, $inicio_formacion, $cierre_formacion, $estado_ficha, $estado_trimestre, $estado_se])) {
+        showErrorFieldsEmpty("editar_ficha.php?'id_ficha-edit=" . $codigo_ficha);
         exit();
     }
-
-    // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaQueryUpdate = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea AND id_area <> :id_area");
-    $areaQueryUpdate->bindParam(':nombreArea', $nombre_area);
-    $areaQueryUpdate->bindParam(':id_area', $id_area);
-    $areaQueryUpdate->execute();
-    // Obtener todos los resultados en un array
-    $queryAreas = $areaQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($queryAreas) {
-        // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "areas.php");
+    // Inserta los datos en la base de datos
+    $fichaUpdateFindById = $connection->prepare("UPDATE fichas 
+    SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, 
+    fin_formacion = :cierre_formacion  
+    WHERE codigoFicha = :codigo_ficha");
+    $fichaUpdateFindById->bindParam(':id_programa', $id_programa);
+    $fichaUpdateFindById->bindParam(':inicio_formacion', $inicio_formacion);
+    $fichaUpdateFindById->bindParam(':cierre_formacion', $cierre_formacion);
+    $fichaUpdateFindById->bindParam(':codigo_ficha', $codigo_ficha);
+    $fichaUpdateFindById->execute();
+    if ($fichaUpdateFindById) {
+        showErrorOrSuccessAndRedirect("success", "Actualizacion exitosa", "Los datos se han actualizado correctamente", "fichas.php");
         exit();
     } else {
-        // Inserta los datos en la base de datos
-        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado WHERE id_area = :idArea");
-        $updateDocument->bindParam(':nombreArea', $nombre_area);
-        $updateDocument->bindParam(':id_estado', $estado_area);
-        $updateDocument->bindParam(':idArea', $id_area);
-        $updateDocument->execute();
-        if ($updateDocument) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "areas.php");
-            exit();
-        } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "areas.php");
-        }
+        showErrorOrSuccessAndRedirect("error", "Error de actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "fichas.php");
     }
 }
 

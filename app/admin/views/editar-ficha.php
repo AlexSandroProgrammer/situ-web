@@ -29,7 +29,7 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                             <h5 class="mb-0">Edita los datos que necesites.</h5>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="" autocomplete="off" name="formRegisterUnidad">
+                            <form method="post" action="" autocomplete="off" name="formUpdateFicha">
                                 <div class="mb-3">
                                     <label class="form-label" for="ficha_formacion">Ficha de formacion</label>
                                     <div class="input-group input-group-merge">
@@ -38,7 +38,7 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                         <input type="text" required minlength="2" maxlength="200"
                                             value="<?php echo $fichaFindById['codigoFicha'] ?>" readonly
                                             class="form-control" name="ficha_formacion" id="ficha_formacion"
-                                            placeholder="Ingresa el nombre del area" />
+                                            placeholder="Ingresa tu ficha de formacion" />
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -47,31 +47,28 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                         <span id="inicio_formacion-icon" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
                                         <input type="date" value="<?php echo $fichaFindById['inicio_formacion'] ?>"
-                                            class="form-control" onkeypress="return(multiplenumber(event));"
-                                            minlength="1" maxlength="4" oninput="maxlengthNumber(this);"
-                                            id="inicio_formacion" name="inicio_formacion"
+                                            class="form-control" id="inicio_formacion" name="inicio_formacion"
                                             aria-describedby="inicio_formacion-icon" />
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="fin_formacion">Cierre de Formacion</label>
+                                    <label class="form-label" for="cierre_formacion">Cierre de Formacion</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="fin_formacion-icon" class="input-group-text"><i
+                                        <span id="cierre_formacion-icon" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
                                         <input type="date" value="<?php echo $fichaFindById['fin_formacion'] ?>"
                                             class="form-control" onkeypress="return(multiplenumber(event));"
                                             minlength="1" maxlength="4" oninput="maxlengthNumber(this);"
-                                            id="fin_formacion" name="fin_formacion"
-                                            aria-describedby="fin_formacion-icon" />
+                                            id="cierre_formacion" name="cierre_formacion"
+                                            aria-describedby="cierre_formacion-icon" />
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="programa_formacion" class="form-label">Cambiar Programa de
+                                    <label for="id_programa" class="form-label">Cambiar Programa de
                                         formacion</label>
                                     <div class="input-group input-group-merge">
                                         <span class="input-group-text"><i class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="programa_formacion" name="programa_formacion"
-                                            required>
+                                        <select class="form-select" id="id_programa" name="id_programa" required>
                                             <option value="<?php echo $fichaFindById['id_programa'] ?>">
                                                 <?php echo $fichaFindById['nombre_programa'] ?></option>
                                             <?php
@@ -93,11 +90,11 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="estadoFicha" class="form-label">Estado de Ficha</label>
+                                    <label for="estado_ficha" class="form-label">Estado de Ficha</label>
                                     <div class="input-group input-group-merge">
                                         <span id="estadoInicial-2" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="estadoFicha" required name="estadoFicha">
+                                        <select class="form-select" id="estado_ficha" required name="estado_ficha">
                                             <option value="<?php echo $fichaFindById['id_estado'] ?>">
                                                 <?php echo $fichaFindById['estado'] ?></option>
                                             <?php
@@ -119,12 +116,12 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="estadoTrimestre" class="form-label">Estado Trimestre</label>
+                                    <label for="estado_trimestre" class="form-label">Estado Trimestre</label>
                                     <div class="input-group input-group-merge">
                                         <span id="estadoInicial-2" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="estadoTrimestre" required
-                                            name="estadoTrimestre">
+                                        <select class="form-select" id="estado_trimestre" required
+                                            name="estado_trimestre">
                                             <option value="<?php echo $fichaFindById['id_estado_trimestre'] ?>">
                                                 <?php echo $fichaFindById['estado'] ?></option>
                                             <?php
@@ -146,13 +143,12 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="estadoSenaEmpresa" class="form-label">Estado Sena Empresa</label>
+                                    <label for="estado_se" class="form-label">Estado Sena Empresa</label>
                                     <div class="input-group input-group-merge">
                                         <span id="estadoInicial-2" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="estadoSenaEmpresa" required
-                                            name="estadoSenaEmpresa">
-                                            <option value="<?php echo $fichaFindById['id_estado_trimestre'] ?>">
+                                        <select class="form-select" id="estado_se" required name="estado_se">
+                                            <option value="<?php echo $fichaFindById['id_estado_se'] ?>">
                                                 <?php echo $fichaFindById['estado'] ?></option>
                                             <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
@@ -177,8 +173,8 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                         Cancelar
                                     </a>
                                     <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                    <input type="hidden" class="btn btn-info" value="formRegisterUnidad"
-                                        name="MM_formRegisterUnidad"></input>
+                                    <input type="hidden" class="btn btn-info" value="formUpdateFicha"
+                                        name="MM_formUpdateFicha"></input>
                                 </div>
                             </form>
                         </div>
