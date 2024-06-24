@@ -261,7 +261,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             </form>
                                         </td>
                                         <td><?php echo $programa['nombre_programa'] ?></td>
-                                        <td><?php echo $programa['descripcion'] ?></td>
+                                        <td style="width: 500px;"><?php echo $programa['descripcion'] ?></td>
                                         <td><?php echo $programa['estado'] ?></td>
 
 

@@ -40,7 +40,7 @@ if ((isset($_POST["MM_formRegisterArea"])) && ($_POST["MM_formRegisterArea"] == 
 }
 
 
-//  REGISTRO DE AREA
+//  EDITAR AREA
 if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $nombre_area = $_POST['nombre_area'];

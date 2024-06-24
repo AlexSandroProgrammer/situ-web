@@ -80,8 +80,8 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                 width="100%">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Acciones</th>
-                                        <th>ID</th>
                                         <th>Nombre de Unidad</th>
                                         <th>Area</th>
                                         <th>Aprendices Requeridos</th>
@@ -96,6 +96,7 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($unidades as $unidad) {
                                     ?>
                                     <tr>
+                                        <td><?php echo $unidad['id_unidad'] ?></td>
                                         <td>
                                             <form method="GET" action="">
                                                 <input type="hidden" name="id_unidad-delete"
@@ -113,7 +114,6 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                                         title="Actualizar"></i></button>
                                             </form>
                                         </td>
-                                        <td><?php echo $unidad['id_unidad'] ?></td>
                                         <td><?php echo $unidad['nombre_unidad'] ?></td>
                                         <td><?php echo $unidad['nombreArea'] ?></td>
                                         <td><?php echo $unidad['cantidad_aprendices'] ?></td>

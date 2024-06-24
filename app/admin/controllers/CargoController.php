@@ -37,7 +37,7 @@ if ((isset($_POST["MM_formRegisterCargo"])) && ($_POST["MM_formRegisterCargo"] =
         }
     }
 }
-//  REGISTRO DE AREA
+//  ACTUALIZAR AREA
 if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $nombre_area = $_POST['nombre_area'];
@@ -79,7 +79,7 @@ if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "for
     }
 }
 
-// ELIMINAR PROCESO
+//* ELIMINAR PROCESO
 if (isset($_GET['id_area-delete'])) {
     $id_area = $_GET["id_area-delete"];
     if ($id_area == null) {
@@ -102,6 +102,8 @@ if (isset($_GET['id_area-delete'])) {
         }
     }
 }
+
+//* IMPORTAR ARCHIVO CSV
 
 if ((isset($_POST["MM_registroCsvCargos"])) && ($_POST["MM_registroCsvCargos"] == "registroCsvCargos")) {
     // recibimos el archivo

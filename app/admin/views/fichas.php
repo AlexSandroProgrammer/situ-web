@@ -95,7 +95,6 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <th>Acciones</th>
                                         <th>Codigo de Ficha</th>
                                         <th>P. de Formacion</th>
-                                        <th>Cantidad de Aprendices</th>
                                         <th>Inicio de Formacion</th>
                                         <th>Fin de Formacion</th>
                                         <th>Estado</th>
@@ -127,7 +126,6 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         </td>
                                         <td><?php echo $ficha['codigoFicha'] ?></td>
                                         <td><?php echo $ficha['nombre_programa'] ?></td>
-                                        <td><?php echo $ficha['cantidad_aprendices'] ?></td>
                                         <td><?php echo $ficha['inicio_formacion'] ?></td>
                                         <td><?php echo $ficha['fin_formacion'] ?></td>
                                         <td><?php echo $ficha['id_estado'] ?></td>
