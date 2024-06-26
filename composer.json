@@ -1,0 +1,17 @@
+{
+    "name": "sena/situ-web",
+    "autoload": {
+        "psr-4": {
+            "Sena\\SituWeb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Luis Alejandro Muñoz Garcia",
+            "email": "luisalejandrm533@gmail.com"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^2.1"
+    }
+}
