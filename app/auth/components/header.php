@@ -3,7 +3,7 @@ session_start();
 if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['email'])) {
     echo "<script>alert('Debes iniciar sesión');</script>";
     header("Location:../../admin/");
-    exit; // Agregar exit para asegurar que el script se detenga
+    exit(); // Agregar exit para asegurar que el script se detenga
 }
 ?>
 
@@ -15,7 +15,6 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
     <title>Pagina Inicial</title>
     <meta name="description" content="" />
     <!-- Favicon -->

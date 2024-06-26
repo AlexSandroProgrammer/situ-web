@@ -220,8 +220,47 @@ if (isset($_POST["registro"])) {
     }
 }
 
+// VERIFICAMOS EL CORREO ELECTRONICO
+if ((isset($_POST["MM_formVerifyPassword"])) && ($_POST["MM_formVerifyPassword"] == "formVerifyPassword")) {
+    // recibimos el correo electronico y lo encapsulamos en una variable
+    $correo_electronico = $_POST['email'];
+    $id_admin = 1;
+    // verificamos que no hayan datos vacios
+    if (isEmpty([$correo_electronico])) {
+        showErrorOrSuccessAndRedirect("error", "¡Opss...!", "Existen datos vacios en el formulario, registre todos los datos", "verify-email.php");
+        exit();
+    }
 
-if (isset($_POST["changePassword"])) {
+    // Verificamos que el correo exista en la base de datos
+    $authEmail = $connection->prepare("SELECT * FROM usuarios WHERE email = :email AND id_tipo_usuario = :id_tipo_usuario");
+    $authEmail->bindParam(":email", $correo_electronico);
+    $authEmail->bindParam(":id_tipo_usuario", $id_admin);
+    $email = $authEmail->fetch(PDO::FETCH_ASSOC);
+    if ($email) {
+        // Encriptacion del numero de documento 
+        $emailEncriptado = encriptar($correo_electronico, $token);
+        // obtenemos el nombre del hostname
+        $hostname = gethostname();
+        $asunto = "Cambio de contraseña de Sistema SITU (Sistema Informacion de Turnos Rutinarios)";
+        $message = "Estimado Usuario Administrador, se ha solicitado correctamente un cambio de contraseña para la dirección de correo electrónico: " . $correo_electronico;
+        $message .= "Para continuar, haz clic en el siguiente enlace e ingresa posteriormente la nueva contraseña:" . "\n";
+        $message .= "http://" . $hostname . "/situ-web/app/auth/views/change-password.php?smtp_url=" . urlencode($emailEncriptado);
+        $admin_email = "From:" . $correo_electronico;
+        if (mail($correo_electronico, $asunto, $message, $admin_email)) {
+            showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Estimado Usuario Administrador, se ha enviado un correo el cual contiene todas las instrucciones para el respectivo cambio de contraseña", "index.php");
+            exit();
+        } else {
+            showErrorOrSuccessAndRedirect("error", "¡Lo sentimos!", "Error al momento de hacer envio del correo electronico", "verify-email.php");
+            exit();
+        }
+    } else {
+        showErrorOrSuccessAndRedirect("error", "¡Ha sucedido un error!", "Los datos ingresados no cumplen los parametros estandarizados", "verify-email.php");
+        exit();
+    }
+}
+
+
+if ((isset($_POST["MM_formChangePassword"])) && ($_POST["MM_formChangePassword"] == "formChangePassword")) {
 
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE PROCESOS
     $password = $_POST['passswordNew'];

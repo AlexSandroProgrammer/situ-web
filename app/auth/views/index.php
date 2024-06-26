@@ -1,6 +1,7 @@
 <?php
 require_once("../components/header.php");
-require_once("../controllers/Controllers.php");
+// importacion de controladores
+require_once("../controllers/AuthController.php");
 ?>
 
 <!-- Content -->

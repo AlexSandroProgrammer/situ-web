@@ -163,3 +163,14 @@ function updateUser($connection, $id_usuario, $rol, $names, $username)
         return false; // Error al actualizar el usuario
     }
 }
+
+
+function encriptar($texto, $token)
+{
+    $clave = md5($token); // Generar clave a partir del token
+    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    $textoEncriptado = openssl_encrypt($texto, 'aes-256-cbc', $clave, 0, $iv);
+    return base64_encode($iv . $textoEncriptado);
+}
+
+$token = "11SXDLSLDDDDKFE332KDKS";

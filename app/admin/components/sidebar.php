@@ -34,8 +34,6 @@
     <!-- Page CSS -->
     <!-- Helpers -->
     <script src="../../assets/vendor/js/helpers.js"></script>
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="../../assets/js/config.js"></script>
     <script src="../../js/sweetalert.js"></script>
     <script src="../../assets/css/sweetalert.css"></script>
@@ -45,12 +43,17 @@
 <body>
 
     <?php
+    // iniciamos sesion para obtener los datos del usuario autenticado
     session_start();
+    // validamos que el usuario este autenticado
     require_once("../../validation/sessionValidation.php");
+    // creamos la conexion a la base de datos
     require_once("../../../database/connection.php");
     $db = new Database();
     $connection = $db->conectar();
+    // importacion de funciones
     require_once("../../functions/functions.php");
+    // importacion de controladores
     require_once("../controllers/index.php");
 
     $documento = $_SESSION['documento'];
