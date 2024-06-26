@@ -146,7 +146,7 @@ if (isset($_POST["MM_formUpdateFormat"]) && $_POST["MM_formUpdateFormat"] == "fo
                                 $updateDocument->bindParam(':idDocument', $id_document);
                                 $updateDocument->execute();
                                 if ($updateDocument) {
-                                    showErrorOrSuccessAndRedirect("", "", "Se ha actualizado correctamente los datos", "../views/lista-documentos.php");
+                                    showErrorOrSuccessAndRedirect("", "", "Se han actualizado correctamente los datos", "../views/lista-documentos.php");
                                 } else {
                                     showErrorOrSuccessAndRedirect("", "", "Error en la actualizacion de los datos.", "../views/archivar-documento.php?id_archive_document=" . $id_document);
                                 }

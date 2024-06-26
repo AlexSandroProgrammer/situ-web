@@ -37,7 +37,7 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="input-group input-group-merge">
                                                 <span id="nombre_cargo-span" class="input-group-text"><i
                                                         class="fas fa-layer-group"></i> </span>
-                                                <input type="text" required minlength="2" maxlength="20" autofocus
+                                                <input type="text" required minlength="2" maxlength="100" autofocus
                                                     class="form-control" name="nombreCargo" id="nombre_cargo"
                                                     placeholder="Ingresa el nombre del cargo" />
                                             </div>
@@ -91,47 +91,47 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <?php
-                if (!empty($_GET["id_area"])) {
-                    $id_area = $_GET["id_area"];
+                if (!empty($_GET["id_cargo"])) {
+                    $id_cargo = $_GET["id_cargo"];
                     // CONSUMO DE DATOS DE LOS PROCESOS
-                    $listArea = $connection->prepare("SELECT * FROM areas INNER JOIN estados ON areas.id_estado = estados.id_estado WHERE id_area = :id_area AND areas.id_estado = estados.id_estado");
-                    $listArea->bindParam(":id_area", $id_area);
-                    $listArea->execute();
-                    $areaSeleccionada = $listArea->fetch(PDO::FETCH_ASSOC);
-                    if ($areaSeleccionada) {
+                    $listCargos = $connection->prepare("SELECT * FROM cargos INNER JOIN estados ON cargos.estado = estados.id_estado WHERE id_cargo = :id_cargo AND cargos.estado = estados.id_estado");
+                    $listCargos->bindParam(":id_cargo", $id_cargo);
+                    $listCargos->execute();
+                    $cargoSeleccionado = $listCargos->fetch(PDO::FETCH_ASSOC);
+                    if ($cargoSeleccionado) {
                 ?>
                 <div class="row">
                     <div class="col-xl">
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Actualizacion datos de
-                                    <?php echo $areaSeleccionada['nombreArea'] ?>
+                                    <?php echo $cargoSeleccionado['tipo_cargo'] ?>
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <form action="" method="POST" autocomplete="off" name="formUpdateArea">
+                                <form action="" method="POST" autocomplete="off" name="formUpdateCargo">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="codigo-ficha">Nombre de Area</label>
+                                        <label class="form-label" for="tipo_cargo">Tipo de Cargo</label>
                                         <div class="input-group input-group-merge">
-                                            <span id="nombre-area" class="input-group-text"><i
+                                            <span id="tipo_cargo" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
-                                            <input type="text" minlength="5" maxlength="20" autofocus
-                                                class="form-control" required name="nombre_cargo" id="nombre-area"
-                                                placeholder="Ingresa el nombre del area"
-                                                value="<?php echo $areaSeleccionada['nombreArea']  ?>"
-                                                aria-describedby="codigo-ficha-2" />
+                                            <input type="text" minlength="2" maxlength="200" autofocus
+                                                class="form-control" required name="tipo_cargo" id="tipo_cargo"
+                                                placeholder="Ingresa el tipo de cargo"
+                                                value="<?php echo $cargoSeleccionado['tipo_cargo']  ?>"
+                                                aria-describedby="tipo_cargo-2" />
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="estadoInicial" class="form-label">Estado
-                                            Inicial</label>
+                                        <label for="estado_cargo" class="form-label">Estado</label>
                                         <div class="input-group input-group-merge">
                                             <span id="estadoInicial-2" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
-                                            <select class="form-select" required name="estado_area" required>
-                                                <option value="<?php echo $areaSeleccionada['id_estado'] ?>">
-                                                    <?php echo $areaSeleccionada['estado'] ?></option>
+                                            <select class="form-select" required name="estado_cargo" id="estado_cargo"
+                                                required>
+                                                <option value="<?php echo $cargoSeleccionado['id_estado'] ?>">
+                                                    <?php echo $cargoSeleccionado['estado'] ?></option>
                                                 <?php
                                                         // CONSUMO DE DATOS DE LOS PROCESOS
                                                         $listEstados = $connection->prepare("SELECT * FROM estados");
@@ -147,17 +147,16 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
 
-                                    <input type="hidden" minlength="5" maxlength="20" autofocus class="form-control"
-                                        id="id_area" name="id_area"
-                                        value="<?php echo $areaSeleccionada['id_area']  ?>" />
+                                    <input type="hidden" class="form-control" name="id_cargo"
+                                        value="<?php echo $cargoSeleccionado['id_cargo']  ?>" />
 
                                     <div class="modal-footer">
                                         <a class="btn btn-danger" href="cargos.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formUpdateArea"
-                                            name="MM_formUpdateArea"></input>
+                                        <input type="hidden" class="btn btn-info" value="formUpdateCargo"
+                                            name="MM_formUpdateCargo"></input>
                                     </div>
                                 </form>
                             </div>

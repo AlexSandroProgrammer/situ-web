@@ -16,7 +16,7 @@ if ((isset($_POST["MM_formRegisterCargo"])) && ($_POST["MM_formRegisterCargo"] =
     $queryFetchAllCargos->bindParam(':nombreCargo', $nombreCargo);
     $queryFetchAllCargos->execute();
     $queryFetch = $queryFetchAllCargos->fetchAll();
-    // // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
+    // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
     if ($queryFetch) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "cargos.php");
@@ -38,54 +38,54 @@ if ((isset($_POST["MM_formRegisterCargo"])) && ($_POST["MM_formRegisterCargo"] =
     }
 }
 //  ACTUALIZAR AREA
-if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
-    // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
-    $nombre_area = $_POST['nombre_area'];
-    $estado_area = $_POST['estado_area'];
-    $id_area = $_POST['id_area'];
+if ((isset($_POST["MM_formUpdateCargo"])) && ($_POST["MM_formUpdateCargo"] == "formUpdateCargo")) {
+    // VARIABLES DE ASIGNACION
+    $id_cargo = $_POST['id_cargo'];
+    $tipo_cargo = $_POST['tipo_cargo'];
+    $estado_cargo = $_POST['estado_cargo'];
 
-    // // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_area, $estado_area, $id_area])) {
-        showErrorFieldsEmpty("areas.php?id_area=" . $id_area);
+    // validamos que no hayamos recibido ningun dato vacio
+    if (isEmpty([$tipo_cargo, $estado_cargo, $id_cargo])) {
+        showErrorFieldsEmpty("cargos.php?id_cargo=" . $id_cargo);
         exit();
     }
 
     // validamos que no se repitan los datos del nombre del area
     // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaQueryUpdate = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea AND id_area <> :id_area");
-    $areaQueryUpdate->bindParam(':nombreArea', $nombre_area);
-    $areaQueryUpdate->bindParam(':id_area', $id_area);
-    $areaQueryUpdate->execute();
+    $cargoQuery = $connection->prepare("SELECT * FROM cargos WHERE tipo_cargo = :tipo_cargo AND id_cargo <> :id_cargo");
+    $cargoQuery->bindParam(':tipo_cargo', $tipo_cargo);
+    $cargoQuery->bindParam(':id_cargo', $id_cargo);
+    $cargoQuery->execute();
     // Obtener todos los resultados en un array
-    $queryAreas = $areaQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
+    $query = $cargoQuery->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($queryAreas) {
+    if ($query) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "areas.php");
+        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "cargos.php");
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado WHERE id_area = :idArea");
-        $updateDocument->bindParam(':nombreArea', $nombre_area);
-        $updateDocument->bindParam(':id_estado', $estado_area);
-        $updateDocument->bindParam(':idArea', $id_area);
+        $updateDocument = $connection->prepare("UPDATE cargos SET tipo_cargo = :tipo_cargo, estado = :estado WHERE id_cargo = :id_cargo");
+        $updateDocument->bindParam(':tipo_cargo', $tipo_cargo);
+        $updateDocument->bindParam(':estado', $estado_cargo);
+        $updateDocument->bindParam(':id_cargo', $id_cargo);
         $updateDocument->execute();
         if ($updateDocument) {
-            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "areas.php");
+            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "cargos.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "cargos.php");
         }
     }
 }
 
 //* ELIMINAR PROCESO
-if (isset($_GET['id_area-delete'])) {
-    $id_area = $_GET["id_area-delete"];
-    if ($id_area == null) {
-        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "areas.php");
+if (isset($_GET['id_cargo-delete'])) {
+    $id_cargo = $_GET["id_cargo-delete"];
+    if ($id_cargo == null) {
+        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "cargos.php");
     } else {
-        $deleteArea = $connection->prepare("SELECT * FROM areas WHERE id_area = :id_area");
+        $deleteArea = $connection->prepare("SELECT * FROM cargos WHERE id_cargo = :id_area");
         $deleteArea->bindParam(":id_area", $id_area);
         $deleteArea->execute();
         $deleteAreaSelect = $deleteArea->fetch(PDO::FETCH_ASSOC);

@@ -135,7 +135,7 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
                     $registerFuncionario->bindParam(':documento', $documento);
                     $registerFuncionario->execute();
                     if ($registerFuncionario) {
-                        showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "funcionarios.php");
+                        showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han actualizado correctamente", "funcionarios.php");
                         exit();
                     }
                 } else {

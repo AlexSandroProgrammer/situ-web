@@ -327,7 +327,7 @@
                     </li>
 
                     <li class="menu-item">
-                        <a href="#" target="_blank" class="menu-link">
+                        <a href="perfil.php" target="_blank" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-user"></i>
                             <div data-i18n="Documentation">Mis Datos</div>
                         </a>

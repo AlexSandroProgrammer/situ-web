@@ -76,7 +76,7 @@ if ((isset($_POST["MM_formUpdatePrograma"])) && ($_POST["MM_formUpdatePrograma"]
         $updateProgramFindById->bindParam(':id_programa', $id_programa);
         $updateProgramFindById->execute();
         if ($updateProgramFindById) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "programas.php");
+            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "programas.php");
             exit();
         } else {
             showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "programas.php");
