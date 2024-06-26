@@ -204,7 +204,24 @@
                             </li>
                         </ul>
                     </li>
-
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                            <div data-i18n="Misc">Aprendices</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="aprendices.php" class="menu-link">
+                                    <div data-i18n="Error">Lista de Aprendices</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="registrar-aprendiz.php" class="menu-link">
+                                    <div data-i18n="Under Maintenance">Registrar Aprendiz</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-cube-alt"></i>
@@ -217,7 +234,7 @@
                                 </a>
                             </li>
                             <li class="menu-item">
-                                <a href="registrar-ficha.php" class="menu-link">
+                                <a href="registrar-funcionario.php" class="menu-link">
                                     <div data-i18n="Under Maintenance">Registrar Funcionario</div>
                                 </a>
                             </li>
