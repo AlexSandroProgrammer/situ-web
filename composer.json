@@ -12,6 +12,7 @@
         }
     ],
     "require": {
-        "phpoffice/phpspreadsheet": "^2.1"
+        "phpoffice/phpspreadsheet": "^2.1",
+        "resend/resend-php": "^0.12.0"
     }
 }
