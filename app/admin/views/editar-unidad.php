@@ -109,7 +109,7 @@ if (!empty($_GET['id_unidad-edit'])) {
                                 </div>
                                 <div class="mb-3">
                                     <label for="estadoInicial" class="form-label">Estado
-                                        Inicial</label>
+                                        Unidad</label>
                                     <div class="input-group input-group-merge">
                                         <span class="input-group-text"><i class="bx bx-unite"></i></span>
                                         <select class="form-select" id="estadoInicial" name="estado_unidad" required>
@@ -127,33 +127,6 @@ if (!empty($_GET['id_unidad-edit'])) {
                                                         // Iterar sobre los estados
                                                         foreach ($estados as $estado) {
                                                             echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
-                                                        }
-                                                    }
-                                                    ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="estadoTrimestre" class="form-label">Estado Trimestre</label>
-                                    <div class="input-group input-group-merge">
-                                        <span id="estadoInicial-2" class="input-group-text"><i
-                                                class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="estadoTrimestre" required
-                                            name="estado_trimestre">
-                                            <option value="<?php echo $unidadFindById['id_estado_trimestre'] ?>">
-                                                Cambiar Estado para Trimestre...</option>
-                                            <?php
-                                                    // CONSUMO DE DATOS DE LOS PROCESOS
-                                                    $listadoEstadoTrimestre = $connection->prepare("SELECT * FROM estados");
-                                                    $listadoEstadoTrimestre->execute();
-                                                    $estadosTrimestre = $listadoEstadoTrimestre->fetchAll(PDO::FETCH_ASSOC);
-                                                    // Verificar si no hay datos
-                                                    if (empty($estados)) {
-                                                        echo "<option value=''>No hay datos...</option>";
-                                                    } else {
-                                                        // Iterar sobre los estados
-                                                        foreach ($estadosTrimestre as $estadoTrimestre) {
-                                                            echo "<option value='{$estadoTrimestre['id_estado']}'>{$estadoTrimestre['estado']}</option>";
                                                         }
                                                     }
                                                     ?>

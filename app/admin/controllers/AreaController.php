@@ -1,10 +1,9 @@
 <?php
 
 require '../../../vendor/autoload.php';
-// IMPORTACION MODULOS DE 
+// IMPORTACION MODULOS DE LIBRERIA PARA MANEJO DE ARCHIVOS EXCEL
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
-use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
+
 //  REGISTRO DE AREA
 if ((isset($_POST["MM_formRegisterArea"])) && ($_POST["MM_formRegisterArea"] == "formRegisterArea")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
@@ -114,8 +113,8 @@ if (isset($_GET['id_area-delete'])) {
     }
 }
 
-
-if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"] == "registroArchivoCSV")) {
+// REGISTRO ARCHIVO DE EXCEL 
+if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExcel"] == "registroArchivoExcel")) {
 
     $fileTmpPath = $_FILES['area_excel']['tmp_name'];
     $fileName = $_FILES['area_excel']['name'];
@@ -141,6 +140,11 @@ if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"]
             // Escogemos la hoja correcta para el registro de datos
             if ($hojaDatosArea) {
                 $data = $hojaDatosArea->toArray();
+                $requiredColumnCount = 2;
+                if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "areas.php?importarExcel");
+                    exit();
+                }
                 $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
                 $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado) VALUES (:nombreArea, :estado)");
                 foreach ($data as $index => $row) {

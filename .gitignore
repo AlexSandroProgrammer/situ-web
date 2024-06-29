@@ -13,6 +13,8 @@ ehthumbs_vista.db
 *.stackdump
 
 app/formatos/~$area_excel.xlsx
+app/formatos/~$unidad_excel.xlsx
+
 # Folder config file
 [Dd]esktop.ini
 

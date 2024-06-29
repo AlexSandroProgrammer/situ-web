@@ -1,5 +1,9 @@
 <?php
-//  REGISTRO DE AREA
+
+require '../../../vendor/autoload.php';
+// IMPORTACION MODULOS PARA MANEJO DE ARCHIVOS EXCEL
+use PhpOffice\PhpSpreadsheet\IOFactory;
+//  REGISTRO DE UNIDAD
 if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"] == "formRegisterUnidad")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $nombre_unidad = $_POST['nombre_unidad'];
@@ -8,13 +12,12 @@ if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"]
     $horario_inicial = $_POST['horario_inicial'];
     $horario_final = $_POST['horario_final'];
     $estadoInicial = $_POST['estadoInicial'];
-    $estadoTrimestre = $_POST['estadoTrimestre'];
 
     // Convertir a formato hora (H:i)
     $horario_inicial = date('H:i', strtotime($horario_inicial));
     $horario_final = date('H:i', strtotime($horario_final));
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_unidad, $id_area, $cantidad_aprendices, $horario_inicial, $horario_final, $estadoInicial, $estadoTrimestre])) {
+    if (isEmpty([$nombre_unidad, $id_area, $cantidad_aprendices, $horario_inicial, $horario_final, $estadoInicial])) {
         showErrorFieldsEmpty("registrar-unidad.php");
         exit();
     }
@@ -31,20 +34,19 @@ if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"]
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $unidadRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado, id_estado_trimestre) VALUES(:nombre_unidad, :id_area, :hora_inicial, :hora_final, :cantidad_aprendices, :id_estado, :id_estado_trimestre)");
+        $unidadRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado) VALUES(:nombre_unidad, :id_area, :hora_inicial, :hora_final, :cantidad_aprendices, :id_estado)");
         $unidadRegister->bindParam(':nombre_unidad', $nombre_unidad);
         $unidadRegister->bindParam(':id_area', $id_area);
         $unidadRegister->bindParam(':hora_inicial', $horario_inicial);
         $unidadRegister->bindParam(':hora_final', $horario_final);
         $unidadRegister->bindParam(':cantidad_aprendices', $cantidad_aprendices);
         $unidadRegister->bindParam(':id_estado', $estadoInicial);
-        $unidadRegister->bindParam(':id_estado_trimestre', $estadoTrimestre);
         $unidadRegister->execute();
         if ($unidadRegister) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "unidades.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "unidades.php");
+            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "registrar-unidad.php");
             exit();
         }
     }
@@ -61,16 +63,15 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
     $horario_inicial = $_POST['horario_inicial'];
     $horario_final = $_POST['horario_final'];
     $estado_unidad = $_POST['estado_unidad'];
-    $estado_trimestre = $_POST['estado_trimestre'];
 
-    // // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_unidad, $id_unidad, $areaPerteneciente, $cantidad_aprendices, $horario_inicial, $horario_final, $estado_unidad, $estado_trimestre])) {
+    // validamos que no hayamos recibido ningun dato vacio
+    if (isEmpty([$nombre_unidad, $id_unidad, $areaPerteneciente, $cantidad_aprendices, $horario_inicial, $horario_final, $estado_unidad])) {
         showErrorFieldsEmpty("editar-unidad.php?id_unidad-edit=" . $id_unidad);
         exit();
     }
 
     // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
+    // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $unidadQueryUpdate = $connection->prepare("SELECT * FROM unidad WHERE nombre_unidad = :nombre_unidad AND id_unidad <> :id_unidad");
     $unidadQueryUpdate->bindParam(':nombre_unidad', $nombre_unidad);
     $unidadQueryUpdate->bindParam(':id_unidad', $id_unidad);
@@ -90,7 +91,6 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
         hora_inicio = :horario_inicial, 
         hora_finalizacion = :horario_final, 
         id_estado = :estado_unidad, 
-        id_estado_trimestre = :estado_trimestre, 
         cantidad_aprendices = :cantidad_aprendices 
         WHERE id_unidad = :id_unidad");
         $updateDocument->bindParam(':nombre_unidad', $nombre_unidad);
@@ -98,7 +98,6 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
         $updateDocument->bindParam(':horario_inicial', $horario_inicial);
         $updateDocument->bindParam(':horario_final', $horario_final);
         $updateDocument->bindParam(':estado_unidad', $estado_unidad);
-        $updateDocument->bindParam(':estado_trimestre', $estado_trimestre);
         $updateDocument->bindParam(':cantidad_aprendices', $cantidad_aprendices);
         $updateDocument->bindParam(':id_unidad', $id_unidad);
         $updateDocument->execute();
@@ -106,7 +105,7 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
             showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "unidades.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "unidades.php");
+            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "editar-unidad.php?id_unidad-edit=" . $id_unidad);
         }
     }
 }
@@ -138,100 +137,92 @@ if (isset($_GET['id_unidad-delete'])) {
     showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "unidades.php");
     exit();
 }
-// REGISTRO DE UNIDADES MEDIANTE ARCHIVOS CSV
-if ((isset($_POST["MM_registroUnidadCsv"])) && ($_POST["MM_registroUnidadCsv"] == "registroUnidadCsv")) {
-    // recibimos el archivo
-    $documentoCsv = $_FILES['unidad_csv'];
-    // validamos que no llegue vacio
-    if (isEmpty([$documentoCsv])) {
-        showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "unidades.php?importarExcel");
-        exit();
+
+// REGISTRO DATOS DE EXCEL MEDIANTE ARCHIVO EXCEL
+if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel"] == "registroUnidadExcel")) {
+    $fileTmpPath = $_FILES['unidad_excel']['tmp_name'];
+    $fileName = $_FILES['unidad_excel']['name'];
+    $fileSize = $_FILES['unidad_excel']['size'];
+    $fileType = $_FILES['unidad_excel']['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+
+    if (isEmpty([$fileName])) {
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "unidades.php?importarExcel");
     }
-    // Verificar si el archivo subido es un CSV
-    $fileType = pathinfo($documentoCsv['name'], PATHINFO_EXTENSION);
-    if ($fileType != 'csv') {
-        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de registrar los datos, solo puedes subir archivos con extensión csv.", "unidades.php?importarExcel");
-        exit();
-    }
-    // Procesar el archivo CSV
-    if (($initialUpload = fopen($documentoCsv['tmp_name'], "r")) !== FALSE) {
-        try {
-            // Preparar la consulta de verificación
-            $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM unidad WHERE nombre_unidad = :nombre_unidad");
-            // Preparar la consulta de inserción
-            $stmtInsert = $connection->prepare("INSERT INTO unidad (
-            nombre_unidad, 
-            id_area, 
-            hora_inicio, 
-            hora_finalizacion, 
-            cantidad_aprendices, 
-            id_estado,
-            id_estado_trimestre) 
-            VALUES (
-            :nombre_unidad, 
-            :id_area, 
-            :hora_inicio, 
-            :hora_finalizacion, 
-            :cantidad_aprendices, 
-            :id_estado,
-            :id_estado_trimestre)");
-            $firstLine = true;
-            $rowCount = 0; // Contador de filas de datos
-            while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
-                if ($firstLine) {
-                    // Ignorar la primera línea (encabezados)
-                    $firstLine = false;
-                    continue;
-                }
-                // Verificar que la fila tiene al menos dos columnas
-                if (count($data) >= 7) {
-                    $nombre_unidad = $data[0];
-                    $id_area = $data[1];
-                    $hora_inicio = $data[2];
-                    $hora_finalizacion = $data[3];
-                    $cantidad_aprendices = $data[4];
-                    $id_estado = $data[5];
-                    $id_estado_trimestre = $data[6];
-                    // Verificar que los valores no sean nulos
-                    if (isNotEmpty([$nombre_unidad, $id_area, $hora_inicio, $hora_finalizacion, $cantidad_aprendices, $id_estado, $id_estado_trimestre])) {
-                        // Verificar si el nombreArea ya existe
-                        $stmtCheck->bindParam(':nombre_unidad', $nombre_unidad);
-                        $stmtCheck->execute();
-                        $exists = $stmtCheck->fetchColumn();
-                        if ($exists) {
-                            // Manejo de datos duplicados
-                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "La unidad ya está registrada en la base de datos.", "unidades.php?importarExcel");
-                            exit();
-                        }
-                        // Bindear los parámetros y ejecutar la inserción
-                        $stmtInsert->bindParam(':nombre_unidad', $nombre_unidad);
-                        $stmtInsert->bindParam(':id_area', $id_area);
-                        $stmtInsert->bindParam(':hora_inicio', $hora_inicio);
-                        $stmtInsert->bindParam(':hora_finalizacion', $hora_finalizacion);
-                        $stmtInsert->bindParam(':cantidad_aprendices', $cantidad_aprendices);
-                        $stmtInsert->bindParam(':id_estado', $id_estado);
-                        $stmtInsert->bindParam(':id_estado_trimestre', $id_estado_trimestre);
-                        $stmtInsert->execute();
-                    } else {
-                        // Manejo de datos inválidos (opcional)
-                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "unidades.php?importarExcel");
-                        exit();
-                    }
-                } else {
-                    // Manejo de fila incompleta
-                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "unidades.php?importarExcel");
+    // Validar la extensión del archivo
+    if (isFileUploaded($_FILES['unidad_excel'])) {
+        // Extensiones permitidas
+        $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
+        $maxSizeKB = 10000;
+        if (isFileValid($_FILES['unidad_excel'], $allowedExtensions, $maxSizeKB)) {
+            // Cargar el archivo Excel
+            $spreadsheet = IOFactory::load($fileTmpPath);
+            // Seleccionar la hoja de datos
+            $hojaDatosUnidades = $spreadsheet->getSheetByName('Datos');
+            // Escogemos la hoja correcta para el registro de datos
+            if ($hojaDatosUnidades) {
+                $data = $hojaDatosUnidades->toArray();
+                $requiredColumnCount = 6;
+                if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos seis columnas requeridas", "unidades.php?importarExcel");
                     exit();
                 }
+                // consulta para validar que no haya una unidad ya registrada
+                $checkUnity = $connection->prepare("SELECT COUNT(*) FROM unidad WHERE nombre_unidad = :nombre_unidad");
+                $queryRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado) VALUES (:nombre_unidad, :id_area, :hora_inicio, :hora_finalizacion, :cantidad_aprendices, :estado)");
+                foreach ($data as $index => $row) {
+                    // Saltar la primera fila si es el encabezado
+                    if ($index == 0) continue;
+                    // asignamos cada fila a una variable que posteriormente utilizaremos para registrar los datos.
+                    $nombre_unidad = $row[0];
+                    $id_area = $row[1];
+                    $aprendices_requeridos = $row[2];
+                    $hora_inicio = $row[3];
+                    $hora_finalizacion = $row[4];
+                    $estado = $row[5];
+                    // Validar que los datos no estén vacíos antes de insertar
+                    if (isEmpty([$nombre_unidad, $id_area, $aprendices_requeridos, $hora_inicio, $hora_finalizacion, $estado])) {
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "unidades.php?importarExcel");
+                        exit();
+                    }
+
+                    // Formatear horas a formato 24 horas (hora-minutos)
+                    try {
+                        $hora_inicio_formateada = (new DateTime($hora_inicio))->format('H:i');
+                        $hora_finalizacion_formateada = (new DateTime($hora_finalizacion))->format('H:i');
+                    } catch (Exception $e) {
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Formato de hora inválido", "unidades.php?importarExcel");
+                        exit();
+                    }
+
+                    // generamos la consula para validar que cada fila no tenga un mismo nombre de unidad registrado en la base de datos
+                    $checkUnity->bindParam(':nombre_unidad', $nombre_unidad);
+                    $checkUnity->execute();
+                    $existsUnity = $checkUnity->fetchColumn();
+                    if ($existsUnity) {
+                        showErrorOrSuccessAndRedirect("error", "Error!", "El área ya esta registrada en la base de datos, por favor verifica el listado de areas", "unidades.php?importarExcel");
+                        exit();
+                    }
+                    // Realizar registro de los datos
+                    $queryRegister->bindParam(":nombre_unidad", $nombre_unidad);
+                    $queryRegister->bindParam(":id_area", $id_area);
+                    $queryRegister->bindParam(":hora_inicio", $hora_inicio_formateada);
+                    $queryRegister->bindParam(":hora_finalizacion", $hora_finalizacion_formateada);
+                    $queryRegister->bindParam(":cantidad_aprendices", $aprendices_requeridos);
+                    $queryRegister->bindParam(":estado", $estado);
+                    $queryRegister->execute();
+                }
+                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "unidades.php");
+                exit();
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "unidades.php?importarExcel");
             }
-            // Cerrar el archivo
-            fclose($initialUpload);
-            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "unidades.php");
-        } catch (PDOException $e) {
-            // Manejo de errores de conexión o ejecución
-            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "unidades.php?importarExcel");
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "unidades.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "unidades.php?importarExcel");
-        exit();
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "unidades.php?importarExcel");
     }
 }
