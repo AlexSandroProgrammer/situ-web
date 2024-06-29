@@ -1,4 +1,10 @@
 <?php
+
+require '../../../vendor/autoload.php';
+// IMPORTACION MODULOS DE 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
 //  REGISTRO DE AREA
 if ((isset($_POST["MM_formRegisterArea"])) && ($_POST["MM_formRegisterArea"] == "formRegisterArea")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
@@ -108,83 +114,66 @@ if (isset($_GET['id_area-delete'])) {
     }
 }
 
+
 if ((isset($_POST["MM_registroArchivoCSV"])) && ($_POST["MM_registroArchivoCSV"] == "registroArchivoCSV")) {
-    // recibimos el archivo
-    $documentoCsv = $_FILES['area_csv'];
-    // validamos que no llegue vacio
-    if (isEmpty([$documentoCsv])) {
-        showErrorOrSuccessAndRedirect("error", "Opss...", "Existen datos vacios.", "areas.php?importarExcel");
-        exit();
+
+    $fileTmpPath = $_FILES['area_excel']['tmp_name'];
+    $fileName = $_FILES['area_excel']['name'];
+    $fileSize = $_FILES['area_excel']['size'];
+    $fileType = $_FILES['area_excel']['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+
+    if (isEmpty([$fileName])) {
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "areas.php?importarExcel");
     }
-    // Verificar si el archivo subido es un CSV
-    $fileType = pathinfo($documentoCsv['name'], PATHINFO_EXTENSION);
-    if ($fileType != 'csv') {
-        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de registrar los datos, solo puedes subir archivos con extensión csv.", "areas.php?importarExcel");
-        exit();
-    }
-    // Procesar el archivo CSV
-    if (($initialUpload = fopen($documentoCsv['tmp_name'], "r")) !== FALSE) {
-        try {
-            // Preparar la consulta de verificación
-            $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
-            // Preparar la consulta de inserción
-            $stmtInsert = $connection->prepare("INSERT INTO areas (nombreArea, id_estado) VALUES (:nombreArea, :estadoInicial)");
-            $firstLine = true;
-            $rowCount = 0; // Contador de filas de datos
-            while (($data = fgetcsv($initialUpload, 1000, ";")) !== FALSE) {
-                if ($firstLine) {
-                    // Ignorar la primera línea (encabezados)
-                    $firstLine = false;
-                    continue;
-                }
-                // Verificar que la fila tiene al menos dos columnas
-                if (count($data) >= 2) {
-                    $nombreArea = $data[0];
-                    $estadoArea = $data[1];
-                    // Verificar que los valores no sean nulos
-                    if (!empty($nombreArea) && !empty($estadoArea)) {
-                        // Verificar si el nombreArea ya existe
+    // Validar la extensión del archivo
+    if (isFileUploaded($_FILES['area_excel'])) {
+        // Extensiones permitidas
+        $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
+        $maxSizeKB = 10000;
+        if (isFileValid($_FILES['area_excel'], $allowedExtensions, $maxSizeKB)) {
+            // Cargar el archivo Excel
+            $spreadsheet = IOFactory::load($fileTmpPath);
+            // Seleccionar la hoja de datos
+            $hojaDatosArea = $spreadsheet->getSheetByName('Datos');
+            // Escogemos la hoja correcta para el registro de datos
+            if ($hojaDatosArea) {
+                $data = $hojaDatosArea->toArray();
+                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
+                $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado) VALUES (:nombreArea, :estado)");
+                foreach ($data as $index => $row) {
+                    // Saltar la primera fila si es el encabezado
+                    if ($index == 0) continue;
+                    $nombreArea = $row[0];
+                    $id_estado = $row[1];
+                    // Validar que los datos no estén vacíos antes de insertar
+                    if (isNotEmpty([$nombreArea, $id_estado])) {
                         $stmtCheck->bindParam(':nombreArea', $nombreArea);
                         $stmtCheck->execute();
                         $exists = $stmtCheck->fetchColumn();
                         if ($exists) {
-                            // Manejo de datos duplicados
-                            showErrorOrSuccessAndRedirect("error", "Dato duplicado", "El área ya está registrada en la base de datos.", "areas.php?importarExcel");
+                            showErrorOrSuccessAndRedirect("error", "Error!", "El área ya esta registrada en la base de datos, por favor verifica el listado de areas", "areas.php?importarExcel");
                             exit();
                         }
-                        // Bindear los parámetros y ejecutar la inserción
-                        $stmtInsert->bindParam(':nombreArea', $nombreArea);
-                        $stmtInsert->bindParam(':estadoInicial', $estadoArea);
-                        $stmtInsert->execute();
-                        $rowCount++; // Incrementar el contador de filas de datos
+                        $queryRegister->bindParam(":nombreArea", $nombreArea);
+                        $queryRegister->bindParam(":estado", $id_estado);
+                        $queryRegister->execute();
                     } else {
-                        // Manejo de datos inválidos (opcional)
-                        showErrorOrSuccessAndRedirect("error", "Datos inválidos", "Se encontraron datos nulos o vacíos en el archivo CSV.", "areas.php?importarExcel");
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "areas.php?importarExcel");
                         exit();
                     }
-                } else {
-                    // Manejo de fila incompleta
-                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo CSV tiene filas incompletas.", "areas.php?importarExcel");
-                    exit();
                 }
-            }
-
-            // Cerrar el archivo
-            fclose($initialUpload);
-
-            // Verificar si se procesaron filas de datos
-            if ($rowCount == 0) {
-                showErrorOrSuccessAndRedirect("error", "Archivo vacío", "El archivo CSV no contiene filas de datos después del encabezado.", "areas.php?importarExcel");
+                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "areas.php");
                 exit();
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "areas.php?importarExcel");
             }
-
-            showErrorOrSuccessAndRedirect("success", "Perfecto", "Los datos han sido importados correctamente.", "areas.php");
-        } catch (PDOException $e) {
-            // Manejo de errores de conexión o ejecución
-            showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al momento de registrar los datos ", "areas.php?importarExcel");
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "areas.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al momento de cargar el archivo, verifica las celdas del archivo.", "areas.php?importarExcel");
-        exit();
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "areas.php?importarExcel");
     }
 }

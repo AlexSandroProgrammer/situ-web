@@ -88,7 +88,6 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                         <th>Fecha Apertura</th>
                                         <th>Fecha Cierre</th>
                                         <th>Estado</th>
-                                        <th>Estado Trimestre</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,7 +118,6 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo $unidad['cantidad_aprendices'] ?></td>
                                         <td><?php echo $unidad['hora_inicio'] ?></td>
                                         <td><?php echo $unidad['hora_finalizacion'] ?></td>
-                                        <td><?php echo $unidad['estado'] ?></td>
                                         <td><?php echo $unidad['estado'] ?></td>
                                     </tr>
                                     <?php
