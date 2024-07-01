@@ -22,17 +22,19 @@ if ((isset($_POST["MM_formRegisterArea"])) && ($_POST["MM_formRegisterArea"] == 
     $areaSelectQuery->bindParam(':nombreArea', $nombreArea);
     $areaSelectQuery->execute();
     $queryFetch = $areaSelectQuery->fetchAll();
-    // // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
+    // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
     if ($queryFetch) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "areas.php");
         exit();
     } else {
-
+        // Obtener la fecha y hora actual
+        $fecha_registro = date('Y-m-d H:i:s');
         // Inserta los datos en la base de datos
-        $registerArea = $connection->prepare("INSERT INTO areas(nombreArea, id_estado) VALUES(:nombreArea, :estadoInicial)");
+        $registerArea = $connection->prepare("INSERT INTO areas(nombreArea, id_estado, fecha_registro) VALUES(:nombreArea, :estadoInicial, :fecha_registro)");
         $registerArea->bindParam(':nombreArea', $nombreArea);
         $registerArea->bindParam(':estadoInicial', $estadoInicial);
+        $registerArea->bindParam(':fecha_registro', $fecha_registro);
         $registerArea->execute();
         if ($registerArea) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "areas.php");
@@ -72,10 +74,12 @@ if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "for
         showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "areas.php");
         exit();
     } else {
+        $fecha_actualizacion = date('Y-m-d H:i:s');
         // Inserta los datos en la base de datos
-        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado WHERE id_area = :idArea");
+        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado, fecha_actualizacion = :fecha_actualizacion WHERE id_area = :idArea");
         $updateDocument->bindParam(':nombreArea', $nombre_area);
         $updateDocument->bindParam(':id_estado', $estado_area);
+        $updateDocument->bindParam(':fecha_actualizacion', $fecha_actualizacion);
         $updateDocument->bindParam(':idArea', $id_area);
         $updateDocument->execute();
         if ($updateDocument) {
@@ -146,7 +150,10 @@ if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExc
                     exit();
                 }
                 $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
-                $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado) VALUES (:nombreArea, :estado)");
+                $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado, fecha_registro) VALUES (:nombreArea, :estado, :fecha_registro)");
+                // creamos la variable para guardar la fecha de registro
+                // Obtener la fecha y hora actual
+                $fecha_registro = date('Y-m-d H:i:s');
                 foreach ($data as $index => $row) {
                     // Saltar la primera fila si es el encabezado
                     if ($index == 0) continue;
@@ -163,6 +170,7 @@ if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExc
                         }
                         $queryRegister->bindParam(":nombreArea", $nombreArea);
                         $queryRegister->bindParam(":estado", $id_estado);
+                        $queryRegister->bindParam(":fecha_registro", $fecha_registro);
                         $queryRegister->execute();
                     } else {
                         showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "areas.php?importarExcel");

@@ -1,13 +1,7 @@
 <?php
 $titlePage = "Listado de Unidades";
 require_once("../components/sidebar.php");
-$getUnidades = $connection->prepare("SELECT *
-FROM 
-unidad
-INNER JOIN 
-estados ON unidad.id_estado = estados.id_estado
-INNER JOIN 
-areas ON unidad.id_area = areas.id_area");
+$getUnidades = $connection->prepare("SELECT unidad.id_unidad, unidad.nombre_unidad, unidad.id_area, unidad.cantidad_aprendices, unidad.hora_inicio, unidad.hora_finalizacion, unidad.fecha_registro AS unidad_fecha_registro, unidad.fecha_actualizacion AS unidad_fecha_actualizacion, estados.estado, areas.nombreArea FROM unidad INNER JOIN  estados ON unidad.id_estado = estados.id_estado INNER JOIN areas ON unidad.id_area = areas.id_area");
 $getUnidades->execute();
 $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -76,13 +70,15 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
-                                        <th>#</th>
+                                        <th>ID</th>
                                         <th>Nombre de Unidad</th>
                                         <th>Area</th>
                                         <th>Aprendices Requeridos</th>
                                         <th>Fecha Apertura</th>
                                         <th>Fecha Cierre</th>
                                         <th>Estado</th>
+                                        <th>Fecha de registro</th>
+                                        <th>Fecha de actualizacion</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -107,6 +103,8 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?php echo $unidad['hora_inicio'] ?></td>
                                             <td><?php echo $unidad['hora_finalizacion'] ?></td>
                                             <td><?php echo $unidad['estado'] ?></td>
+                                            <td><?php echo $unidad['unidad_fecha_registro'] ?></td>
+                                            <td><?php echo $unidad['unidad_fecha_actualizacion'] ?></td>
                                         </tr>
                                     <?php
 

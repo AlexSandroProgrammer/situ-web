@@ -33,14 +33,16 @@ if ((isset($_POST["MM_formRegisterUnidad"])) && ($_POST["MM_formRegisterUnidad"]
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "registrar-unidad.php");
         exit();
     } else {
+        $fecha_registro = date("Y-m-d H:i:s");
         // Inserta los datos en la base de datos
-        $unidadRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado) VALUES(:nombre_unidad, :id_area, :hora_inicial, :hora_final, :cantidad_aprendices, :id_estado)");
+        $unidadRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado, fecha_registro) VALUES(:nombre_unidad, :id_area, :hora_inicial, :hora_final, :cantidad_aprendices, :id_estado, :fecha_registro)");
         $unidadRegister->bindParam(':nombre_unidad', $nombre_unidad);
         $unidadRegister->bindParam(':id_area', $id_area);
         $unidadRegister->bindParam(':hora_inicial', $horario_inicial);
         $unidadRegister->bindParam(':hora_final', $horario_final);
         $unidadRegister->bindParam(':cantidad_aprendices', $cantidad_aprendices);
         $unidadRegister->bindParam(':id_estado', $estadoInicial);
+        $unidadRegister->bindParam(':fecha_registro', $fecha_registro);
         $unidadRegister->execute();
         if ($unidadRegister) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "unidades.php");
@@ -84,6 +86,7 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
         showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "editar-unidad.php?id_unidad-edit=" . $id_unidad);
         exit();
     } else {
+        $fecha_actualizacion = date("Y-m-d H:i:s");
         // Inserta los datos en la base de datos
         $updateDocument = $connection->prepare("UPDATE unidad SET 
         nombre_unidad = :nombre_unidad, 
@@ -91,7 +94,8 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
         hora_inicio = :horario_inicial, 
         hora_finalizacion = :horario_final, 
         id_estado = :estado_unidad, 
-        cantidad_aprendices = :cantidad_aprendices 
+        cantidad_aprendices = :cantidad_aprendices,
+        fecha_actualizacion = :fecha_actualizacion 
         WHERE id_unidad = :id_unidad");
         $updateDocument->bindParam(':nombre_unidad', $nombre_unidad);
         $updateDocument->bindParam(':areaPerteneciente', $areaPerteneciente);
@@ -99,6 +103,7 @@ if ((isset($_POST["MM_formUpdateUnity"])) && ($_POST["MM_formUpdateUnity"] == "f
         $updateDocument->bindParam(':horario_final', $horario_final);
         $updateDocument->bindParam(':estado_unidad', $estado_unidad);
         $updateDocument->bindParam(':cantidad_aprendices', $cantidad_aprendices);
+        $updateDocument->bindParam(':fecha_actualizacion', $fecha_actualizacion);
         $updateDocument->bindParam(':id_unidad', $id_unidad);
         $updateDocument->execute();
         if ($updateDocument) {

@@ -198,15 +198,14 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="card-body">
                                 <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="registroArchivoProgramasCSV">
+                                    name="registroProgramaExcel">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="area_csv">Subir Archivo</label>
+                                        <label class="form-label" for="programa_excel">Subir Archivo</label>
                                         <div class="input-group input-group-merge">
                                             <span id="span_csv" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
                                             <input type="file" autofocus class="form-control" required
-                                                name="programas_csv" id="area_csv"
-                                                placeholder="Ingresa el nombre del area" />
+                                                name="programa_excel" id="programa_excel" />
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -214,8 +213,8 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                        <input type="hidden" class="btn btn-info" value="registroArchivoProgramasCSV"
-                                            name="MM_registroArchivoProgramasCSV"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroProgramaExcel"
+                                            name="MM_registroProgramaExcel"></input>
                                     </div>
                                 </form>
                             </div>
