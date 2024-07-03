@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-06-2024 a las 22:50:05
+-- Tiempo de generación: 03-07-2024 a las 22:19:02
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -30,21 +30,22 @@ SET time_zone = "+00:00";
 CREATE TABLE `areas` (
   `id_area` int(11) NOT NULL,
   `nombreArea` varchar(100) NOT NULL,
-  `id_estado` int(11) NOT NULL
+  `id_estado` int(11) NOT NULL,
+  `fecha_registro` datetime NOT NULL,
+  `fecha_actualizacion` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `areas`
 --
 
-INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`) VALUES
-(3, 'Pecuaria', 1),
-(4, 'Agroindustria', 1),
-(5, 'Gestion', 1),
-(6, 'Ambiental', 1),
-(7, 'Agricola', 1),
-(8, 'Mecanizacion', 1),
-(11, 'Innovacion', 1);
+INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`, `fecha_registro`, `fecha_actualizacion`) VALUES
+(20, 'Pecuaria', 1, '2024-07-03 07:40:27', '2024-07-03 07:41:13'),
+(21, 'Agricola', 1, '2024-07-03 07:40:46', '2024-07-03 07:42:13'),
+(22, 'Agroindustria', 1, '2024-07-03 07:41:04', '2024-07-03 07:42:19'),
+(23, 'Gestion', 1, '2024-07-03 07:41:54', '2024-07-03 07:42:54'),
+(24, 'Ambiental', 1, '2024-07-03 07:42:07', '2024-07-03 07:42:59'),
+(25, 'Innovacion', 1, '2024-07-03 07:43:13', '2024-07-03 07:50:50');
 
 -- --------------------------------------------------------
 
@@ -64,28 +65,8 @@ CREATE TABLE `cargos` (
 
 INSERT INTO `cargos` (`id_cargo`, `tipo_cargo`, `estado`) VALUES
 (1, 'Lider Sena Empresa', 1),
-(2, 'Lider Pecuario', 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `clientes`
---
-
-CREATE TABLE `clientes` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(250) NOT NULL,
-  `correo` varchar(250) NOT NULL,
-  `celular` varchar(250) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `clientes`
---
-
-INSERT INTO `clientes` (`id`, `nombre`, `correo`, `celular`) VALUES
-(2778, 'Urian Viera', 'urian@gmail.com', '123\r\n'),
-(2779, 'Saul R', 'saul@gmail.com', '456\r\n');
+(2, 'Lider Pecuario', 1),
+(3, 'Lider de talento humano editado', 2);
 
 -- --------------------------------------------------------
 
@@ -104,7 +85,9 @@ CREATE TABLE `estados` (
 
 INSERT INTO `estados` (`id_estado`, `estado`) VALUES
 (1, 'activo'),
-(2, 'inactivo');
+(2, 'inactivo'),
+(4, 'Suspendido'),
+(5, 'Bloqueado');
 
 -- --------------------------------------------------------
 
@@ -115,21 +98,24 @@ INSERT INTO `estados` (`id_estado`, `estado`) VALUES
 CREATE TABLE `fichas` (
   `codigoFicha` int(11) NOT NULL,
   `id_programa` int(11) NOT NULL,
-  `cantidad_aprendices` int(11) DEFAULT NULL,
   `inicio_formacion` date NOT NULL,
   `fin_formacion` date NOT NULL,
   `id_estado` int(11) NOT NULL,
-  `id_estado_se` int(11) NOT NULL,
-  `id_estado_trimestre` int(11) NOT NULL
+  `id_estado_se` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `fichas`
 --
 
-INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `cantidad_aprendices`, `inicio_formacion`, `fin_formacion`, `id_estado`, `id_estado_se`, `id_estado_trimestre`) VALUES
-(2309101, 5, NULL, '2024-06-15', '2024-06-22', 1, 2, 1),
-(2500591, 4, NULL, '2024-06-15', '2024-06-29', 1, 2, 1);
+INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `id_estado`, `id_estado_se`) VALUES
+(240123, 3, '0000-00-00', '0000-00-00', 1, 2),
+(240125, 3, '0000-00-00', '0000-00-00', 1, 2),
+(240126, 3, '0000-00-00', '0000-00-00', 1, 2),
+(240127, 3, '0000-00-00', '0000-00-00', 1, 2),
+(2301341, 4, '2024-07-03', '2024-07-20', 1, 1),
+(2309101, 5, '2024-06-15', '2024-06-22', 1, 2),
+(2500591, 8, '2024-07-03', '2024-06-29', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -150,7 +136,9 @@ CREATE TABLE `formatos` (
 --
 
 INSERT INTO `formatos` (`id_formato`, `nombreFormato`, `nombreFormatoMagnetico`, `estado`, `horario_registro`) VALUES
-(4, 'Formato registro de area', 'formatoarea.csv', 1, '2024-06-18 14:12:23');
+(5, 'Formato registro de area', 'formatoarea.csv', 1, '2024-06-20 08:12:33'),
+(6, 'Formato registro de unidad', 'formatounidad.csv', 1, '2024-06-20 10:51:24'),
+(7, 'Formato Registro de Programas de Formacion', 'formatoprogramas.csv', 1, '2024-06-20 12:25:56');
 
 -- --------------------------------------------------------
 
@@ -185,7 +173,12 @@ INSERT INTO `programas_formacion` (`id_programa`, `nombre_programa`, `descripcio
 (4, 'Analisis y Desarrollo de Software', 'Esta es una descripción para un programa de formación relacionado con el analisis y desarrollo de software', 1),
 (5, 'Gestion de Empresas Pecuarias', 'Esta es la descripcion de un programa relacionado con empresas pecuarias', 1),
 (7, 'Gestion de Produccion Agricola', 'Esta es la descripcion de un programa relacionado con la produccion agricola', 1),
-(8, 'Gestion Agroempresarial', 'descripcion corta del tecnologo gestion agroempresarial', 1);
+(8, 'Gestion Agroempresarial', 'descripcion corta del tecnologo gestion agroempresarial', 1),
+(11, 'Produccion Ambiental', 'Esta es una descripcion relacionada con el programa de formacion produccion ambiental', 1),
+(12, 'Gestion Ambiental', 'Esta es una descripcion relacionada con el programa de formacion Ambiental', 1),
+(13, 'Analisis de Muestras Quimicas dato actualizado', 'Es un tecnologo para el analisis de muestras quimicas del tecnologo 2024', 2),
+(14, 'Gestion de Empresas Agropecuarias', 'esta es la descripcion de un programa de formacion relacionado con empresas agropecuarias', 1),
+(15, 'Gestion de empresas agricolas', 'esta es la descripcion de un programa de formacion', 1);
 
 -- --------------------------------------------------------
 
@@ -254,17 +247,27 @@ CREATE TABLE `unidad` (
   `hora_finalizacion` time NOT NULL,
   `cantidad_aprendices` int(11) NOT NULL,
   `id_estado` int(11) NOT NULL,
-  `id_estado_trimestre` int(11) NOT NULL
+  `fecha_registro` datetime NOT NULL,
+  `fecha_actualizacion` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `unidad`
 --
 
-INSERT INTO `unidad` (`id_unidad`, `nombre_unidad`, `id_area`, `hora_inicio`, `hora_finalizacion`, `cantidad_aprendices`, `id_estado`, `id_estado_trimestre`) VALUES
-(1, 'Mercasena 2 Pan y Cafe', 5, '07:00:00', '16:00:00', 5, 1, 1),
-(2, 'Unidad de Porcinos', 5, '07:00:00', '08:55:00', 5, 1, 2),
-(5, 'Unidad de Caprinos', 3, '05:57:00', '06:57:00', 4, 1, 1);
+INSERT INTO `unidad` (`id_unidad`, `nombre_unidad`, `id_area`, `hora_inicio`, `hora_finalizacion`, `cantidad_aprendices`, `id_estado`, `fecha_registro`, `fecha_actualizacion`) VALUES
+(37, 'Avicultura', 20, '07:00:00', '16:00:00', 4, 1, '2024-07-03 10:35:44', '2024-07-03 10:40:40'),
+(38, 'Mercasena 1', 22, '08:00:00', '11:00:00', 3, 1, '2024-07-03 10:35:44', '2024-07-03 10:49:12'),
+(39, 'Caprinos', 20, '07:00:00', '16:00:00', 4, 1, '2024-07-03 10:49:21', '0000-00-00 00:00:00'),
+(40, 'Mercasena 2', 22, '08:00:00', '11:00:00', 3, 1, '2024-07-03 10:49:21', '0000-00-00 00:00:00'),
+(41, 'Lacteos', 20, '07:00:00', '16:00:00', 4, 1, '2024-07-03 11:38:35', '0000-00-00 00:00:00'),
+(42, 'Panificacion', 22, '08:00:00', '11:00:00', 3, 1, '2024-07-03 11:38:35', '0000-00-00 00:00:00'),
+(43, 'Fruhor', 20, '07:00:00', '16:00:00', 4, 1, '2024-07-03 11:40:02', '0000-00-00 00:00:00'),
+(44, 'Carnicos', 22, '08:00:00', '11:00:00', 3, 1, '2024-07-03 11:40:02', '0000-00-00 00:00:00'),
+(45, 'Zonas verdes', 20, '07:00:00', '16:00:00', 4, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(46, 'Laboratorio ambiental', 22, '08:00:00', '11:00:00', 3, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(47, 'Lote 1', 20, '07:00:00', '16:00:00', 4, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(48, 'Lote 2', 22, '08:00:00', '11:00:00', 3, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -313,12 +316,6 @@ ALTER TABLE `areas`
 --
 ALTER TABLE `cargos`
   ADD PRIMARY KEY (`id_cargo`);
-
---
--- Indices de la tabla `clientes`
---
-ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `estados`
@@ -388,31 +385,25 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `cargos`
 --
 ALTER TABLE `cargos`
-  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT de la tabla `clientes`
---
-ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2780;
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
 --
 ALTER TABLE `estados`
-  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `formatos`
 --
 ALTER TABLE `formatos`
-  MODIFY `id_formato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_formato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `intentos_fallidos`
@@ -424,7 +415,7 @@ ALTER TABLE `intentos_fallidos`
 -- AUTO_INCREMENT de la tabla `programas_formacion`
 --
 ALTER TABLE `programas_formacion`
-  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_usuario`
@@ -448,7 +439,7 @@ ALTER TABLE `turno_rutinario`
 -- AUTO_INCREMENT de la tabla `unidad`
 --
 ALTER TABLE `unidad`
-  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
