@@ -12,7 +12,6 @@ estados ON fichas.id_estado = estados.id_estado");
 $getFichas->execute();
 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!-- Content wrapper -->
 <div class="content-wrapper">
     <!-- Content -->
@@ -31,18 +30,16 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <!-- Vertically Centered Modal -->
                     <div class="col-lg-4 col-md-6">
+
                         <!-- Button trigger modal -->
-                        <form action="" method="get">
-                            <input type="hidden" name="status" value="importar-csv">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-file-excel"></i> Importar Excel</button>
-                        </form>
+                        <a href="fichas.php?importarExcel" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Importar Excel
+                        </a>
+
                     </div>
                 </div>
-
                 <?php
-                if (!empty($_GET["status"])) {
-                    if ($_GET["status"] == "importar-csv") {
+                if (isset($_GET["importarExcel"])) {
                 ?>
                 <div class="row">
                     <div class="col-xl">
@@ -53,25 +50,23 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="card-body">
                                 <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="formRegisterFichaCsv">
+                                    name="formRegisterExcelFichas">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="archivo-excel">Cargar Archivo Excel</label>
+                                        <label class="form-label" for="ficha_excel">Cargar Archivo Excel</label>
                                         <div class="input-group input-group-merge">
-                                            <span id="archivo-excel-2" class="input-group-text"><i
+                                            <span id="ficha_excel-2" class="input-group-text"><i
                                                     class="fas fa-file-excel"></i></span>
                                             <input type="file" autofocus class="form-control" required
-                                                name="archivo_excel" id="archivo-excel"
-                                                aria-describedby="archivo-excel-2" />
+                                                name="ficha_excel" id="ficha_excel" aria-describedby="ficha_excel-2" />
                                         </div>
                                     </div>
-
                                     <div class="modal-footer">
                                         <a class="btn btn-danger" href="fichas.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterFichaCsv"
-                                            name="MM_formRegisterFichaCsv"></input>
+                                        <input type="hidden" class="btn btn-info" value="formRegisterExcelFichas"
+                                            name="MM_formRegisterExcelFichas"></input>
                                     </div>
                                 </form>
                             </div>
@@ -79,9 +74,6 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <?php
-                    } else {
-                        showErrorOrSuccessAndRedirect("Error", "¡Opsss...!", "Error al momento de acceder al formulario", "fichas.php");
-                    }
                 }
 
                 ?>
@@ -98,7 +90,6 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <th>Inicio de Formacion</th>
                                         <th>Fin de Formacion</th>
                                         <th>Estado</th>
-                                        <th>Estado Trimestre</th>
                                         <th>Estado S.E.</th>
                                     </tr>
                                 </thead>
@@ -130,7 +121,6 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo $ficha['fin_formacion'] ?></td>
                                         <td><?php echo $ficha['id_estado'] ?></td>
                                         <td><?php echo $ficha['id_estado_se'] ?></td>
-                                        <td><?php echo $ficha['id_estado_trimestre'] ?></td>
                                     </tr>
                                     <?php
 

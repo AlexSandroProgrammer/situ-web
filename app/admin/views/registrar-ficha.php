@@ -20,14 +20,18 @@ require_once("../components/sidebar.php");
                             <div class="mb-3">
                                 <label class="form-label" for="codigo_ficha">Codigo de Ficha</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="codigo_ficha_icon" class="input-group-text"><i class="bx bx-unite"></i></span>
-                                    <input type="number" name="codigo_ficha" required min="2" autofocus class="form-control" id="codigo_ficha" placeholder="Ingresa el codigo de ficha" />
+                                    <span id="codigo_ficha_icon" class="input-group-text"><i
+                                            class="bx bx-unite"></i></span>
+                                    <input type="number" name="codigo_ficha" required min="2" autofocus
+                                        class="form-control" id="codigo_ficha"
+                                        placeholder="Ingresa el codigo de ficha" />
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="id_programa" class="form-label">Programa de Formacion</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="codigo-ficha-2" class="input-group-text"><i class="bx bx-unite"></i></span>
+                                    <span id="codigo-ficha-2" class="input-group-text"><i
+                                            class="bx bx-unite"></i></span>
                                     <select class="form-select" id="id_programa" required name="id_programa">
                                         <option value="">Seleccionar Programa de Formacion...</option>
                                         <?php
@@ -51,15 +55,23 @@ require_once("../components/sidebar.php");
                             <div class="mb-3">
                                 <label class="form-label" for="inicio_formacion">Inicio de Formacion</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="inicio_formacion_icon" class="input-group-text"><i class="bx bx-calendar"></i></span>
-                                    <input type="date" name="inicio_formacion" id="inicio_formacion" class="form-control" placeholder="Ingresa el horario de apertura de la unidad" aria-label="Ingresa el horario de apertura de la unidad" aria-describedby="horario_inicial_icon" />
+                                    <span id="inicio_formacion_icon" class="input-group-text"><i
+                                            class="bx bx-calendar"></i></span>
+                                    <input type="date" name="inicio_formacion" class="form-control"
+                                        placeholder="Ingresa el horario de apertura de la unidad"
+                                        aria-label="Ingresa el horario de apertura de la unidad"
+                                        aria-describedby="horario_inicial_icon" />
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="cierre_formacion_label">Cierre de Formacion</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="cierre_formacion_icon" class="input-group-text"><i class="bx bx-calendar"></i></span>
-                                    <input type="date" id="cierre_formacion_label" name="cierre_formacion" class="form-control" placeholder="Ingresa el horario de cierre de la unidad" aria-label="Ingresa el horario de cierre de la unidad" aria-describedby="cierre_formacion_icon" />
+                                    <span id="cierre_formacion_icon" class="input-group-text"><i
+                                            class="bx bx-calendar"></i></span>
+                                    <input type="date" id="cierre_formacion_label" name="cierre_formacion"
+                                        class="form-control" placeholder="Ingresa el horario de cierre de la unidad"
+                                        aria-label="Ingresa el horario de cierre de la unidad"
+                                        aria-describedby="cierre_formacion_icon" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -88,33 +100,10 @@ require_once("../components/sidebar.php");
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="estado_trimestre" class="form-label">Estado Trimestre</label>
-                                <div class="input-group input-group-merge">
-                                    <span id="estadoInicial-2" class="input-group-text"><i class="bx bx-unite"></i></span>
-                                    <select class="form-select" id="estado_trimestre" required name="estado_trimestre">
-                                        <option value="">Seleccionar Estado...</option>
-                                        <?php
-                                        // CONSUMO DE DATOS DE LOS PROCESOS
-                                        $listadoEstadoTrimestre = $connection->prepare("SELECT * FROM estados");
-                                        $listadoEstadoTrimestre->execute();
-                                        $estadosTrimestre = $listadoEstadoTrimestre->fetchAll(PDO::FETCH_ASSOC);
-                                        // Verificar si no hay datos
-                                        if (empty($estadosTrimestre)) {
-                                            echo "<option value=''>No hay datos...</option>";
-                                        } else {
-                                            // Iterar sobre los estados
-                                            foreach ($estadosTrimestre as $estadoTrimestre) {
-                                                echo "<option value='{$estadoTrimestre['id_estado']}'>{$estadoTrimestre['estado']}</option>";
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="mb-3">
                                 <label for="estado_se" class="form-label">Estado Sena Empresa</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="estadoInicial-2" class="input-group-text"><i class="bx bx-unite"></i></span>
+                                    <span id="estadoInicial-2" class="input-group-text"><i
+                                            class="bx bx-unite"></i></span>
                                     <select class="form-select" id="estado_se" required name="estado_se">
                                         <option value="">Seleccionar Estado...</option>
                                         <?php
@@ -140,7 +129,8 @@ require_once("../components/sidebar.php");
                                     Cancelar
                                 </a>
                                 <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                <input type="hidden" class="btn btn-info" value="formRegisterFicha" name="MM_formRegisterFicha"></input>
+                                <input type="hidden" class="btn btn-info" value="formRegisterFicha"
+                                    name="MM_formRegisterFicha"></input>
                             </div>
                         </form>
                     </div>

@@ -1,5 +1,9 @@
 <?php
-//  REGISTRO DE AREA
+
+require '../../../vendor/autoload.php';
+// IMPORTACION MODULOS DE LIBRERIA PARA MANEJO DE ARCHIVOS EXCEL
+use PhpOffice\PhpSpreadsheet\IOFactory;
+//  REGISTRO DE FICHA
 if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] == "formRegisterFicha")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $codigo_ficha = $_POST['codigo_ficha'];
@@ -7,10 +11,7 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
     $inicio_formacion = $_POST['inicio_formacion'];
     $cierre_formacion = $_POST['cierre_formacion'];
     $estado_inicial = $_POST['estado_inicial'];
-    $estado_trimestre = $_POST['estado_trimestre'];
     $estado_se = $_POST['estado_se'];
-
-
     // validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([
         $codigo_ficha,
@@ -18,7 +19,6 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         $inicio_formacion,
         $cierre_formacion,
         $estado_inicial,
-        $estado_trimestre,
         $estado_se
     ])) {
         showErrorFieldsEmpty("registrar-ficha.php");
@@ -44,16 +44,14 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         inicio_formacion, 
         fin_formacion, 
         id_estado, 
-        id_estado_se, 
-        id_estado_trimestre) 
+        id_estado_se) 
         VALUES(
         :codigo_ficha, 
         :id_programa,
         :inicio_formacion, 
         :cierre_formacion, 
         :estado_inicial, 
-        :estado_se,
-        :estado_trimestre
+        :estado_se
         )");
         $fichaInsertInto->bindParam(':codigo_ficha', $codigo_ficha);
         $fichaInsertInto->bindParam(':id_programa', $id_programa);
@@ -61,7 +59,6 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         $fichaInsertInto->bindParam(':cierre_formacion', $cierre_formacion);
         $fichaInsertInto->bindParam(':estado_inicial', $estado_inicial);
         $fichaInsertInto->bindParam(':estado_se', $estado_se);
-        $fichaInsertInto->bindParam(':estado_trimestre', $estado_trimestre);
         $fichaInsertInto->execute();
         if ($fichaInsertInto) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "fichas.php");
@@ -74,7 +71,7 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
 }
 
 
-//  REGISTRO DE AREA
+//  ACTUALIZACION DATOS DE FICHAS DE FORMACION
 if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "formUpdateFicha")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $codigo_ficha = $_POST['ficha_formacion'];
@@ -82,28 +79,26 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $inicio_formacion = $_POST['inicio_formacion'];
     $cierre_formacion = $_POST['cierre_formacion'];
     $estado_ficha = $_POST['estado_ficha'];
-    $estado_trimestre = $_POST['estado_trimestre'];
     $estado_se = $_POST['estado_se'];
-    // // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$codigo_ficha, $id_programa, $inicio_formacion, $cierre_formacion, $estado_ficha, $estado_trimestre, $estado_se])) {
+    // validamos que no hayamos recibido ningun dato vacio
+    if (isEmpty([$codigo_ficha, $id_programa, $inicio_formacion, $cierre_formacion, $estado_ficha, $estado_se])) {
         showErrorFieldsEmpty("editar_ficha.php?'id_ficha-edit=" . $codigo_ficha);
         exit();
     }
     // Inserta los datos en la base de datos
-    $fichaUpdateFindById = $connection->prepare("UPDATE fichas 
-    SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, 
-    fin_formacion = :cierre_formacion  
-    WHERE codigoFicha = :codigo_ficha");
+    $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se WHERE codigoFicha = :codigo_ficha");
     $fichaUpdateFindById->bindParam(':id_programa', $id_programa);
     $fichaUpdateFindById->bindParam(':inicio_formacion', $inicio_formacion);
     $fichaUpdateFindById->bindParam(':cierre_formacion', $cierre_formacion);
+    $fichaUpdateFindById->bindParam(':estado_ficha', $estado_ficha);
+    $fichaUpdateFindById->bindParam(':estado_se', $estado_se);
     $fichaUpdateFindById->bindParam(':codigo_ficha', $codigo_ficha);
     $fichaUpdateFindById->execute();
     if ($fichaUpdateFindById) {
         showErrorOrSuccessAndRedirect("success", "Actualizacion exitosa", "Los datos se han actualizado correctamente", "fichas.php");
         exit();
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "fichas.php");
+        showErrorOrSuccessAndRedirect("error", "Error de actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "fichas.php?id_ficha-edit=" . $codigo_ficha);
     }
 }
 
@@ -131,84 +126,81 @@ if (isset($_GET['id_ficha-delete'])) {
     }
 }
 
+// REGISTRO ARCHIVO DE EXCEL 
+if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExcelFichas"] == "formRegisterExcelFichas")) {
 
-// METODO PARA IMPORTAR Y REGISTRAR UN ARCHIVO EXCEL 
-if ((isset($_POST["MM_formRegisterFichaCsv"])) && ($_POST["MM_formRegisterFichaCsv"] == "formRegisterFichaCsv")) {
+    $fileTmpPath = $_FILES['ficha_excel']['tmp_name'];
+    $fileName = $_FILES['ficha_excel']['name'];
+    $fileSize = $_FILES['ficha_excel']['size'];
+    $fileType = $_FILES['ficha_excel']['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
 
-    // Allowed mime types
-    $csvMimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain');
-
-
-    // Validate whether selected file is a CSV file
-    if (!empty($_FILES['archivo_excel']['name']) && in_array($_FILES['archivo_excel']['type'], $csvMimes)) {
-        // If the file is uploaded
-        if (is_uploaded_file($_FILES['archivo_excel']['tmp_name'])) {
-            // Open uploaded CSV file with read-only mode
-            $csvFile = fopen($_FILES['archivo_excel']['tmp_name'], 'r');
-            // Skip the first line
-            fgetcsv($csvFile);
-            // Parse data from CSV file line by line
-            while (($line = fgetcsv($csvFile)) !== FALSE) {
-                // Get row data
-                $codigoFicha   = $line[0];
-                $id_programa  = $line[1];
-                $inicio_formacion  = $line[2];
-                $cierre_formacion = $line[3];
-                $estado_inicial = $line[4];
-                $estado_se = $line[5];
-                $estado_trimestre = $line[6];
-
-                $fichaIsExists = $connection->prepare("SELECT * FROM fichas WHERE codigoFicha = :codigoFicha");
-                $fichaIsExists->bindParam(':codigoFicha', $codigoFicha);
-                $fichaIsExists->execute();
-                // Obtener todos los resultados en un array
-                $fichaContainer = $fichaIsExists->fetchAll(PDO::FETCH_ASSOC);
-                if ($fichaContainer) {
-                    // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-                    showErrorOrSuccessAndRedirect("error", "Error", "La ficha ya esta registrada", "fichas.php");
+    if (isEmpty([$fileName])) {
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "fichas.php?importarExcel");
+    }
+    // Validar la extensión del archivo
+    if (isFileUploaded($_FILES['ficha_excel'])) {
+        // Extensiones permitidas
+        $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
+        $maxSizeKB = 10000;
+        if (isFileValid($_FILES['ficha_excel'], $allowedExtensions, $maxSizeKB)) {
+            // Cargar el archivo Excel
+            $spreadsheet = IOFactory::load($fileTmpPath);
+            // Seleccionar la hoja de datos
+            $hojasDatosFicha = $spreadsheet->getSheetByName('Datos');
+            // Escogemos la hoja correcta para el registro de datos
+            if ($hojasDatosFicha) {
+                $data = $hojasDatosFicha->toArray();
+                $requiredColumnCount = 6;
+                if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "fichas.php?importarExcel");
                     exit();
-                } else {
-                    // Inserta los datos en la base de datos
-                    $fichaInsertInto = $connection->prepare("INSERT INTO fichas(
-                codigoFicha,
-                id_programa,
-                inicio_formacion, 
-                fin_formacion, 
-                id_estado, 
-                id_estado_se, 
-                id_estado_trimestre) 
-                VALUES(
-                :codigo_ficha, 
-                :id_programa,
-                :inicio_formacion, 
-                :cierre_formacion, 
-                :estado_inicial, 
-                :estado_se,
-                :estado_trimestre
-                )");
-                    $fichaInsertInto->bindParam(':codigo_ficha', $codigo_ficha);
-                    $fichaInsertInto->bindParam(':id_programa', $id_programa);
-                    $fichaInsertInto->bindParam(':inicio_formacion', $inicio_formacion);
-                    $fichaInsertInto->bindParam(':cierre_formacion', $cierre_formacion);
-                    $fichaInsertInto->bindParam(':estado_inicial', $estado_inicial);
-                    $fichaInsertInto->bindParam(':estado_se', $estado_se);
-                    $fichaInsertInto->bindParam(':estado_trimestre', $estado_trimestre);
-                    $fichaInsertInto->execute();
-                    if ($fichaInsertInto) {
-                        showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "fichas.php");
-                        exit();
+                }
+                $queryDuplicateSheet = $connection->prepare("SELECT COUNT(*) FROM fichas WHERE codigoFicha = :codigoFicha");
+                $registerSheet = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion,id_estado, id_estado_se) 
+                VALUES (:codigoFicha, :id_programa, :inicio_formacion, :fin_formacion, :id_estado, :id_estado_se)");
+                $fecha_registro = date('Y-m-d H:i:s');
+                foreach ($data as $index => $row) {
+                    // Saltar la primera fila si es el encabezado
+                    if ($index == 0) continue;
+                    $codigoFicha = $row[0];
+                    $id_programa = $row[1];
+                    $inicio_formacion = $row[2];
+                    $fin_formacion = $row[3];
+                    $id_estado = $row[4];
+                    $id_estado_se = $row[5];
+                    // Validar que los datos no estén vacíos antes de insertar
+                    if (isNotEmpty([$codigoFicha, $id_programa, $inicio_formacion, $fin_formacion, $id_estado, $id_estado_se])) {
+                        $queryDuplicateSheet->bindParam(':codigoFicha', $codigoFicha);
+                        $queryDuplicateSheet->execute();
+                        $exists = $queryDuplicateSheet->fetchColumn();
+                        if ($exists) {
+                            showErrorOrSuccessAndRedirect("error", "Error!", "La ficha ya esta registrada en la base de datos, por favor verifica el listado de fichas", "fichas.php?importarExcel");
+                            exit();
+                        }
+                        $registerSheet->bindParam(":codigoFicha", $codigoFicha);
+                        $registerSheet->bindParam(":id_programa", $id_programa);
+                        $registerSheet->bindParam(":inicio_formacion", $inicio_formacion);
+                        $registerSheet->bindParam(":fin_formacion", $fin_formacion);
+                        $registerSheet->bindParam(":id_estado", $id_estado);
+                        $registerSheet->bindParam(":id_estado_se", $id_estado_se);
+                        $registerSheet->execute();
                     } else {
-                        showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente 1", "fichas.php?status=importar-csv");
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "fichas.php?importarExcel");
                         exit();
                     }
                 }
+                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "fichas.php");
+                exit();
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, debes seleccionar la hoja de calculo llamada Datos.", "fichas.php?importarExcel");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente 2", "fichas.php?status=importar-csv");
-            exit();
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "fichas.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente 3", "fichas.php?status=importar-csv");
-        exit();
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "fichas.php?importarExcel");
     }
 }

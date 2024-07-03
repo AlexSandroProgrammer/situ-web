@@ -116,33 +116,6 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="estado_trimestre" class="form-label">Estado Trimestre</label>
-                                    <div class="input-group input-group-merge">
-                                        <span id="estadoInicial-2" class="input-group-text"><i
-                                                class="bx bx-unite"></i></span>
-                                        <select class="form-select" id="estado_trimestre" required
-                                            name="estado_trimestre">
-                                            <option value="<?php echo $fichaFindById['id_estado_trimestre'] ?>">
-                                                <?php echo $fichaFindById['estado'] ?></option>
-                                            <?php
-                                                    // CONSUMO DE DATOS DE LOS PROCESOS
-                                                    $listadoEstadoTrimestre = $connection->prepare("SELECT * FROM estados");
-                                                    $listadoEstadoTrimestre->execute();
-                                                    $estadosTrimestre = $listadoEstadoTrimestre->fetchAll(PDO::FETCH_ASSOC);
-                                                    // Verificar si no hay datos
-                                                    if (empty($estadosTrimestre)) {
-                                                        echo "<option value=''>No hay datos...</option>";
-                                                    } else {
-                                                        // Iterar sobre los estados
-                                                        foreach ($estadosTrimestre as $estadoTrimestre) {
-                                                            echo "<option value='{$estadoTrimestre['id_estado']}'>{$estadoTrimestre['estado']}</option>";
-                                                        }
-                                                    }
-                                                    ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
                                     <label for="estado_se" class="form-label">Estado Sena Empresa</label>
                                     <div class="input-group input-group-merge">
                                         <span id="estadoInicial-2" class="input-group-text"><i

@@ -187,7 +187,7 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                         <label class="form-label" for="cargos_csv">Subir Archivo</label>
                                         <div class="input-group input-group-merge">
                                             <span id="span_csv" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
+                                                    class="fas fa-file-excel"></i></span>
                                             <input type="file" autofocus class="form-control" required name="cargos_csv"
                                                 id="cargos_csv" placeholder="Ingresa el nombre del area" />
                                         </div>

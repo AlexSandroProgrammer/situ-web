@@ -203,7 +203,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                         <label class="form-label" for="programa_excel">Subir Archivo</label>
                                         <div class="input-group input-group-merge">
                                             <span id="span_csv" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
+                                                    class="fas fa-file-excel"></i></span>
                                             <input type="file" autofocus class="form-control" required
                                                 name="programa_excel" id="programa_excel" />
                                         </div>
