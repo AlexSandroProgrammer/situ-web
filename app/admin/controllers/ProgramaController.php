@@ -8,15 +8,13 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
     $nombrePrograma = $_POST['nombrePrograma'];
     $estadoInicial = $_POST['estadoInicial'];
     $descripcion = $_POST['descripcion'];
-
     // validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$nombrePrograma, $estadoInicial])) {
         showErrorFieldsEmpty("programas.php");
         exit();
     }
-
     // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
+    // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $programaSelectQuery = $connection->prepare("SELECT * FROM programas_formacion WHERE nombre_programa = :nombrePrograma");
     $programaSelectQuery->bindParam(':nombrePrograma', $nombrePrograma);
     $programaSelectQuery->execute();
@@ -120,7 +118,7 @@ if ((isset($_POST["MM_registroProgramaExcel"])) && ($_POST["MM_registroProgramaE
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
     if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "programas.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "programas.php?importarExcel");
     }
     // Validar la extensión del archivo
     if (isFileUploaded($_FILES['programa_excel'])) {
@@ -132,69 +130,52 @@ if ((isset($_POST["MM_registroProgramaExcel"])) && ($_POST["MM_registroProgramaE
             // Cargar el archivo Excel
             $spreadsheet = IOFactory::load($fileTmpPath);
             // Seleccionar la hoja de datos
-            $hojaDatosUnidades = $spreadsheet->getSheetByName('Datos');
+            $hojaDatosPrograma = $spreadsheet->getSheetByName('Datos');
             // Escogemos la hoja correcta para el registro de datos
-            if ($hojaDatosUnidades) {
-                $data = $hojaDatosUnidades->toArray();
-                $requiredColumnCount = 6;
+            if ($hojaDatosPrograma) {
+                $data = $hojaDatosPrograma->toArray();
+                $requiredColumnCount = 3;
                 if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos seis columnas requeridas", "programas.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos tres columnas requeridas", "programas.php?importarExcel");
                     exit();
                 }
                 // consulta para validar que no haya una unidad ya registrada
-                $checkUnity = $connection->prepare("SELECT COUNT(*) FROM unidad WHERE nombre_unidad = :nombre_unidad");
-                $queryRegister = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado) VALUES (:nombre_unidad, :id_area, :hora_inicio, :hora_finalizacion, :cantidad_aprendices, :estado)");
+                $checkProgram = $connection->prepare("SELECT COUNT(*) FROM programas_formacion WHERE nombre_programa = :nombre_programa");
+                $queryRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, descripcion, id_estado) VALUES 
+                (:nombre_programa, :descripcion, :id_estado)");
                 foreach ($data as $index => $row) {
                     // Saltar la primera fila si es el encabezado
                     if ($index == 0) continue;
                     // asignamos cada fila a una variable que posteriormente utilizaremos para registrar los datos.
-                    $nombre_unidad = $row[0];
-                    $id_area = $row[1];
-                    $aprendices_requeridos = $row[2];
-                    $hora_inicio = $row[3];
-                    $hora_finalizacion = $row[4];
-                    $estado = $row[5];
+                    $nombre_programa = $row[0];
+                    $descripcion = $row[1];
+                    $id_estado = $row[2];
                     // Validar que los datos no estén vacíos antes de insertar
-                    if (isEmpty([$nombre_unidad, $id_area, $aprendices_requeridos, $hora_inicio, $hora_finalizacion, $estado])) {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "unidades.php?importarExcel");
-                        exit();
+                    if (isNotEmpty([$nombre_programa, $descripcion, $id_estado])) {
+                        // generamos la consula para validar que cada fila no tenga un mismo nombre de programa registrado en la base de datos
+                        $checkProgram->bindParam(':nombre_programa', $nombre_programa);
+                        $checkProgram->execute();
+                        $existsProgram = $checkProgram->fetchColumn();
+                        if ($existsProgram) {
+                            showErrorOrSuccessAndRedirect("error", "Error!", "El programa ya esta registrada en la base de datos, por favor verifica el listado de programas", "programas.php?importarExcel");
+                            exit();
+                        }
+                        // Realizar registro de los datos
+                        $queryRegister->bindParam(":nombre_programa", $nombre_programa);
+                        $queryRegister->bindParam(":descripcion", $descripcion);
+                        $queryRegister->bindParam(":id_estado", $id_estado);
+                        $queryRegister->execute();
                     }
-
-                    // Formatear horas a formato 24 horas (hora-minutos)
-                    try {
-                        $hora_inicio_formateada = (new DateTime($hora_inicio))->format('H:i');
-                        $hora_finalizacion_formateada = (new DateTime($hora_finalizacion))->format('H:i');
-                    } catch (Exception $e) {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Formato de hora inválido", "unidades.php?importarExcel");
-                        exit();
-                    }
-
-                    // generamos la consula para validar que cada fila no tenga un mismo nombre de unidad registrado en la base de datos
-                    $checkUnity->bindParam(':nombre_unidad', $nombre_unidad);
-                    $checkUnity->execute();
-                    $existsUnity = $checkUnity->fetchColumn();
-                    if ($existsUnity) {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "El área ya esta registrada en la base de datos, por favor verifica el listado de areas", "unidades.php?importarExcel");
-                        exit();
-                    }
-                    // Realizar registro de los datos
-                    $queryRegister->bindParam(":nombre_unidad", $nombre_unidad);
-                    $queryRegister->bindParam(":id_area", $id_area);
-                    $queryRegister->bindParam(":hora_inicio", $hora_inicio_formateada);
-                    $queryRegister->bindParam(":hora_finalizacion", $hora_finalizacion_formateada);
-                    $queryRegister->bindParam(":cantidad_aprendices", $aprendices_requeridos);
-                    $queryRegister->bindParam(":estado", $estado);
-                    $queryRegister->execute();
                 }
-                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "unidades.php");
+                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "programas.php");
                 exit();
             } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "unidades.php?importarExcel");
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "programas.php?importarExcel");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "unidades.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "programas.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "unidades.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "programas.php?importarExcel");
     }
 }
