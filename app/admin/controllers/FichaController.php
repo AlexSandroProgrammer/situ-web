@@ -128,7 +128,6 @@ if (isset($_GET['id_ficha-delete'])) {
 
 // REGISTRO ARCHIVO DE EXCEL 
 if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExcelFichas"] == "formRegisterExcelFichas")) {
-
     $fileTmpPath = $_FILES['ficha_excel']['tmp_name'];
     $fileName = $_FILES['ficha_excel']['name'];
     $fileSize = $_FILES['ficha_excel']['size'];
@@ -159,7 +158,7 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                     exit();
                 }
                 $queryDuplicateSheet = $connection->prepare("SELECT COUNT(*) FROM fichas WHERE codigoFicha = :codigoFicha");
-                $registerSheet = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion,id_estado, id_estado_se) 
+                $registerSheet = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion, id_estado, id_estado_se) 
                 VALUES (:codigoFicha, :id_programa, :inicio_formacion, :fin_formacion, :id_estado, :id_estado_se)");
                 $fecha_registro = date('Y-m-d H:i:s');
                 foreach ($data as $index => $row) {
@@ -173,6 +172,10 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                     $id_estado_se = $row[5];
                     // Validar que los datos no estén vacíos antes de insertar
                     if (isNotEmpty([$codigoFicha, $id_programa, $inicio_formacion, $fin_formacion, $id_estado, $id_estado_se])) {
+                        // Formatear las fechas
+                        $inicio_formacion = DateTime::createFromFormat('m/d/Y', $inicio_formacion)->format('Y-m-d');
+                        $fin_formacion = DateTime::createFromFormat('m/d/Y', $fin_formacion)->format('Y-m-d');
+
                         $queryDuplicateSheet->bindParam(':codigoFicha', $codigoFicha);
                         $queryDuplicateSheet->execute();
                         $exists = $queryDuplicateSheet->fetchColumn();
@@ -187,9 +190,6 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                         $registerSheet->bindParam(":id_estado", $id_estado);
                         $registerSheet->bindParam(":id_estado_se", $id_estado_se);
                         $registerSheet->execute();
-                    } else {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "fichas.php?importarExcel");
-                        exit();
                     }
                 }
                 showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "fichas.php");

@@ -182,14 +182,14 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="card-body">
                                 <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="registroCsvCargos">
+                                    name="registroCargoExcel">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="cargos_csv">Subir Archivo</label>
+                                        <label class="form-label" for="cargo_excel">Subir Archivo</label>
                                         <div class="input-group input-group-merge">
                                             <span id="span_csv" class="input-group-text"><i
                                                     class="fas fa-file-excel"></i></span>
-                                            <input type="file" autofocus class="form-control" required name="cargos_csv"
-                                                id="cargos_csv" placeholder="Ingresa el nombre del area" />
+                                            <input type="file" autofocus class="form-control" required
+                                                name="cargo_excel" id="cargo_excel" />
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -197,8 +197,8 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                        <input type="hidden" class="btn btn-info" value="registroCsvCargos"
-                                            name="MM_registroCsvCargos"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroCargoExcel"
+                                            name="MM_registroCargoExcel"></input>
                                     </div>
                                 </form>
                             </div>

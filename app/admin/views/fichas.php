@@ -1,14 +1,7 @@
 <?php
 $titlePage = "Listado de Fichas";
 require_once("../components/sidebar.php");
-
-$getFichas = $connection->prepare("SELECT *
-FROM 
-fichas
-INNER JOIN 
-programas_formacion ON fichas.id_programa = programas_formacion.id_programa
-INNER JOIN 
-estados ON fichas.id_estado = estados.id_estado");
+$getFichas = $connection->prepare("SELECT * FROM fichas INNER JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa INNER JOIN  estados ON fichas.id_estado = estados.id_estado");
 $getFichas->execute();
 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -30,12 +23,10 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <!-- Vertically Centered Modal -->
                     <div class="col-lg-4 col-md-6">
-
                         <!-- Button trigger modal -->
                         <a href="fichas.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
-
                     </div>
                 </div>
                 <?php
@@ -75,7 +66,6 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <?php
                 }
-
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
@@ -96,6 +86,9 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                 <tbody>
                                     <?php
                                     foreach ($fichas as $ficha) {
+                                        // organizamos las fechas
+                                        $inicio_formacion = DateTime::createFromFormat('Y-m-d', $ficha['inicio_formacion'])->format('m/d/Y');
+                                        $fin_formacion = DateTime::createFromFormat('Y-m-d', $ficha['fin_formacion'])->format('m/d/Y');
                                     ?>
                                     <tr>
                                         <td>
@@ -117,15 +110,13 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         </td>
                                         <td><?php echo $ficha['codigoFicha'] ?></td>
                                         <td><?php echo $ficha['nombre_programa'] ?></td>
-                                        <td><?php echo $ficha['inicio_formacion'] ?></td>
-                                        <td><?php echo $ficha['fin_formacion'] ?></td>
+                                        <td><?php echo $inicio_formacion ?></td>
+                                        <td><?php echo $fin_formacion ?></td>
                                         <td><?php echo $ficha['id_estado'] ?></td>
                                         <td><?php echo $ficha['id_estado_se'] ?></td>
                                     </tr>
                                     <?php
-
                                     }
-
                                     ?>
                                 </tbody>
 
@@ -134,11 +125,8 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
     <?php
     require_once("../components/footer.php")
     ?>

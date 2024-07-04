@@ -1,4 +1,8 @@
 <?php
+
+require '../../../vendor/autoload.php';
+// IMPORTACION MODULOS DE LIBRERIA PARA MANEJO DE ARCHIVOS EXCEL
+use PhpOffice\PhpSpreadsheet\IOFactory;
 // REGISTRO DE FUNCIONARIO
 if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFuncionario"] == "formRegisterFuncionario")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
@@ -178,5 +182,76 @@ if (isset($_GET['id_funcionario-delete'])) {
         } else {
             showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "funcionarios.php");
         }
+    }
+}
+
+// REGISTRO ARCHIVO DE EXCEL 
+if ((isset($_POST["MM_registroCargoExcel"])) && ($_POST["MM_registroCargoExcel"] == "registroCargoExcel")) {
+    $fileTmpPath = $_FILES['funcionario_excel']['tmp_name'];
+    $fileName = $_FILES['funcionario_excel']['name'];
+    $fileSize = $_FILES['funcionario_excel']['size'];
+    $fileType = $_FILES['funcionario_excel']['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+    if (isEmpty([$fileName])) {
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "funcionarios.php?importarExcel");
+    }
+    // Validar la extensión del archivo
+    if (isFileUploaded($_FILES['funcionario_excel'])) {
+        // Extensiones permitidas
+        $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
+        $maxSizeKB = 10000;
+        if (isFileValid($_FILES['funcionario_excel'], $allowedExtensions, $maxSizeKB)) {
+            // Cargar el archivo Excel
+            $spreadsheet = IOFactory::load($fileTmpPath);
+            // Seleccionar la hoja de datos
+            $hojaDatosArea = $spreadsheet->getSheetByName('Datos');
+            // Escogemos la hoja correcta para el registro de datos
+            if ($hojaDatosArea) {
+                $data = $hojaDatosArea->toArray();
+                $requiredColumnCount = 2;
+                if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "cargos.php?importarExcel");
+                    exit();
+                }
+                $queryDuplicatePost = $connection->prepare("SELECT COUNT(*) FROM cargos WHERE tipo_cargo = :tipo_cargo");
+                $registerPost = $connection->prepare("INSERT INTO cargos(tipo_cargo, estado, fecha_registro) VALUES (:tipo_cargo, :estado, :fecha_registro)");
+                // creamos la variable para guardar la fecha de registro
+                // Obtener la fecha y hora actual
+                $fecha_registro = date('Y-m-d H:i:s');
+                foreach ($data as $index => $row) {
+                    // Saltar la primera fila si es el encabezado
+                    if ($index == 0) continue;
+                    $tipo_cargo = $row[0];
+                    $estado = $row[1];
+                    // Validar que los datos no estén vacíos antes de insertar
+                    if (isNotEmpty([$tipo_cargo, $estado])) {
+                        $queryDuplicatePost->bindParam(':tipo_cargo', $tipo_cargo);
+                        $queryDuplicatePost->execute();
+                        $exists = $queryDuplicatePost->fetchColumn();
+                        if ($exists) {
+                            showErrorOrSuccessAndRedirect("error", "Error!", "El cargo ya esta registrada en la base de datos, por favor verifica el listado de cargos", "cargos.php?importarExcel");
+                            exit();
+                        }
+                        $registerPost->bindParam(":tipo_cargo", $tipo_cargo);
+                        $registerPost->bindParam(":estado", $estado);
+                        $registerPost->bindParam(":fecha_registro", $fecha_registro);
+                        $registerPost->execute();
+                    } else {
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "cargos.php?importarExcel");
+                        exit();
+                    }
+                }
+                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "cargos.php");
+                exit();
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "cargos.php?importarExcel");
+            }
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "cargos.php?importarExcel");
+        }
+    } else {
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "cargos.php?importarExcel");
     }
 }

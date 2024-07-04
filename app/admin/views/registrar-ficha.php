@@ -22,9 +22,10 @@ require_once("../components/sidebar.php");
                                 <div class="input-group input-group-merge">
                                     <span id="codigo_ficha_icon" class="input-group-text"><i
                                             class="bx bx-unite"></i></span>
-                                    <input type="number" name="codigo_ficha" required min="2" autofocus
-                                        class="form-control" id="codigo_ficha"
-                                        placeholder="Ingresa el codigo de ficha" />
+                                    <input type="text" name="codigo_ficha" required
+                                        onkeypress="return(multiplenumber(event));" minlength="1" maxlength="20"
+                                        oninput="maxlengthNumber(this);" autofocus class="form-control"
+                                        id="codigo_ficha" placeholder="Ingresa el codigo de ficha" />
                                 </div>
                             </div>
                             <div class="mb-3">

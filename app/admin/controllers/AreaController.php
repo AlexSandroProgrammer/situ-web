@@ -119,7 +119,6 @@ if (isset($_GET['id_area-delete'])) {
 
 // REGISTRO ARCHIVO DE EXCEL 
 if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExcel"] == "registroArchivoExcel")) {
-
     $fileTmpPath = $_FILES['area_excel']['tmp_name'];
     $fileName = $_FILES['area_excel']['name'];
     $fileSize = $_FILES['area_excel']['size'];
