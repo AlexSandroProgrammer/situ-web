@@ -24,75 +24,44 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                             <i class="fas fa-layer-group"></i> Registrar
                         </a>
                     </div>
+                    <!-- Vertically Centered Modal -->
+                    <div class="col-lg-4 col-md-6">
+                        <!-- Button trigger modal -->
+                        <a href="funcionarios.php?importarExcel" class="btn btn-success">
+                            <i class="fas fa-file-excel"></i> Importar Excel
+                        </a>
+
+                    </div>
                 </div>
                 <?php
-                if (!empty($_GET["id_area"])) {
-                    $id_area = $_GET["id_area"];
-                    // CONSUMO DE DATOS DE LOS PROCESOS
-                    $listArea = $connection->prepare("SELECT * FROM areas INNER JOIN estados ON areas.id_estado = estados.id_estado WHERE id_area = :id_area AND areas.id_estado = estados.id_estado");
-                    $listArea->bindParam(":id_area", $id_area);
-                    $listArea->execute();
-                    $areaSeleccionada = $listArea->fetch(PDO::FETCH_ASSOC);
-                    if ($areaSeleccionada) {
+                if (isset($_GET['importarExcel'])) {
                 ?>
                 <div class="row">
                     <div class="col-xl">
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Actualizacion datos de
-                                    <?php echo $areaSeleccionada['nombreArea'] ?>
+                                <h5 class="mb-0">Importacion de Archivo Excel
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <form action="" method="POST" autocomplete="off" name="formUpdateArea">
+                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
+                                    name="funcionarioArchivoExcel">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="codigo-ficha">Nombre de Area</label>
+                                        <label class="form-label" for="area_excel">Subir Archivo</label>
                                         <div class="input-group input-group-merge">
-                                            <span id="nombre-area" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <input type="text" minlength="5" maxlength="20" autofocus
-                                                class="form-control" required name="nombre_area" id="nombre-area"
-                                                placeholder="Ingresa el nombre del area"
-                                                value="<?php echo $areaSeleccionada['nombreArea']  ?>"
-                                                aria-describedby="codigo-ficha-2" />
+                                            <span id="span_csv" class="input-group-text"><i
+                                                    class="fas fa-file-excel"></i></span>
+                                            <input type="file" autofocus class="form-control" required
+                                                name="funcionario_excel" id="funcionario_excel" />
                                         </div>
                                     </div>
-
-                                    <div class="mb-3">
-                                        <label for="estadoInicial" class="form-label">Estado
-                                            Inicial</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="estadoInicial-2" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <select class="form-select" required name="estado_area" required>
-                                                <option value="<?php echo $areaSeleccionada['id_estado'] ?>">
-                                                    <?php echo $areaSeleccionada['estado'] ?></option>
-                                                <?php
-                                                        // CONSUMO DE DATOS DE LOS PROCESOS
-                                                        $listEstados = $connection->prepare("SELECT * FROM estados");
-                                                        $listEstados->execute();
-                                                        $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
-
-                                                        // Iterar sobre los procedimientos
-                                                        foreach ($estados as $estado) {
-                                                            echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
-                                                        }
-                                                        ?>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <input type="hidden" minlength="5" maxlength="20" autofocus class="form-control"
-                                        id="id_area" name="id_area"
-                                        value="<?php echo $areaSeleccionada['id_area']  ?>" />
-
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="areas.php">
+                                        <a class="btn btn-danger" href="funcionarios.php">
                                             Cancelar
                                         </a>
-                                        <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formUpdateArea"
-                                            name="MM_formUpdateArea"></input>
+                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
+                                        <input type="hidden" class="btn btn-info" value="funcionarioArchivoExcel"
+                                            name="MM_funcionarioArchivoExcel"></input>
                                     </div>
                                 </form>
                             </div>
@@ -100,12 +69,7 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 <?php
-                    } else {
-                        showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "areas.php");
-                        exit();
-                    }
                 }
-
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
@@ -115,6 +79,7 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
+                                        <th>N. documento</th>
                                         <th>Nombres</th>
                                         <th>Apellidos</th>
                                         <th>Email</th>
@@ -147,11 +112,11 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                                                 </button>
                                             </form>
                                         </td>
+                                        <td><?php echo $funcionario['documento'] ?></td>
                                         <td><?php echo $funcionario['nombres'] ?></td>
                                         <td><?php echo $funcionario['apellidos'] ?></td>
                                         <td><?php echo $funcionario['email'] ?></td>
                                         <td><?php echo $funcionario['celular'] ?></td>
-
                                         <td><?php echo $funcionario['cargo_funcionario'] ?></td>
                                         <td><?php echo $funcionario['estado'] ?></td>
                                         <td style="text-align: center;"><img

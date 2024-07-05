@@ -185,73 +185,96 @@ if (isset($_GET['id_funcionario-delete'])) {
     }
 }
 
-// REGISTRO ARCHIVO DE EXCEL 
-if ((isset($_POST["MM_registroCargoExcel"])) && ($_POST["MM_registroCargoExcel"] == "registroCargoExcel")) {
+// REGISTRO ARCHIVO DE EXCEL
+if (isset($_POST["MM_funcionarioArchivoExcel"]) && ($_POST["MM_funcionarioArchivoExcel"] == "funcionarioArchivoExcel")) {
     $fileTmpPath = $_FILES['funcionario_excel']['tmp_name'];
     $fileName = $_FILES['funcionario_excel']['name'];
     $fileSize = $_FILES['funcionario_excel']['size'];
     $fileType = $_FILES['funcionario_excel']['type'];
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
-    if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "funcionarios.php?importarExcel");
+
+    if (empty($fileName)) {
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "");
     }
     // Validar la extensión del archivo
     if (isFileUploaded($_FILES['funcionario_excel'])) {
         // Extensiones permitidas
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
+        // Tamaño máximo del archivo en KB
         $maxSizeKB = 10000;
         if (isFileValid($_FILES['funcionario_excel'], $allowedExtensions, $maxSizeKB)) {
             // Cargar el archivo Excel
             $spreadsheet = IOFactory::load($fileTmpPath);
             // Seleccionar la hoja de datos
-            $hojaDatosArea = $spreadsheet->getSheetByName('Datos');
-            // Escogemos la hoja correcta para el registro de datos
-            if ($hojaDatosArea) {
-                $data = $hojaDatosArea->toArray();
-                $requiredColumnCount = 2;
+            $hojaDatosFuncionario = $spreadsheet->getSheetByName('Datos');
+            // id tipo funcionario
+            $id_tipo_usuario = 3;
+            if ($hojaDatosFuncionario) {
+                $data = $hojaDatosFuncionario->toArray();
+                $requiredColumnCount = 8;
                 if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "cargos.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "");
                     exit();
                 }
-                $queryDuplicatePost = $connection->prepare("SELECT COUNT(*) FROM cargos WHERE tipo_cargo = :tipo_cargo");
-                $registerPost = $connection->prepare("INSERT INTO cargos(tipo_cargo, estado, fecha_registro) VALUES (:tipo_cargo, :estado, :fecha_registro)");
-                // creamos la variable para guardar la fecha de registro
+                $queryDuplcateFuncionario = $connection->prepare("SELECT COUNT(*) FROM usuarios WHERE documento = :documento OR celular = :celular OR email = :email");
+                $registerFuncionary = $connection->prepare("INSERT INTO usuarios(documento, nombres, apellidos, email, celular, cargo_funcionario, id_estado, foto_data, fecha_registro) 
+                VALUES (:documento, :nombres, :apellidos, :email, :celular, :cargo, :estado, :firma, :fecha_registro)");
                 // Obtener la fecha y hora actual
                 $fecha_registro = date('Y-m-d H:i:s');
                 foreach ($data as $index => $row) {
                     // Saltar la primera fila si es el encabezado
                     if ($index == 0) continue;
-                    $tipo_cargo = $row[0];
-                    $estado = $row[1];
+                    $documento = $row[0];
+                    $nombres = $row[1];
+                    $apellidos = $row[2];
+                    $email = $row[3];
+                    $celular = $row[4];
+                    $tipo_cargo = $row[5];
+                    $estado = $row[6];
+                    $firma = $row[7];
                     // Validar que los datos no estén vacíos antes de insertar
-                    if (isNotEmpty([$tipo_cargo, $estado])) {
-                        $queryDuplicatePost->bindParam(':tipo_cargo', $tipo_cargo);
-                        $queryDuplicatePost->execute();
-                        $exists = $queryDuplicatePost->fetchColumn();
+                    if (isNotEmpty([$documento, $nombres, $apellidos, $email, $celular, $tipo_cargo, $estado, $firma])) {
+                        $queryDuplcateFuncionario->bindParam(':documento', $documento);
+                        $queryDuplcateFuncionario->bindParam(':celular', $celular);
+                        $queryDuplcateFuncionario->bindParam(':email', $email);
+                        $queryDuplcateFuncionario->execute();
+                        $exists = $queryDuplcateFuncionario->fetchColumn();
                         if ($exists) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "El cargo ya esta registrada en la base de datos, por favor verifica el listado de cargos", "cargos.php?importarExcel");
-                            exit();
+                            showErrorOrSuccessAndRedirect("error", "Error!", "Los datos del funcionario ya están registrados en la base de datos, por favor verifica el número de documento, celular y el correo electrónico", "funcionarios.php?importarExcel");
                         }
-                        $registerPost->bindParam(":tipo_cargo", $tipo_cargo);
-                        $registerPost->bindParam(":estado", $estado);
-                        $registerPost->bindParam(":fecha_registro", $fecha_registro);
-                        $registerPost->execute();
+                        // Guardar la imagen
+                        $imageFileName = $nombres . $apellidos . $documento . '.png'; // Asumiendo que la firma es una imagen en base64 en formato PNG
+                        $imageUploadPath = 'ruta/a/tu/carpeta/' . $imageFileName;
+                        $firmaData = base64_decode($firma);
+
+                        if (file_put_contents($imageUploadPath, $firmaData)) {
+                            $registerFuncionary->bindParam(":documento", $documento);
+                            $registerFuncionary->bindParam(":nombres", $nombres);
+                            $registerFuncionary->bindParam(":apellidos", $apellidos);
+                            $registerFuncionary->bindParam(":email", $email);
+                            $registerFuncionary->bindParam(":celular", $celular);
+                            $registerFuncionary->bindParam(":cargo", $tipo_cargo);
+                            $registerFuncionary->bindParam(":estado", $estado);
+                            $registerFuncionary->bindParam(":firma", $imageFileName);
+                            $registerFuncionary->bindParam(":fecha_registro", $fecha_registro);
+                            $registerFuncionary->execute();
+                        } else {
+                            showErrorOrSuccessAndRedirect("error", "Error!", "No se pudo guardar la imagen", "funcionarios.php?importarExcel");
+                        }
                     } else {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "cargos.php?importarExcel");
-                        exit();
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "funcionarios.php?importarExcel");
                     }
                 }
-                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "cargos.php");
-                exit();
+
+                showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos han sido importados correctamente", "funcionarios.php");
             } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "cargos.php?importarExcel");
+                showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "funcionarios.php?importarExcel");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "cargos.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta, la extensión debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "funcionarios.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "cargos.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "funcionarios.php?importarExcel");
     }
 }

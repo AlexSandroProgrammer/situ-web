@@ -6,7 +6,6 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
     exit(); // Agregar exit para asegurar que el script se detenga
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../assets/"
     data-template="vertical-menu-template-free">
@@ -15,7 +14,7 @@ if (isset($_SESSION['rol']) || isset($_SESSION['username']) || isset($_SESSION['
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Pagina Inicial</title>
+    <title>SITU || Sistema de Turnos rutinarios</title>
     <meta name="description" content="" />
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
