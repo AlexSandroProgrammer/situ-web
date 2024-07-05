@@ -13,7 +13,6 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
         showErrorFieldsEmpty("programas.php");
         exit();
     }
-    // validamos que no se repitan los datos del nombre del area
     // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $programaSelectQuery = $connection->prepare("SELECT * FROM programas_formacion WHERE nombre_programa = :nombrePrograma");
     $programaSelectQuery->bindParam(':nombrePrograma', $nombrePrograma);
