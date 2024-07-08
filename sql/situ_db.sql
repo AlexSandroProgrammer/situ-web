@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-07-2024 a las 22:19:02
+-- Tiempo de generación: 08-07-2024 a las 22:53:38
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -56,17 +56,32 @@ INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`, `fecha_registro`, `fe
 CREATE TABLE `cargos` (
   `id_cargo` int(11) NOT NULL,
   `tipo_cargo` varchar(255) NOT NULL,
-  `estado` int(11) NOT NULL
+  `estado` int(11) NOT NULL,
+  `fecha_registro` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `cargos`
 --
 
-INSERT INTO `cargos` (`id_cargo`, `tipo_cargo`, `estado`) VALUES
-(1, 'Lider Sena Empresa', 1),
-(2, 'Lider Pecuario', 1),
-(3, 'Lider de talento humano editado', 2);
+INSERT INTO `cargos` (`id_cargo`, `tipo_cargo`, `estado`, `fecha_registro`) VALUES
+(8, 'Instructor Tecnico ', 1, '2024-07-04 14:31:30'),
+(9, 'Lider Agroindustria', 2, '2024-07-04 14:31:30'),
+(10, 'Lider Sena Empresa', 1, '2024-07-04 14:32:11'),
+(11, 'Lider Pecuario', 2, '2024-07-04 14:32:11');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_area_unidades`
+--
+
+CREATE TABLE `detalle_area_unidades` (
+  `id_detalle_areauni` int(11) NOT NULL,
+  `id_area` int(11) NOT NULL,
+  `id_unidad` int(11) NOT NULL,
+  `fecha_registro` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -109,13 +124,14 @@ CREATE TABLE `fichas` (
 --
 
 INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `id_estado`, `id_estado_se`) VALUES
-(240123, 3, '0000-00-00', '0000-00-00', 1, 2),
-(240125, 3, '0000-00-00', '0000-00-00', 1, 2),
-(240126, 3, '0000-00-00', '0000-00-00', 1, 2),
-(240127, 3, '0000-00-00', '0000-00-00', 1, 2),
-(2301341, 4, '2024-07-03', '2024-07-20', 1, 1),
-(2309101, 5, '2024-06-15', '2024-06-22', 1, 2),
-(2500591, 8, '2024-07-03', '2024-06-29', 1, 2);
+(123456, 14, '2024-02-18', '2026-02-18', 1, 2),
+(342301, 12, '2024-02-17', '2026-02-17', 1, 2),
+(881201, 11, '2024-02-16', '2026-02-16', 1, 2),
+(23012302, 5, '2024-02-13', '2026-02-13', 1, 2),
+(23014502, 8, '2024-02-15', '2026-02-15', 1, 2),
+(26013402, 4, '2024-02-12', '2026-02-12', 1, 2),
+(1201561201, 7, '2024-02-14', '2026-02-14', 1, 2),
+(2147483647, 11, '2024-07-13', '2024-07-20', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -176,9 +192,7 @@ INSERT INTO `programas_formacion` (`id_programa`, `nombre_programa`, `descripcio
 (8, 'Gestion Agroempresarial', 'descripcion corta del tecnologo gestion agroempresarial', 1),
 (11, 'Produccion Ambiental', 'Esta es una descripcion relacionada con el programa de formacion produccion ambiental', 1),
 (12, 'Gestion Ambiental', 'Esta es una descripcion relacionada con el programa de formacion Ambiental', 1),
-(13, 'Analisis de Muestras Quimicas dato actualizado', 'Es un tecnologo para el analisis de muestras quimicas del tecnologo 2024', 2),
-(14, 'Gestion de Empresas Agropecuarias', 'esta es la descripcion de un programa de formacion relacionado con empresas agropecuarias', 1),
-(15, 'Gestion de empresas agricolas', 'esta es la descripcion de un programa de formacion', 1);
+(14, 'Gestion de Empresas Agropecuarias', 'esta es la descripcion de un programa de formacion relacionado con empresas agropecuarias', 1);
 
 -- --------------------------------------------------------
 
@@ -289,17 +303,18 @@ CREATE TABLE `usuarios` (
   `id_ficha` int(11) DEFAULT NULL,
   `id_tipo_usuario` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `id_estado` int(11) NOT NULL
+  `id_estado` int(11) NOT NULL,
+  `fecha_registro` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_estado_trimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`) VALUES
-(1002340230, 'Natalia', 'Olmos', 'Lider de Talento Humano', 'logonegro.png', '3103452301', NULL, NULL, NULL, NULL, NULL, 3, 'nataliaolmos02@gmail.com', 1),
-(1110460410, 'Daniel ', 'Cardenas', 'Lider Sena Empresa', 'LideresSenaEmpresa.PNG', '3112301201', NULL, NULL, NULL, NULL, NULL, 3, 'danielcardenas@gmail.com', 1),
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1);
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_estado_trimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`, `fecha_registro`) VALUES
+(1002340230, 'Natalia', 'Olmos', 'Lider de Talento Humano', 'logonegro.png', '3103452301', NULL, NULL, NULL, NULL, NULL, 3, 'nataliaolmos02@gmail.com', 1, NULL),
+(1110460410, 'Daniel ', 'Cardenas', 'Lider Sena Empresa', 'LideresSenaEmpresa.PNG', '3112301201', NULL, NULL, NULL, NULL, NULL, 3, 'danielcardenas@gmail.com', 1, NULL),
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -316,6 +331,12 @@ ALTER TABLE `areas`
 --
 ALTER TABLE `cargos`
   ADD PRIMARY KEY (`id_cargo`);
+
+--
+-- Indices de la tabla `detalle_area_unidades`
+--
+ALTER TABLE `detalle_area_unidades`
+  ADD PRIMARY KEY (`id_detalle_areauni`);
 
 --
 -- Indices de la tabla `estados`
@@ -391,7 +412,13 @@ ALTER TABLE `areas`
 -- AUTO_INCREMENT de la tabla `cargos`
 --
 ALTER TABLE `cargos`
-  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_area_unidades`
+--
+ALTER TABLE `detalle_area_unidades`
+  MODIFY `id_detalle_areauni` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
