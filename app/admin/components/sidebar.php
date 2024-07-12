@@ -292,13 +292,13 @@
                                 </a>
                             </li>
                             <li class="menu-item">
-                                <a href="registrar-ficha.php" class="menu-link">
+                                <a href="registrar-turno.php" class="menu-link">
                                     <div data-i18n="Under Maintenance">Registrar Turno R.</div>
                                 </a>
                             </li>
                             <li class="menu-item">
-                                <a href="registrar-ficha.php" class="menu-link">
-                                    <div data-i18n="Under Maintenance">Registrar Turno R.</div>
+                                <a href="config-turnos.php" class="menu-link">
+                                    <div data-i18n="Under Maintenance">Configuracion de Turnos</div>
                                 </a>
                             </li>
                         </ul>

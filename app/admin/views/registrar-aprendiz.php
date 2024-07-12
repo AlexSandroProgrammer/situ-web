@@ -19,7 +19,6 @@ require_once("../components/sidebar.php");
                     <div class="card-body">
                         <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
                             name="formRegisterAprendiz">
-
                             <div class="mb-3">
                                 <label class="form-label" for="documento">Numero de
                                     Documento</label>
