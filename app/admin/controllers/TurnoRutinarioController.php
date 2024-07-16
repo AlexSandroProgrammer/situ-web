@@ -1,47 +1,27 @@
 <?php
 
-// CONFIGURACION DE UNIDADES Y AREAS
-if (!empty($_GET['details'])) {
-    $arrayUnidadesArea = $_GET['details'];
-    echo json_decode($arrayUnidadesArea, true);
-    // $area = $_POST["codigo"];
-    // $sentencia = $connection->prepare("SELECT * FROM productos WHERE codigo = ? LIMIT 1;");
-    // $sentencia->execute([$codigo]);
-    // $producto = $sentencia->fetch(PDO::FETCH_OBJ);
-    // # Si no existe, salimos y lo indicamos
-    // if (!$producto) {
-    //     header("Location: ./vender.php?status=4");
-    //     exit;
-    // }
-    // # Si no hay existencia...
-    // if ($producto->cantidad < 1) {
-    //     header("Location: ./vender.php?status=5");
-    //     exit;
-    // }
-    // # Buscar producto dentro del cartito
-    // $indice = false;
-    // for ($i = 0; $i < count($_SESSION["carrito"]); $i++) {
-    //     if ($_SESSION["carrito"][$i]->codigo === $codigo) {
-    //         $indice = $i;
-    //         break;
-    //     }
-    // }
-    // # Si no existe, lo agregamos como nuevo
-    // if ($indice === false) {
-    //     $producto->cantidad = 1;
-    //     $producto->total = $producto->precio;
-    //     array_push($_SESSION["carrito"], $producto);
-    // } else {
-    //     # Si ya existe, se agrega la cantidad
-    //     # Pero espera, tal vez ya no haya
-    //     $cantidadExistente = $_SESSION["carrito"][$indice]->existencia;
-    //     # si al sumarle uno supera lo que existe, no se agrega
-    //     if ($cantidadExistente + 0 > $producto->producto) {
-    //         header("Location: ./vender.php?status=5");
-    //         exit;
-    //     }
-    //     $_SESSION["carrito"][$indice]->cantidad++;
-    //     $_SESSION["carrito"][$indice]->total = $_SESSION["carrito"][$indice]->cantidad * $_SESSION["carrito"][$indice]->precio;
-    // }
-    // header("Location: ./vender.php");
+// ELIMINAR DETALLE DE AREA Y UNIDADES
+if ((isset($_GET["id_detalle_area-delete"]))) {
+    $id_detalle_area = $_GET["id_detalle_area-delete"];
+    if (isEmpty([$id_detalle_area])) {
+        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "config.php");
+    } else {
+        $deleteDetail = $connection->prepare("SELECT * FROM detalle_area_unidades WHERE id_area = :id_detalle_area");
+        $deleteDetail->bindParam(":id_detalle_area", $id_detalle_area);
+        $deleteDetail->execute();
+        $deleteDetailSelect = $deleteDetail->fetch(PDO::FETCH_ASSOC);
+
+        if ($deleteDetailSelect) {
+            $delete = $connection->prepare("DELETE  FROM detalle_area_unidades WHERE id_area = :id_detalle_area");
+            $delete->bindParam(':id_detalle_area', $id_detalle_area);
+            $delete->execute();
+            if ($delete) {
+                showErrorOrSuccessAndRedirect("success", "Perfecto", "Se elimino todas las relaciones entre el area y las unidades.", "config.php");
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "config.php");
+            }
+        } else {
+            showErrorOrSuccessAndRedirect("info", "Error de datos", "El registro seleccionado no existe.", "config.php");
+        }
+    }
 }

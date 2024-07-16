@@ -8,3 +8,4 @@ require_once("../controllers/CargoController.php");
 require_once("../controllers/FormatoController.php");
 require_once("../controllers/EstadoController.php");
 require_once("../controllers/AprendicesController.php");
+require_once("../controllers/TurnoRutinarioController.php");
