@@ -25,8 +25,10 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         exit();
     }
 
+    // creamos una variable para almacenar la fecha en que la ficha sale a etapa productiva
+    $etapa_productiva = date('Y-m-d', strtotime('-6 months', strtotime($cierre_formacion)));
     // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
+    // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $fichaSelectQuery = $connection->prepare("SELECT * FROM fichas WHERE codigoFicha = :codigoFicha");
     $fichaSelectQuery->bindParam(':codigoFicha', $codigo_ficha);
     $fichaSelectQuery->execute();
@@ -44,14 +46,16 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         inicio_formacion, 
         fin_formacion, 
         id_estado, 
-        id_estado_se) 
+        id_estado_se,
+        fecha_productiva) 
         VALUES(
         :codigo_ficha, 
         :id_programa,
         :inicio_formacion, 
         :cierre_formacion, 
         :estado_inicial, 
-        :estado_se
+        :estado_se,
+        :etapa_productiva
         )");
         $fichaInsertInto->bindParam(':codigo_ficha', $codigo_ficha);
         $fichaInsertInto->bindParam(':id_programa', $id_programa);
@@ -59,6 +63,7 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         $fichaInsertInto->bindParam(':cierre_formacion', $cierre_formacion);
         $fichaInsertInto->bindParam(':estado_inicial', $estado_inicial);
         $fichaInsertInto->bindParam(':estado_se', $estado_se);
+        $fichaInsertInto->bindParam(':etapa_productiva', $etapa_productiva);
         $fichaInsertInto->execute();
         if ($fichaInsertInto) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "fichas.php");
@@ -158,8 +163,7 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                     exit();
                 }
                 $queryDuplicateSheet = $connection->prepare("SELECT COUNT(*) FROM fichas WHERE codigoFicha = :codigoFicha");
-                $registerSheet = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion, id_estado, id_estado_se) 
-                VALUES (:codigoFicha, :id_programa, :inicio_formacion, :fin_formacion, :id_estado, :id_estado_se)");
+                $registerSheet = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion, id_estado, id_estado_se, fecha_productiva) VALUES (:codigoFicha, :id_programa, :inicio_formacion, :fin_formacion, :id_estado, :id_estado_se, :etapa_productiva)");
                 $fecha_registro = date('Y-m-d H:i:s');
                 foreach ($data as $index => $row) {
                     // Saltar la primera fila si es el encabezado
@@ -168,6 +172,8 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                     $id_programa = $row[1];
                     $inicio_formacion = $row[2];
                     $fin_formacion = $row[3];
+                    // creamos una variable para almacenar la fecha en que la ficha sale a etapa productiva
+                    $etapa_productiva = date('Y-m-d', strtotime('-6 months', strtotime($fin_formacion)));
                     $id_estado = $row[4];
                     $id_estado_se = $row[5];
                     // Validar que los datos no estén vacíos antes de insertar
@@ -189,6 +195,7 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                         $registerSheet->bindParam(":fin_formacion", $fin_formacion);
                         $registerSheet->bindParam(":id_estado", $id_estado);
                         $registerSheet->bindParam(":id_estado_se", $id_estado_se);
+                        $registerSheet->bindParam(":etapa_productiva", $etapa_productiva);
                         $registerSheet->execute();
                     }
                 }

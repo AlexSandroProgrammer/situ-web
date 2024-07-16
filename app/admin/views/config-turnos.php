@@ -20,11 +20,13 @@ require_once("../components/sidebar.php");
                             respectivas areas de acuerdo a los aprendices que necesiten para turnar.</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" id="agregarUnidadAreaForm" enctype="multipart/form-data" name="agregarUnidadArea" autocomplete="off">
+                        <form method="POST" id="agregarUnidadAreaForm" enctype="multipart/form-data"
+                            name="agregarUnidadArea" autocomplete="off">
                             <div class="mb-3">
                                 <label for="area-seleccionada" class="form-label">Seleccionar Area</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="area-seleccionada-2" class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <span id="area-seleccionada-2" class="input-group-text"><i
+                                            class="fas fa-user"></i></span>
                                     <select class="form-select" name="area_seleccionada" id="area-seleccionada">
                                         <option value="">Seleccionar Aprendices de Area...</option>
                                         <?php
@@ -50,30 +52,32 @@ require_once("../components/sidebar.php");
                                 $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                                 if (empty($unidades)) {
                                 ?>
-                                    <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-4">
-                                        <div class="flex-grow-1 row">
-                                            <div class="col-9 mb-sm-0 mb-2">
-                                                <h6 class="mb-0">No existen registros</h6>
-                                                <small class="text-muted">Actualmente no tienes unidades registradas</small>
-                                            </div>
+                                <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-4">
+                                    <div class="flex-grow-1 row">
+                                        <div class="col-9 mb-sm-0 mb-2">
+                                            <h6 class="mb-0">No existen registros</h6>
+                                            <small class="text-muted">Actualmente no tienes unidades registradas</small>
                                         </div>
                                     </div>
-                                    <?php
+                                </div>
+                                <?php
                                 } else {
                                     foreach ($unidades as $unidad) {
                                     ?>
-                                        <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-4">
-                                            <div class="flex-grow-1 row">
-                                                <div class="col-9 mb-sm-0 mb-2">
-                                                    <h6 class="mb-0"> <?php echo $unidad['nombre_unidad'] ?> </h6>
-                                                </div>
-                                                <div class="col-3 text-end">
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input float-end unidad-checkbox" type="checkbox" data-unidad-id="<?php echo $unidad['id_unidad'] ?>" data-unidad-nombre="<?php echo $unidad['nombre_unidad'] ?>" />
-                                                    </div>
-                                                </div>
+                                <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-4">
+                                    <div class="flex-grow-1 row">
+                                        <div class="col-9 mb-sm-0 mb-2">
+                                            <h6 class="mb-0"> <?php echo $unidad['nombre_unidad'] ?> </h6>
+                                        </div>
+                                        <div class="col-3 text-end">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input float-end unidad-checkbox"
+                                                    type="checkbox" data-unidad-id="<?php echo $unidad['id_unidad'] ?>"
+                                                    data-unidad-nombre="<?php echo $unidad['nombre_unidad'] ?>" />
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
                                 <?php
                                     }
                                 }
@@ -96,15 +100,17 @@ require_once("../components/sidebar.php");
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Las áreas y unidades guardadas se mostrarán aquí -->
+                                                <!-- se realizara un mapeo de datos de las areas y unidades -->
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <button class="btn btn-danger" id="eliminarItems">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" onclick="transferirDatos(event)">Registrar</button>
-                                    <input type="hidden" id="unidades-seleccionadas" name="unidades-seleccionadas" value="">
+                                    <button class="btn btn-danger" onclick="cerrarVista(event)">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary"
+                                        onclick="transferirDatos(event)">Registrar</button>
+                                    <input type="hidden" id="unidades-seleccionadas" name="unidades-seleccionadas"
+                                        value="">
                                 </div>
                             </div>
                         </form>

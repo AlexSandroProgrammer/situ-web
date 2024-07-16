@@ -75,9 +75,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     <!-- código JS propìo-->
     <!-- Vendors JS -->
     <script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
-
     <!-- Main JS -->
-
     <!-- Page JS -->
     <script src="../../assets/js/dashboards-analytics.js"></script>
 
@@ -87,9 +85,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-
-
     <script>
 // Creamos el arreglo para guardar las unidades seleccionadas
 let unidadesSeleccionadas = JSON.parse(localStorage.getItem('unidadesSeleccionadas')) || [];
@@ -179,17 +174,18 @@ document.getElementById('guardarSeleccion').addEventListener('click', function()
     }
 });
 
-
-
 // ELIMINAR DATOS DEL LOCAL STORAGE
-
-document.getElementById('eliminarItems').addEventListener('click', function() {
+function cerrarVista(event) {
+    event.preventDefault();
     localStorage.removeItem('unidadesSeleccionadas');
     localStorage.removeItem('items');
     unidadesSeleccionadas = [];
     items = [];
-    window.location.href = "config.php";
-});
+    // verificamos que los items esten vacios
+    if (items.length === 0) {
+        window.location.href = "config.php";
+    }
+};
 
 function removerUnidadDeTabla(unidadId) {
     const row = document.querySelector(`#tabla-unidades-seleccionadas tr[data-unidad-id="${unidadId}"]`);
@@ -224,7 +220,7 @@ function mapearItems(items) {
         accionCell.classList.add('row');
         const removeAreaButton = document.createElement('button');
         removeAreaButton.textContent = 'Eliminar Área';
-        removeAreaButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', 'p-2', "col-md-10",
+        removeAreaButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', "col-md-10",
             "col-lg-3");
         removeAreaButton.addEventListener('click', function() {
             items.splice(index, 1);
@@ -235,7 +231,7 @@ function mapearItems(items) {
         item.unidades.forEach(unidad => {
             const removeUnidadButton = document.createElement('button');
             removeUnidadButton.textContent = `Eliminar ${unidad.nombre}`;
-            removeUnidadButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', 'p-2',
+            removeUnidadButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2',
                 "col-md-10",
                 "col-lg-3");
             removeUnidadButton.addEventListener('click', function() {

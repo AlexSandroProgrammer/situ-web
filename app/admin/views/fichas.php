@@ -79,6 +79,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <th>P. de Formacion</th>
                                         <th>Inicio de Formacion</th>
                                         <th>Fin de Formacion</th>
+                                        <th>Inicio Etapa productiva</th>
                                         <th>Estado</th>
                                         <th>Estado S.E.</th>
                                     </tr>
@@ -89,6 +90,8 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         // organizamos las fechas
                                         $inicio_formacion = DateTime::createFromFormat('Y-m-d', $ficha['inicio_formacion'])->format('m/d/Y');
                                         $fin_formacion = DateTime::createFromFormat('Y-m-d', $ficha['fin_formacion'])->format('m/d/Y');
+                                        $fecha_productiva = DateTime::createFromFormat('Y-m-d', $ficha['fecha_productiva'])->format('m/d/Y');
+
                                     ?>
                                     <tr>
                                         <td>
@@ -112,6 +115,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo $ficha['nombre_programa'] ?></td>
                                         <td><?php echo $inicio_formacion ?></td>
                                         <td><?php echo $fin_formacion ?></td>
+                                        <td><?php echo $fecha_productiva ?></td>
                                         <td><?php echo $ficha['id_estado'] ?></td>
                                         <td><?php echo $ficha['id_estado_se'] ?></td>
                                     </tr>
