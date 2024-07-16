@@ -1,9 +1,7 @@
 <?php
 $titlePage = "Configuracion de Areas y Unidades";
 require_once("../components/sidebar.php");
-if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] = [];
 ?>
-
 <!-- Content wrapper -->
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -29,9 +27,8 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
                                 <div class="input-group input-group-merge">
                                     <span id="area-seleccionada-2" class="input-group-text"><i
                                             class="fas fa-user"></i></span>
-                                    <select class="form-select" name="area_seleccionada" id="area-seleccionada"
-                                        required>
-                                        <option value="">Seleccionar Area...</option>
+                                    <select class="form-select" name="area_seleccionada" id="area-seleccionada">
+                                        <option value="">Seleccionar Aprendices de Area...</option>
                                         <?php
                                         $listaAreas = $connection->prepare("SELECT * FROM areas");
                                         $listaAreas->execute();
@@ -40,7 +37,7 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
                                             echo "<option value=''>No hay datos...</option>";
                                         } else {
                                             foreach ($areas as $area) {
-                                                echo "<option value='{$area['id_area']}'>{$area['nombreArea']}</option>";
+                                                echo "<option value='{$area['id_area']}'>Aprendices de {$area['nombreArea']}</option>";
                                             }
                                         }
                                         ?>
@@ -89,30 +86,29 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
                                     <button type="button" class="btn btn-primary" id="guardarSeleccion">Guardar
                                         Selección</button>
                                 </div>
-
-
                                 <div class="card-header mt-4">
                                     <h5 class="card-title">Áreas y Unidades Guardadas</h5>
                                 </div>
                                 <div class="card-body">
-                                    <table class="table table-bordered" id="tabla-areas-unidades">
-                                        <thead>
-                                            <tr>
-                                                <th>Área</th>
-                                                <th>Unidades</th>
-                                                <th>Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Las áreas y unidades guardadas se mostrarán aquí -->
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered" id="tabla-areas-unidades">
+                                            <thead>
+                                                <tr>
+                                                    <th>Área</th>
+                                                    <th>Unidades</th>
+                                                    <th>Acción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Las áreas y unidades guardadas se mostrarán aquí -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-
                                 <div class="mt-4">
-                                    <a href="index.php" class="btn btn-danger">Cancelar</a>
-                                    <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                    <input type="hidden" name="MM_agregarUnidadArea" value="agregarUnidadArea"></input>
+                                    <button class="btn btn-danger" id="eliminarItems">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary"
+                                        onclick="transferirDatos(event)">Registrar</button>
                                     <input type="hidden" id="unidades-seleccionadas" name="unidades-seleccionadas"
                                         value="">
                                 </div>
@@ -128,9 +124,32 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
     <?php require_once("../components/footer.php") ?>
 
     <script>
+    // Creamos el arreglo para guardar las unidades seleccionadas
     let unidadesSeleccionadas = JSON.parse(localStorage.getItem('unidadesSeleccionadas')) || [];
+    // creamos el arreglo para almacnar el area junto con sus unidades
     let items = JSON.parse(localStorage.getItem('items')) || [];
+    document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
+        const items = JSON.parse(localStorage.getItem('items')) || [];
+        document.getElementById('unidades-seleccionadas').value = JSON.stringify(items);
+    });
 
+    function transferirDatos(event) {
+        event.preventDefault();
+        const items = JSON.parse(localStorage.getItem('items'));
+        console.log(items);
+        if (!items || items.length < 1) {
+            swal.fire({
+                title: 'Error',
+                text: 'Debes seleccionar al menos una unidad y un área',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            }).then(() => {
+                window.location = 'config-turnos.php'
+            });
+            return;
+        }
+        window.location.href = 'guardarDatos.php?details=' + JSON.stringify(items);
+    }
     document.addEventListener('DOMContentLoaded', function() {
         cargarUnidadesSeleccionadas();
         cargarItemsGuardados();
@@ -148,7 +167,8 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
                     });
                 }
             } else {
-                unidadesSeleccionadas = unidadesSeleccionadas.filter(unidad => unidad.id !== unidadId);
+                unidadesSeleccionadas = unidadesSeleccionadas.filter(unidad => unidad.id !==
+                    unidadId);
                 removerUnidadDeTabla(unidadId);
             }
             localStorage.setItem('unidadesSeleccionadas', JSON.stringify(unidadesSeleccionadas));
@@ -156,12 +176,26 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
                 unidadesSeleccionadas);
         });
     });
-
+    // funcion para 
     document.getElementById('guardarSeleccion').addEventListener('click', function() {
         const areaSeleccionada = document.getElementById('area-seleccionada').value;
         if (areaSeleccionada && unidadesSeleccionadas.length > 0) {
             const areaNombre = document.querySelector('#area-seleccionada option:checked').textContent;
+
+            // Comprobar si el área ya existe en el array de items
+            const areaExistente = items.some(item => item.areaId === areaSeleccionada);
+            if (areaExistente) {
+                swal.fire({
+                    title: 'Error',
+                    text: 'Esta área ya ha sido agregada.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
             const item = {
+                areaId: areaSeleccionada,
                 area: areaNombre,
                 unidades: [...unidadesSeleccionadas]
             };
@@ -174,8 +208,20 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
                 text: 'Debes seleccionar un área y al menos una unidad.',
                 icon: 'error',
                 confirmButtonText: 'Aceptar'
-            })
+            });
         }
+    });
+
+
+
+    // ELIMINAR DATOS DEL LOCAL STORAGE
+
+    document.getElementById('eliminarItems').addEventListener('click', function() {
+        localStorage.removeItem('unidadesSeleccionadas');
+        localStorage.removeItem('items');
+        unidadesSeleccionadas = [];
+        items = [];
+        window.location.href = "index.php";
     });
 
     function removerUnidadDeTabla(unidadId) {
@@ -208,10 +254,11 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
             row.appendChild(unidadesCell);
 
             const accionCell = document.createElement('td');
-            accionCell.classList.add('col');
+            accionCell.classList.add('row');
             const removeAreaButton = document.createElement('button');
             removeAreaButton.textContent = 'Eliminar Área';
-            removeAreaButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', "col-10");
+            removeAreaButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', 'p-2', "col-md-10",
+                "col-lg-3");
             removeAreaButton.addEventListener('click', function() {
                 items.splice(index, 1);
                 localStorage.setItem('items', JSON.stringify(items));
@@ -221,7 +268,9 @@ if (!isset($_SESSION["configAreasUnidades"])) $_SESSION["configAreasUnidades"] =
             item.unidades.forEach(unidad => {
                 const removeUnidadButton = document.createElement('button');
                 removeUnidadButton.textContent = `Eliminar ${unidad.nombre}`;
-                removeUnidadButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', 'col-5');
+                removeUnidadButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', 'p-2',
+                    "col-md-10",
+                    "col-lg-3");
                 removeUnidadButton.addEventListener('click', function() {
                     item.unidades = item.unidades.filter(u => u.id !== unidad.id);
                     if (item.unidades.length === 0) {
