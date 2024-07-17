@@ -241,63 +241,60 @@ $formatosFetch = $getFormatos->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-                        <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0"
-                                width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Acciones</th>
-                                        <th>Nombre del Formato</th>
-                                        <th>Nombre Formato Magnetico</th>
-                                        <th>Estado</th>
-                                        <th>Fecha de registro</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    foreach ($formatosFetch as $formato) {
-                                    ?>
-                                    <tr>
-                                        <!--  -->
-                                        <td>
-                                            <div class="mt-2">
-                                                <a href="../assets/formatos/<?= $formato['nombreFormatoMagnetico'] ?>"
-                                                    class="btn btn-info"><i class="bx bx-download"
-                                                        title="Descargar"></i></a>
-                                            </div>
-                                            <form method="GET" class="mt-2" action="">
-                                                <input type="hidden" name="id_formato"
-                                                    value="<?= $formato['id_formato'] ?>">
-                                                <button class="btn btn-success"
-                                                    onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
-                                                    type="submit"><i class="bx bx-refresh"
-                                                        title="Actualizar"></i></button>
-                                            </form>
-                                            <form method="GET" action="">
-                                                <input type="hidden" name="id_formato-delete"
-                                                    value="<?= $formato['id_formato'] ?>">
-                                                <button class="btn btn-danger mt-2"
-                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
-                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                            </form>
-                                        </td>
-                                        <td><?php echo $formato['nombreFormato'] ?></td>
-                                        <td><a
-                                                href="../assets/formatos/<?= $formato['nombreFormatoMagnetico'] ?>"><?= $formato['nombreFormatoMagnetico'] ?></a>
-                                        </td>
-                                        <td><?php echo $formato['estado'] ?></td>
-                                        <td><?php echo $formato['horario_registro'] ?></td>
+                        <table id="example" class="table table-striped table-bordered top-table table-responsive"
+                            cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Acciones</th>
+                                    <th>Nombre del Formato</th>
+                                    <th>Nombre Formato Magnetico</th>
+                                    <th>Estado</th>
+                                    <th>Fecha de registro</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($formatosFetch as $formato) {
+                                ?>
+                                <tr>
+                                    <!--  -->
+                                    <td>
+                                        <div class="mt-2">
+                                            <a href="../assets/formatos/<?= $formato['nombreFormatoMagnetico'] ?>"
+                                                class="btn btn-info"><i class="bx bx-download"
+                                                    title="Descargar"></i></a>
+                                        </div>
+                                        <form method="GET" class="mt-2" action="">
+                                            <input type="hidden" name="id_formato"
+                                                value="<?= $formato['id_formato'] ?>">
+                                            <button class="btn btn-success"
+                                                onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
+                                                type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
+                                        </form>
+                                        <form method="GET" action="">
+                                            <input type="hidden" name="id_formato-delete"
+                                                value="<?= $formato['id_formato'] ?>">
+                                            <button class="btn btn-danger mt-2"
+                                                onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                        </form>
+                                    </td>
+                                    <td><?php echo $formato['nombreFormato'] ?></td>
+                                    <td><a
+                                            href="../assets/formatos/<?= $formato['nombreFormatoMagnetico'] ?>"><?= $formato['nombreFormatoMagnetico'] ?></a>
+                                    </td>
+                                    <td><?php echo $formato['estado'] ?></td>
+                                    <td><?php echo $formato['horario_registro'] ?></td>
 
-                                    </tr>
-                                    <?php
+                                </tr>
+                                <?php
 
-                                    }
+                                }
 
-                                    ?>
-                                </tbody>
+                                ?>
+                            </tbody>
+                        </table>
 
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
