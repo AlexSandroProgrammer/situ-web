@@ -20,54 +20,95 @@ require_once("../components/sidebar.php");
                             encuentran activas y que pasaran a Sena Empresa.</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" id="agregarUnidadAreaForm" enctype="multipart/form-data"
-                            name="agregarUnidadArea" autocomplete="off">
+                        <form method="POST" id="agregarUnidadAreaForm" enctype="multipart/form-data" name="agregarUnidadArea" autocomplete="off">
                             <div class="row">
-                                <label for="estadoInicial" class="form-label">Seleccionar Unidades</label>
+                                <label for="estadoInicial" class="form-label">Seleccionar Fichas</label>
                                 <?php
                                 $getFichas = $connection->prepare("SELECT * FROM fichas WHERE id_estado = 1 AND id_estado_se <> 1");
                                 $getFichas->execute();
                                 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                 if (empty($fichas)) {
                                 ?>
-                                <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-4">
-                                    <div class="flex-grow-1 row">
-                                        <div class="col-9 mb-sm-0 mb-2">
-                                            <h6 class="mb-0">No existen registros</h6>
-                                            <small class="text-muted">Actualmente no tienes fichas registradas</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                                } else {
-                                    foreach ($fichas as $ficha) {
-                                    ?>
-                                <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-3">
-                                    <div class="flex-grow-1 row">
-                                        <div class="col-6 mb-sm-0 mb-2">
-                                            <h6 class="mb-0"> <?php echo $ficha['codigoFicha'] ?> </h6>
-                                        </div>
-                                        <div class="col-3 text-start">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input float-end ficha-checkbox" type="checkbox"
-                                                    data-ficha-id="<?php echo $ficha['codigoFicha'] ?>"
-                                                    data-ficha-nombre="<?php echo $ficha['codigoFicha'] ?>" />
+                                    <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-4">
+                                        <div class="flex-grow-1 row">
+                                            <div class="col-9 mb-sm-0 mb-2">
+                                                <h6 class="mb-0">No existen registros</h6>
+                                                <small class="text-muted">Actualmente no tienes fichas registradas</small>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <?php
+                                } else {
+                                    foreach ($fichas as $ficha) {
+                                    ?>
+                                        <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-3">
+                                            <div class="flex-grow-1 row">
+                                                <div class="col-6 mb-sm-0 mb-2">
+                                                    <h6 class="mb-0"> <?php echo $ficha['codigoFicha'] ?> </h6>
+                                                </div>
+                                                <div class="col-3 text-start">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input float-end ficha-checkbox" type="checkbox" data-ficha-id="<?php echo $ficha['codigoFicha'] ?>" data-ficha-nombre="<?php echo $ficha['codigoFicha'] ?>" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                 <?php
                                     }
                                 }
                                 ?>
                                 <div class="mt-4">
                                     <button class="btn btn-danger" onclick="cerrarVistaEstados(event)">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary"
-                                        onclick="transferirDatos(event)">Registrar</button>
+                                    <button type="submit" class="btn btn-primary" onclick="transferirDatos(event)">Registrar</button>
                                     <input type="hidden" id="fichas-seleccionadas" name="fichas-seleccionadas" value="">
                                 </div>
                             </div>
                         </form>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                cargarFichasSeleccionadas();
+                            });
+
+                            let fichasSeleccionadas = JSON.parse(localStorage.getItem('fichasSeleccionadas')) || [];
+
+                            function cargarFichasSeleccionadas() {
+                                fichasSeleccionadas.forEach(ficha => {
+                                    const checkbox = document.querySelector(
+                                        `.ficha-checkbox[data-ficha-id="${ficha.id}"]`);
+                                    if (checkbox) {
+                                        checkbox.checked = true;
+                                    }
+                                });
+                                document.getElementById('fichas-seleccionadas').value = JSON.stringify(fichasSeleccionadas);
+                            }
+
+                            document.querySelectorAll('.ficha-checkbox').forEach(checkbox => {
+                                checkbox.addEventListener('change', function() {
+                                    const fichaId = this.getAttribute('data-ficha-id');
+                                    if (this.checked) {
+                                        if (!fichasSeleccionadas.find(ficha => ficha.id === fichaId)) {
+                                            fichasSeleccionadas.push({
+                                                id: fichaId
+                                            });
+                                        }
+                                    } else {
+                                        fichasSeleccionadas = fichasSeleccionadas.filter(ficha => ficha
+                                            .id !== fichaId);
+                                    }
+                                    localStorage.setItem('fichasSeleccionadas', JSON.stringify(
+                                        fichasSeleccionadas));
+                                    document.getElementById('fichas-seleccionadas').value = JSON.stringify(
+                                        fichasSeleccionadas);
+                                });
+                            });
+
+                            document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
+                                document.getElementById('fichas-seleccionadas').value = JSON.stringify(
+                                    fichasSeleccionadas);
+                            });
+                        </script>
+
 
                     </div>
                 </div>

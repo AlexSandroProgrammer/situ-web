@@ -5,18 +5,20 @@
         <!-- Footer with components -->
         <section id="component-footer">
             <footer class="footer bg-light">
-                <div class="container-fluid d-flex flex-lg-row flex-column justify-content-between align-items-md-center gap-1 container-p-x py-3">
+                <div
+                    class="container-fluid d-flex flex-lg-row flex-column justify-content-between align-items-md-center gap-1 container-p-x py-3">
                     <div class="mb-2 mb-md-0">
                         ©
                         <script>
-                            document.write(new Date().getFullYear());
+                        document.write(new Date().getFullYear());
                         </script>
                         , Todos los derechos reservados, diseñado y desarrollado por
                         <a href="#" target="_blank" class="footer-link fw-bolder">Luis
                             Alejandro Muñoz Garcia</a>
                     </div>
                     <div>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"><i class="bx bx-log-out-circle"></i>Cerrar Sesion</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"><i
+                                class="bx bx-log-out-circle"></i>Cerrar Sesion</a>
                     </div>
                 </div>
             </footer>
@@ -53,14 +55,14 @@
     <script type="text/javascript" src="../../libraries/datatables/datatables.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const today = new Date();
-            const formattedDate = today.toISOString().split('T')[0];
-            const inicioFormacionInput = document.getElementById('inicio_formacion');
+document.addEventListener('DOMContentLoaded', (event) => {
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    const inicioFormacionInput = document.getElementById('inicio_formacion');
 
-            inicioFormacionInput.setAttribute('min', formattedDate);
-            inicioFormacionInput.value = formattedDate;
-        });
+    inicioFormacionInput.setAttribute('min', formattedDate);
+    inicioFormacionInput.value = formattedDate;
+});
     </script>
 
     <!-- para usar botones en datatables JS -->
@@ -84,225 +86,220 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script>
-        // Creamos el arreglo para guardar las unidades seleccionadas
-        let unidadesSeleccionadas = JSON.parse(localStorage.getItem('unidadesSeleccionadas')) || [];
-        // creamos el arreglo para almacenar las fichas de formacion
-        let fichasSeleccionadas = JSON.parse(localStorage.getItem('fichasSeleccionadas')) || [];
-        // creamos el arreglo para almacnar el area junto con sus unidades
-        let items = JSON.parse(localStorage.getItem('items')) || [];
-        document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
-            const items = JSON.parse(localStorage.getItem('items')) || [];
-            document.getElementById('unidades-seleccionadas').value = JSON.stringify(items);
-        });
+// Creamos el arreglo para guardar las unidades seleccionadas
+let unidadesSeleccionadas = JSON.parse(localStorage.getItem('unidadesSeleccionadas')) || [];
+// creamos el arreglo para almacenar las fichas de formacion
+let fichasSeleccionadas = JSON.parse(localStorage.getItem('fichasSeleccionadas')) || [];
+// creamos el arreglo para almacnar el area junto con sus unidades
+let items = JSON.parse(localStorage.getItem('items')) || [];
+document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
+    const items = JSON.parse(localStorage.getItem('items')) || [];
+    document.getElementById('unidades-seleccionadas').value = JSON.stringify(items);
+});
 
-        function transferirDatos(event) {
-            event.preventDefault();
-            const items = JSON.parse(localStorage.getItem('items'));
-            console.log(items);
-            if (!items || items.length < 1) {
-                swal.fire({
-                    title: 'Error',
-                    text: 'Debes seleccionar al menos una unidad y un área',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                }).then(() => {
-                    window.location = 'config-turnos.php'
+function transferirDatos(event) {
+    event.preventDefault();
+    const items = JSON.parse(localStorage.getItem('items'));
+    console.log(items);
+    if (!items || items.length < 1) {
+        swal.fire({
+            title: 'Error',
+            text: 'Debes seleccionar al menos una unidad y un área',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        }).then(() => {
+            window.location = 'config-turnos.php'
+        });
+        return;
+    }
+    window.location.href = 'guardarDatos.php?details=' + JSON.stringify(items);
+}
+
+// CARGAR FICHAS SELECCIONADAS
+document.addEventListener('DOMContentLoaded', function() {
+    cargarUnidadesSeleccionadas();
+    cargarItemsGuardados();
+    cargarFichasSeleccionadas();
+});
+
+// evento el cual permita agregar y deseleccionar checkbox
+document.querySelectorAll('.unidad-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const unidadId = this.getAttribute('data-unidad-id');
+        const unidadNombre = this.getAttribute('data-unidad-nombre');
+        if (this.checked) {
+            if (!unidadesSeleccionadas.find(unidad => unidad.id === unidadId)) {
+                unidadesSeleccionadas.push({
+                    id: unidadId,
+                    nombre: unidadNombre
                 });
-                return;
             }
-            window.location.href = 'guardarDatos.php?details=' + JSON.stringify(items);
+        } else {
+            unidadesSeleccionadas = unidadesSeleccionadas.filter(unidad => unidad.id !==
+                unidadId);
+            removerUnidadDeTabla(unidadId);
         }
+        localStorage.setItem('unidadesSeleccionadas', JSON.stringify(unidadesSeleccionadas));
+        document.getElementById('unidades-seleccionadas').value = JSON.stringify(
+            unidadesSeleccionadas);
+    });
+});
 
-        // CARGAR FICHAS SELECCIONADAS
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarUnidadesSeleccionadas();
-            cargarItemsGuardados();
-            cargarFichasSeleccionadas();
-        });
+// evento el cual permita agregar y deseleccionar checkbox
+document.querySelectorAll('.ficha-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const fichaId = this.getAttribute('data-ficha-id');
+        if (this.checked) {
+            if (!fichasSeleccionadas.find(ficha => ficha.id === fichaId)) {
+                fichasSeleccionadas.push({
+                    id: fichaId
+                });
+            }
+        } else {
+            fichasSeleccionadas = fichasSeleccionadas.filter(ficha => ficha.id !== fichaId);
+        }
+        localStorage.setItem('fichasSeleccionadas', JSON.stringify(fichasSeleccionadas));
+        document.getElementById('fichas-seleccionadas').value = JSON.stringify(fichasSeleccionadas);
+    });
+});
+// funcion para guardar la seleccion del area
+document.getElementById('guardarSeleccion').addEventListener('click', function() {
+    const areaSeleccionada = document.getElementById('area-seleccionada').value;
+    if (areaSeleccionada && unidadesSeleccionadas.length > 0) {
+        const areaNombre = document.querySelector('#area-seleccionada option:checked').textContent;
 
-        // evento el cual permita agregar y deseleccionar checkbox
-        document.querySelectorAll('.unidad-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const unidadId = this.getAttribute('data-unidad-id');
-                const unidadNombre = this.getAttribute('data-unidad-nombre');
-                if (this.checked) {
-                    if (!unidadesSeleccionadas.find(unidad => unidad.id === unidadId)) {
-                        unidadesSeleccionadas.push({
-                            id: unidadId,
-                            nombre: unidadNombre
-                        });
-                    }
-                } else {
-                    unidadesSeleccionadas = unidadesSeleccionadas.filter(unidad => unidad.id !==
-                        unidadId);
-                    removerUnidadDeTabla(unidadId);
-                }
-                localStorage.setItem('unidadesSeleccionadas', JSON.stringify(unidadesSeleccionadas));
-                document.getElementById('unidades-seleccionadas').value = JSON.stringify(
-                    unidadesSeleccionadas);
+        // Comprobar si el área ya existe en el array de items
+        const areaExistente = items.some(item => item.areaId === areaSeleccionada);
+        if (areaExistente) {
+            swal.fire({
+                title: 'Error',
+                text: 'Esta área ya ha sido agregada.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
             });
+            return;
+        }
+        const item = {
+            areaId: areaSeleccionada,
+            area: areaNombre,
+            unidades: [...unidadesSeleccionadas]
+        };
+        items.push(item);
+        localStorage.setItem('items', JSON.stringify(items));
+        mapearItems(items);
+    } else {
+        swal.fire({
+            title: 'Error',
+            text: 'Debes seleccionar un área y al menos una unidad.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
         });
+    }
+});
 
-        // evento el cual permita agregar y deseleccionar checkbox
-        document.querySelectorAll('.ficha-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const fichaId = this.getAttribute('data-ficha-id');
-                const fichaNombre = this.getAttribute('data-ficha-nombre');
-                if (this.checked) {
-                    if (!fichasSeleccionadas.find(ficha => ficha.id === fichaId)) {
-                        fichasSeleccionadas.push({
-                            id: fichaId,
-                        });
-                    }
-                } else {
-                    fichasSeleccionadas = fichasSeleccionadas.filter(ficha => ficha.id !==
-                        fichaId);
-                }
-                localStorage.setItem('fichasSeleccionadas', JSON.stringify(fichasSeleccionadas));
-                document.getElementById('fichas-seleccionadas').value = JSON.stringify(
-                    fichasSeleccionadas);
-            });
+// ELIMINAR DATOS DEL LOCAL STORAGE
+function cerrarVista(event) {
+    event.preventDefault();
+    localStorage.removeItem('unidadesSeleccionadas');
+    localStorage.removeItem('items');
+    unidadesSeleccionadas = [];
+    items = [];
+    // verificamos que los items esten vacios
+    if (items.length === 0) {
+        window.location.href = "config.php";
+    }
+};
+
+function cerrarVistaEstados(event) {
+    event.preventDefault();
+    localStorage.removeItem('fichasSeleccionadas');
+    fichasSeleccionadas = [];
+    // verificamos que los items esten vacios
+    if (fichasSeleccionadas.length === 0) {
+        window.location.href = "fichas.php";
+    }
+};
+
+function removerUnidadDeTabla(unidadId) {
+    const row = document.querySelector(`#tabla-unidades-seleccionadas tr[data-unidad-id="${unidadId}"]`);
+    if (row) {
+        row.remove();
+    }
+}
+
+function cargarUnidadesSeleccionadas() {
+    unidadesSeleccionadas.forEach(unidad => {
+        document.querySelector(`.unidad-checkbox[data-unidad-id="${unidad.id}"]`).checked = true;
+    });
+    document.getElementById('unidades-seleccionadas').value = JSON.stringify(unidadesSeleccionadas);
+}
+
+function cargarFichasSeleccionadas() {
+    fichasSeleccionadas.forEach(ficha => {
+        const checkbox = document.querySelector(`.ficha-checkbox[data-ficha-id="${ficha.id}"]`);
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+    });
+    document.getElementById('fichas-seleccionadas').value = JSON.stringify(fichasSeleccionadas);
+}
+
+function mapearItems(items) {
+    const tbody = document.querySelector('#tabla-areas-unidades tbody');
+    tbody.innerHTML = '';
+    items.forEach((item, index) => {
+        const row = document.createElement('tr');
+        const areaCell = document.createElement('td');
+        areaCell.textContent = item.area;
+        row.appendChild(areaCell);
+        const unidadesCell = document.createElement('td');
+        unidadesCell.innerHTML = item.unidades.map(u => `<div style="width: 300px;">${u.nombre}</div>`)
+            .join('');
+        row.appendChild(unidadesCell);
+
+        const accionCell = document.createElement('td');
+        accionCell.classList.add('row');
+        const removeAreaButton = document.createElement('button');
+        removeAreaButton.textContent = 'Eliminar Área';
+        removeAreaButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', "col-md-10",
+            "col-lg-3");
+        removeAreaButton.addEventListener('click', function() {
+            items.splice(index, 1);
+            localStorage.setItem('items', JSON.stringify(items));
+            mapearItems(items);
         });
-
-
-        // funcion para guardar la seleccion del area
-        document.getElementById('guardarSeleccion').addEventListener('click', function() {
-            const areaSeleccionada = document.getElementById('area-seleccionada').value;
-            if (areaSeleccionada && unidadesSeleccionadas.length > 0) {
-                const areaNombre = document.querySelector('#area-seleccionada option:checked').textContent;
-
-                // Comprobar si el área ya existe en el array de items
-                const areaExistente = items.some(item => item.areaId === areaSeleccionada);
-                if (areaExistente) {
-                    swal.fire({
-                        title: 'Error',
-                        text: 'Esta área ya ha sido agregada.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
-                    return;
+        item.unidades.forEach(unidad => {
+            const removeUnidadButton = document.createElement('button');
+            removeUnidadButton.textContent = `Eliminar ${unidad.nombre}`;
+            removeUnidadButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2',
+                "col-md-10",
+                "col-lg-3");
+            removeUnidadButton.addEventListener('click', function() {
+                item.unidades = item.unidades.filter(u => u.id !== unidad.id);
+                if (item.unidades.length === 0) {
+                    items.splice(index, 1);
                 }
-
-                const item = {
-                    areaId: areaSeleccionada,
-                    area: areaNombre,
-                    unidades: [...unidadesSeleccionadas]
-                };
-                items.push(item);
                 localStorage.setItem('items', JSON.stringify(items));
                 mapearItems(items);
-            } else {
-                swal.fire({
-                    title: 'Error',
-                    text: 'Debes seleccionar un área y al menos una unidad.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-            }
+            });
+            accionCell.appendChild(removeUnidadButton);
         });
 
-        // ELIMINAR DATOS DEL LOCAL STORAGE
-        function cerrarVista(event) {
-            event.preventDefault();
-            localStorage.removeItem('unidadesSeleccionadas');
-            localStorage.removeItem('items');
-            unidadesSeleccionadas = [];
-            items = [];
-            // verificamos que los items esten vacios
-            if (items.length === 0) {
-                window.location.href = "config.php";
-            }
-        };
+        accionCell.appendChild(removeAreaButton);
+        row.appendChild(accionCell);
 
-        function cerrarVistaEstados(event) {
-            event.preventDefault();
-            localStorage.removeItem('fichasSeleccionadas');
-            fichasSeleccionadas = [];
-            // verificamos que los items esten vacios
-            if (fichasSeleccionadas.length === 0) {
-                window.location.href = "fichas.php";
-            }
-        };
+        tbody.appendChild(row);
+    });
+}
 
-        function removerUnidadDeTabla(unidadId) {
-            const row = document.querySelector(`#tabla-unidades-seleccionadas tr[data-unidad-id="${unidadId}"]`);
-            if (row) {
-                row.remove();
-            }
-        }
+function cargarItemsGuardados() {
+    items = JSON.parse(localStorage.getItem('items')) || [];
+    mapearItems(items);
+}
 
-        function cargarUnidadesSeleccionadas() {
-            unidadesSeleccionadas.forEach(unidad => {
-                document.querySelector(`.unidad-checkbox[data-unidad-id="${unidad.id}"]`).checked = true;
-            });
-            document.getElementById('unidades-seleccionadas').value = JSON.stringify(unidadesSeleccionadas);
-        }
-
-        function cargarFichasSeleccionadas() {
-            fichasSeleccionadas.forEach(fichas => {
-                document.querySelector(`.ficha-checkbox[data-ficha-id="${fichas.id}"]`).checked = true;
-            });
-            document.getElementById('fichas-seleccionadas').value = JSON.stringify(fichasSeleccionadas);
-        }
-
-        function mapearItems(items) {
-            const tbody = document.querySelector('#tabla-areas-unidades tbody');
-            tbody.innerHTML = '';
-            items.forEach((item, index) => {
-                const row = document.createElement('tr');
-
-                const areaCell = document.createElement('td');
-                areaCell.textContent = item.area;
-                row.appendChild(areaCell);
-
-                const unidadesCell = document.createElement('td');
-                unidadesCell.innerHTML = item.unidades.map(u => `<div style="width: 300px;">${u.nombre}</div>`)
-                    .join('');
-                row.appendChild(unidadesCell);
-
-                const accionCell = document.createElement('td');
-                accionCell.classList.add('row');
-                const removeAreaButton = document.createElement('button');
-                removeAreaButton.textContent = 'Eliminar Área';
-                removeAreaButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2', "col-md-10",
-                    "col-lg-3");
-                removeAreaButton.addEventListener('click', function() {
-                    items.splice(index, 1);
-                    localStorage.setItem('items', JSON.stringify(items));
-                    mapearItems(items);
-                });
-                item.unidades.forEach(unidad => {
-                    const removeUnidadButton = document.createElement('button');
-                    removeUnidadButton.textContent = `Eliminar ${unidad.nombre}`;
-                    removeUnidadButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2',
-                        "col-md-10",
-                        "col-lg-3");
-                    removeUnidadButton.addEventListener('click', function() {
-                        item.unidades = item.unidades.filter(u => u.id !== unidad.id);
-                        if (item.unidades.length === 0) {
-                            items.splice(index, 1);
-                        }
-                        localStorage.setItem('items', JSON.stringify(items));
-                        mapearItems(items);
-                    });
-                    accionCell.appendChild(removeUnidadButton);
-                });
-
-                accionCell.appendChild(removeAreaButton);
-                row.appendChild(accionCell);
-
-                tbody.appendChild(row);
-            });
-        }
-
-        function cargarItemsGuardados() {
-            items = JSON.parse(localStorage.getItem('items')) || [];
-            mapearItems(items);
-        }
-
-        document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
-            document.getElementById('unidades-seleccionadas').value = JSON.stringify(unidadesSeleccionadas);
-        });
+document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
+    document.getElementById('unidades-seleccionadas').value = JSON.stringify(unidadesSeleccionadas);
+});
     </script>
     </body>
 
