@@ -165,6 +165,8 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                 $queryDuplicateSheet = $connection->prepare("SELECT COUNT(*) FROM fichas WHERE codigoFicha = :codigoFicha");
                 $registerSheet = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion, id_estado, id_estado_se, fecha_productiva) VALUES (:codigoFicha, :id_programa, :inicio_formacion, :fin_formacion, :id_estado, :id_estado_se, :etapa_productiva)");
                 $fecha_registro = date('Y-m-d H:i:s');
+                // CREAMOS UN ARREGLO PARA ALMACENAR TODAS LAS FICHAS DE FORMACION
+                $arrayFichas = [];
                 foreach ($data as $index => $row) {
                     // Saltar la primera fila si es el encabezado
                     if ($index == 0) continue;
@@ -181,7 +183,6 @@ if ((isset($_POST["MM_formRegisterExcelFichas"])) && ($_POST["MM_formRegisterExc
                         // Formatear las fechas
                         $inicio_formacion = DateTime::createFromFormat('m/d/Y', $inicio_formacion)->format('Y-m-d');
                         $fin_formacion = DateTime::createFromFormat('m/d/Y', $fin_formacion)->format('Y-m-d');
-
                         $queryDuplicateSheet->bindParam(':codigoFicha', $codigoFicha);
                         $queryDuplicateSheet->execute();
                         $exists = $queryDuplicateSheet->fetchColumn();
