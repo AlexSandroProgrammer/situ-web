@@ -96,6 +96,12 @@ document.getElementById('agregarUnidadAreaForm').addEventListener('submit', func
     const items = JSON.parse(localStorage.getItem('items')) || [];
     document.getElementById('unidades-seleccionadas').value = JSON.stringify(items);
 });
+// CARGAR FICHAS SELECCIONADAS
+document.addEventListener('DOMContentLoaded', function() {
+    cargarUnidadesSeleccionadas();
+    cargarItemsGuardados();
+    cargarFichasSeleccionadas();
+});
 
 function transferirDatos(event) {
     event.preventDefault();
@@ -115,12 +121,61 @@ function transferirDatos(event) {
     window.location.href = 'guardarDatos.php?details=' + JSON.stringify(items);
 }
 
-// CARGAR FICHAS SELECCIONADAS
-document.addEventListener('DOMContentLoaded', function() {
-    cargarUnidadesSeleccionadas();
-    cargarItemsGuardados();
-    cargarFichasSeleccionadas();
+function cargarFichasSeleccionadas() {
+    fichasSeleccionadas.forEach(ficha => {
+        const checkbox = document.querySelector(
+            `.ficha-checkbox[data-ficha-id="${ficha.id}"]`);
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+    });
+    document.getElementById('fichas-seleccionadas').value = JSON.stringify(fichasSeleccionadas);
+}
+
+document.querySelectorAll('.ficha-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const fichaId = this.getAttribute('data-ficha-id');
+        if (this.checked) {
+            if (!fichasSeleccionadas.find(ficha => ficha.id === fichaId)) {
+                fichasSeleccionadas.push({
+                    id: fichaId
+                });
+            }
+        } else {
+            fichasSeleccionadas = fichasSeleccionadas.filter(ficha => ficha
+                .id !== fichaId);
+        }
+        localStorage.setItem('fichasSeleccionadas', JSON.stringify(
+            fichasSeleccionadas));
+        document.getElementById('fichas-seleccionadas').value = JSON.stringify(
+            fichasSeleccionadas);
+    });
 });
+
+document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
+    document.getElementById('fichas-seleccionadas').value = JSON.stringify(
+        fichasSeleccionadas);
+});
+
+function registrarFichas(event) {
+    event.preventDefault();
+    const fichasSeleccionadas = JSON.parse(localStorage.getItem('fichasSeleccionadas'));
+    console.log(fichasSeleccionadas);
+    if (!fichasSeleccionadas || fichasSeleccionadas.length == 0) {
+        swal.fire({
+            title: 'Error',
+            text: 'Debes seleccionar al menos una ficha para cambiar el estado.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        }).then(() => {
+            window.location = 'estado-fichas.php'
+        });
+        return;
+    }
+    window.location.href = 'estado-fichas.php?details=' + JSON.stringify(fichasSeleccionadas);
+}
+
+
 
 // evento el cual permita agregar y deseleccionar checkbox
 document.querySelectorAll('.unidad-checkbox').forEach(checkbox => {

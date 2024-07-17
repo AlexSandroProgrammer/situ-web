@@ -1,6 +1,49 @@
 <?php
 $titlePage = "Configuracion de Areas y Unidades";
 require_once("../components/sidebar.php");
+if (isset($_GET['details'])) {
+    $details = $_GET['details'];
+    // Aquí deberías tener una función o código para validar $details, como isEmpty
+    if (isEmpty([$details])) {
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "No se ha recibido los datos de fichas para actualizacion", "estado-fichas.php");
+        exit();
+    }
+    $data = json_decode($details, true);
+    if (json_last_error() === JSON_ERROR_NONE) {
+        // Función para insertar datos
+        function actualizacionEstado($connection, $data)
+        {
+            try {
+                // estado activo
+                $id_estado = 1;
+                $registerDetails = $connection->prepare("UPDATE fichas SET id_estado_se = :id_estado WHERE codigoFicha = :codigo");
+                foreach ($data as $ficha) {
+                    $codigo = $ficha['id'];
+                    $registerDetails->bindParam(":id_estado", $id_estado);
+                    $registerDetails->bindParam(":codigo", $codigo);
+                    $registerDetails->execute();
+                }
+            } catch (PDOException $e) {
+                // Manejo de errores de base de datos
+                showErrorOrSuccessAndRedirect("error", "Error de base de datos", "Error al ejecutar la consulta", "estado-fichas.php");
+                exit();
+            }
+        }
+        // Llamar a la función para insertar los datos
+        actualizacionEstado($connection, $data);
+
+        // Limpiar datos del localStorage después de la inserción exitosa
+        echo '<script>
+                localStorage.removeItem("fichasSeleccionadas");
+              </script>';
+
+        // Mostrar mensaje de éxito y redireccionar
+        showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Las fichas se han actualizado correctamente", "fichas.php");
+    } else {
+        // Error si hay un problema con el JSON recibido
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", "estado-fichas.php");
+    }
+}
 ?>
 <!-- Content wrapper -->
 <div class="content-wrapper">
@@ -59,55 +102,11 @@ require_once("../components/sidebar.php");
                                 ?>
                                 <div class="mt-4">
                                     <button class="btn btn-danger" onclick="cerrarVistaEstados(event)">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" onclick="transferirDatos(event)">Registrar</button>
+                                    <button type="submit" class="btn btn-primary" onclick="registrarFichas(event)">Registrar</button>
                                     <input type="hidden" id="fichas-seleccionadas" name="fichas-seleccionadas" value="">
                                 </div>
                             </div>
                         </form>
-
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                cargarFichasSeleccionadas();
-                            });
-
-                            let fichasSeleccionadas = JSON.parse(localStorage.getItem('fichasSeleccionadas')) || [];
-
-                            function cargarFichasSeleccionadas() {
-                                fichasSeleccionadas.forEach(ficha => {
-                                    const checkbox = document.querySelector(
-                                        `.ficha-checkbox[data-ficha-id="${ficha.id}"]`);
-                                    if (checkbox) {
-                                        checkbox.checked = true;
-                                    }
-                                });
-                                document.getElementById('fichas-seleccionadas').value = JSON.stringify(fichasSeleccionadas);
-                            }
-
-                            document.querySelectorAll('.ficha-checkbox').forEach(checkbox => {
-                                checkbox.addEventListener('change', function() {
-                                    const fichaId = this.getAttribute('data-ficha-id');
-                                    if (this.checked) {
-                                        if (!fichasSeleccionadas.find(ficha => ficha.id === fichaId)) {
-                                            fichasSeleccionadas.push({
-                                                id: fichaId
-                                            });
-                                        }
-                                    } else {
-                                        fichasSeleccionadas = fichasSeleccionadas.filter(ficha => ficha
-                                            .id !== fichaId);
-                                    }
-                                    localStorage.setItem('fichasSeleccionadas', JSON.stringify(
-                                        fichasSeleccionadas));
-                                    document.getElementById('fichas-seleccionadas').value = JSON.stringify(
-                                        fichasSeleccionadas);
-                                });
-                            });
-
-                            document.getElementById('agregarUnidadAreaForm').addEventListener('submit', function(event) {
-                                document.getElementById('fichas-seleccionadas').value = JSON.stringify(
-                                    fichasSeleccionadas);
-                            });
-                        </script>
 
 
                     </div>
