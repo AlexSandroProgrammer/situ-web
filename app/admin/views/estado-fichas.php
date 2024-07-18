@@ -106,7 +106,7 @@ if (isset($_GET['details'])) {
                                 <div class="mt-4">
                                     <button class="btn btn-danger" onclick="cerrarVistaEstados(event)">Cancelar</button>
                                     <button type="submit" class="btn btn-primary"
-                                        onclick="registrarFichas(event)">Registrar</button>
+                                        onclick="registrarFichas(event)">Actualizar</button>
                                     <input type="hidden" id="fichas-seleccionadas" name="fichas-seleccionadas" value="">
                                 </div>
                             </div>

@@ -226,52 +226,52 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-
-                        <table id="example" class="table table-striped table-bordered top-table table-responsive"
-                            cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Acciones</th>
-                                    <th>Nombre de Programa</th>
-                                    <th>Descripcion</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
+                        <div class="table-responsive">
+                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Acciones</th>
+                                        <th>ID Programa</th>
+                                        <th>Nombre de Programa</th>
+                                        <th>Descripcion</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
                                     foreach ($programas as $programa) {
                                     ?>
-                                <tr>
-                                    <td>
-                                        <form method="GET" action="">
-                                            <input type="hidden" name="id_programa-delete"
-                                                value="<?= $programa['id_programa'] ?>">
-                                            <button class="btn btn-danger mt-2"
-                                                onclick="return confirm('desea eliminar el registro seleccionado');"
-                                                type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                        </form>
-                                        <form method="GET" class="mt-2" action="">
-                                            <input type="hidden" name="id_programa"
-                                                value="<?= $programa['id_programa'] ?>">
-                                            <button class="btn btn-success"
-                                                onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
-                                                type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
-                                        </form>
-                                    </td>
-                                    <td><?php echo $programa['nombre_programa'] ?></td>
-                                    <td style="width: 500px;"><?php echo $programa['descripcion'] ?></td>
-                                    <td><?php echo $programa['estado'] ?></td>
-
-
-                                </tr>
-                                <?php
-
+                                    <tr>
+                                        <td>
+                                            <form method="GET" action="">
+                                                <input type="hidden" name="id_programa-delete"
+                                                    value="<?= $programa['id_programa'] ?>">
+                                                <button class="btn btn-danger mt-2"
+                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                            </form>
+                                            <form method="GET" class="mt-2" action="">
+                                                <input type="hidden" name="id_programa"
+                                                    value="<?= $programa['id_programa'] ?>">
+                                                <button class="btn btn-success"
+                                                    onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
+                                                    type="submit"><i class="bx bx-refresh"
+                                                        title="Actualizar"></i></button>
+                                            </form>
+                                        </td>
+                                        <td><?php echo $programa['id_programa'] ?></td>
+                                        <td><?php echo $programa['nombre_programa'] ?></td>
+                                        <td style="width: 500px;"><?php echo $programa['descripcion'] ?></td>
+                                        <td><?php echo $programa['estado'] ?></td>
+                                    </tr>
+                                    <?php
                                     }
-
                                     ?>
-                            </tbody>
+                                </tbody>
 
-                        </table>
+                            </table>
+                        </div>
 
                     </div>
                 </div>

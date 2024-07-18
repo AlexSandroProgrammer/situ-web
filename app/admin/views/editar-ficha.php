@@ -3,13 +3,22 @@ $titlePage = "Actualizacion Ficha de Formacion";
 require_once("../components/sidebar.php");
 if (!empty($_GET['id_ficha-edit'])) {
     $id_ficha = $_GET['id_ficha-edit'];
-    $getFindByIdFicha = $connection->prepare("SELECT *
-FROM 
-fichas
-INNER JOIN 
-programas_formacion ON fichas.id_programa = programas_formacion.id_programa
-INNER JOIN 
-estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
+    $getFindByIdFicha = $connection->prepare("SELECT 
+        fichas.codigoFicha,
+        programas_formacion.id_programa,
+        programas_formacion.nombre_programa,
+        fichas.inicio_formacion,
+        fichas.fin_formacion,
+        fichas.fecha_productiva,
+        estado_ficha.id_estado AS estado_ficha_id,
+        estado_ficha.estado AS nombre_estado_ficha,
+        estado_se.id_estado AS estado_se_id,
+        estado_se.estado AS nombre_estado_se
+    FROM fichas
+    INNER JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa
+    INNER JOIN estados AS estado_ficha ON fichas.id_estado = estado_ficha.id_estado
+    INNER JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado
+    WHERE codigoFicha = :id_ficha");
     $getFindByIdFicha->bindParam(":id_ficha", $id_ficha);
     $getFindByIdFicha->execute();
     $fichaFindById = $getFindByIdFicha->fetch(PDO::FETCH_ASSOC);
@@ -95,8 +104,8 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                         <span id="estadoInicial-2" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
                                         <select class="form-select" id="estado_ficha" required name="estado_ficha">
-                                            <option value="<?php echo $fichaFindById['id_estado'] ?>">
-                                                <?php echo $fichaFindById['estado'] ?></option>
+                                            <option value="<?php echo $fichaFindById['estado_ficha_id'] ?>">
+                                                <?php echo $fichaFindById['nombre_estado_ficha'] ?></option>
                                             <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
                                                     $listadoEstados = $connection->prepare("SELECT * FROM estados");
@@ -121,8 +130,8 @@ estados ON fichas.id_estado = estados.id_estado WHERE codigoFicha = :id_ficha");
                                         <span id="estadoInicial-2" class="input-group-text"><i
                                                 class="bx bx-unite"></i></span>
                                         <select class="form-select" id="estado_se" required name="estado_se">
-                                            <option value="<?php echo $fichaFindById['id_estado_se'] ?>">
-                                                <?php echo $fichaFindById['estado'] ?></option>
+                                            <option value="<?php echo $fichaFindById['estado_se_id'] ?>">
+                                                <?php echo $fichaFindById['nombre_estado_se'] ?></option>
                                             <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
                                                     $listadoEstadoSe = $connection->prepare("SELECT * FROM estados");

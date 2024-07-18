@@ -1,7 +1,19 @@
 <?php
 $titlePage = "Listado de Fichas";
 require_once("../components/sidebar.php");
-$getFichas = $connection->prepare("SELECT * FROM fichas INNER JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa INNER JOIN  estados ON fichas.id_estado = estados.id_estado");
+$getFichas = $connection->prepare("SELECT 
+        fichas.codigoFicha,
+        programas_formacion.nombre_programa,
+        fichas.inicio_formacion,
+        fichas.fin_formacion,
+        fichas.fecha_productiva,
+        estado_ficha.estado AS nombre_estado_ficha,
+        estado_se.estado AS nombre_estado_se
+    FROM fichas
+    INNER JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa
+    INNER JOIN estados AS estado_ficha ON fichas.id_estado = estado_ficha.id_estado
+    INNER JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado
+");
 $getFichas->execute();
 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -92,13 +104,13 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                             </thead>
                             <tbody>
                                 <?php
-                                    foreach ($fichas as $ficha) {
-                                        // organizamos las fechas
-                                        $inicio_formacion = DateTime::createFromFormat('Y-m-d', $ficha['inicio_formacion'])->format('m/d/Y');
-                                        $fin_formacion = DateTime::createFromFormat('Y-m-d', $ficha['fin_formacion'])->format('m/d/Y');
-                                        $fecha_productiva = DateTime::createFromFormat('Y-m-d', $ficha['fecha_productiva'])->format('m/d/Y');
+                                foreach ($fichas as $ficha) {
+                                    // organizamos las fechas
+                                    $inicio_formacion = DateTime::createFromFormat('Y-m-d', $ficha['inicio_formacion'])->format('m/d/Y');
+                                    $fin_formacion = DateTime::createFromFormat('Y-m-d', $ficha['fin_formacion'])->format('m/d/Y');
+                                    $fecha_productiva = DateTime::createFromFormat('Y-m-d', $ficha['fecha_productiva'])->format('m/d/Y');
 
-                                    ?>
+                                ?>
                                 <tr>
                                     <td>
                                         <form method="GET" action="">
@@ -121,12 +133,12 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                     <td><?php echo $inicio_formacion ?></td>
                                     <td><?php echo $fin_formacion ?></td>
                                     <td><?php echo $fecha_productiva ?></td>
-                                    <td><?php echo $ficha['id_estado'] ?></td>
-                                    <td><?php echo $ficha['id_estado_se'] ?></td>
+                                    <td><?php echo $ficha['nombre_estado_ficha'] ?></td>
+                                    <td><?php echo $ficha['nombre_estado_se'] ?></td>
                                 </tr>
                                 <?php
-                                    }
-                                    ?>
+                                }
+                                ?>
                             </tbody>
 
                         </table>
