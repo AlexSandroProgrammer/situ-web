@@ -11,7 +11,7 @@ require_once("../components/sidebar.php");
             <div class="col-xl">
                 <div class="card mb-4">
                     <div class="card-header justify-content-between align-items-center">
-                        <h3 class="fw-bold py-2"><span class="text-muted fw-light">Funcionarios/</span>Registro de
+                        <h3 class="fw-bold py-2"><span class="text-muted fw-light">Aprendices/</span>Registro de
                             Aprendiz</h3>
                         <h6 class="mb-0">Ingresa por favor los siguientes datos.</h6>
                     </div>
@@ -28,7 +28,7 @@ require_once("../components/sidebar.php");
                                         <input type="text" autofocus class="form-control"
                                             onkeypress="return(multiplenumber(event));" minlength="10" maxlength="10"
                                             oninput="maxlengthNumber(this);" id="documento" name="documento"
-                                            placeholder="Ingresa el numero de documento"
+                                            placeholder="Ingresar numero de documento"
                                             aria-describedby="documento-icon" />
                                     </div>
                                 </div>
@@ -39,8 +39,7 @@ require_once("../components/sidebar.php");
                                         <span id="nombres_span" class="input-group-text"><i
                                                 class="fas fa-user"></i></span>
                                         <input type="text" required minlength="2" maxlength="100" class="form-control"
-                                            name="nombres" id="nombres"
-                                            placeholder="Ingresa el nombre del funcionario" />
+                                            name="nombres" id="nombres" placeholder="Ingresar nombres completos" />
                                     </div>
                                 </div>
                                 <!-- apellidos -->
@@ -51,7 +50,7 @@ require_once("../components/sidebar.php");
                                                 class="fas fa-user"></i></span>
                                         <input type="text" required minlength="2" maxlength="100" class="form-control"
                                             name="apellidos" id="apellidos"
-                                            placeholder="Ingresa los apellidos del funcionario" />
+                                            placeholder="Ingresar apellidos completos" />
                                     </div>
                                 </div>
                                 <!-- correo electronico -->
@@ -71,7 +70,7 @@ require_once("../components/sidebar.php");
                                         <span id="celular_span" class="input-group-text"><i
                                                 class="fas fa-user"></i></span>
                                         <input type="number" required minlength="2" maxlength="10" class="form-control"
-                                            name="celular" id="celular" placeholder="Ingresar corrreo electronico" />
+                                            name="celular" id="celular" placeholder="Ingresar numero de celular" />
                                     </div>
                                 </div>
                                 <!-- cargar foto del aprendiz -->
@@ -137,7 +136,7 @@ require_once("../components/sidebar.php");
                                     <div class="input-group input-group-merge">
                                         <span id="tipo_patrocinio-2" class="input-group-text"><i
                                                 class="fas fa-user"></i></span>
-                                        <select class="form-select" name="tipo_patrocinio" id="tipo_patrocinio" required
+                                        <select class="form-select" name="patrocinio" id="tipo_patrocinio" required
                                             onchange="toggleEmpresaInput()">
                                             <option value="">Seleccionar patrocinio...</option>
                                             <option value="si">Si</option>

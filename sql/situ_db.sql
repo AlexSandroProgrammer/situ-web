@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-07-2024 a las 22:53:38
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.2.0
+-- Tiempo de generación: 18-07-2024 a las 22:54:57
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -83,6 +83,15 @@ CREATE TABLE `detalle_area_unidades` (
   `fecha_registro` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_area_unidades`
+--
+
+INSERT INTO `detalle_area_unidades` (`id_detalle_areauni`, `id_area`, `id_unidad`, `fecha_registro`) VALUES
+(84, 20, 40, '2024-07-17 15:31:29'),
+(85, 20, 41, '2024-07-17 15:31:29'),
+(86, 20, 39, '2024-07-17 15:31:29');
+
 -- --------------------------------------------------------
 
 --
@@ -102,7 +111,9 @@ INSERT INTO `estados` (`id_estado`, `estado`) VALUES
 (1, 'activo'),
 (2, 'inactivo'),
 (4, 'Suspendido'),
-(5, 'Bloqueado');
+(5, 'Bloqueado'),
+(6, 'Sena Empresa'),
+(7, 'Etapa Productiva');
 
 -- --------------------------------------------------------
 
@@ -115,23 +126,25 @@ CREATE TABLE `fichas` (
   `id_programa` int(11) NOT NULL,
   `inicio_formacion` date NOT NULL,
   `fin_formacion` date NOT NULL,
+  `fecha_productiva` date DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
-  `id_estado_se` int(11) NOT NULL
+  `id_estado_se` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `fichas`
 --
 
-INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `id_estado`, `id_estado_se`) VALUES
-(123456, 14, '2024-02-18', '2026-02-18', 1, 2),
-(342301, 12, '2024-02-17', '2026-02-17', 1, 2),
-(881201, 11, '2024-02-16', '2026-02-16', 1, 2),
-(23012302, 5, '2024-02-13', '2026-02-13', 1, 2),
-(23014502, 8, '2024-02-15', '2026-02-15', 1, 2),
-(26013402, 4, '2024-02-12', '2026-02-12', 1, 2),
-(1201561201, 7, '2024-02-14', '2026-02-14', 1, 2),
-(2147483647, 11, '2024-07-13', '2024-07-20', 1, 1);
+INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `fecha_productiva`, `id_estado`, `id_estado_se`) VALUES
+(2123002, 14, '2024-07-18', '2026-04-17', '2025-10-17', 1, 1),
+(2500591, 14, '2024-04-13', '2026-04-13', '2025-10-13', 1, 1),
+(2614312, 6, '2024-04-16', '2026-04-16', '2025-10-16', 1, 1),
+(23010199, 5, '2024-07-18', '2026-04-14', '2025-10-14', 1, 1),
+(23911202, 8, '2024-07-18', '2026-04-12', '2025-10-12', 1, 1),
+(23911211, 14, '2024-04-19', '2026-04-19', '2025-10-19', 1, 1),
+(23911216, 14, '2024-07-18', '2026-04-18', '2025-10-18', 1, 2),
+(26181023, 6, '2024-04-16', '2026-04-16', '2025-10-16', 1, 1),
+(28230188, 7, '2024-07-18', '2026-04-15', '2025-10-15', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -167,6 +180,15 @@ CREATE TABLE `intentos_fallidos` (
   `email` varchar(200) NOT NULL,
   `fecha_intento` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `intentos_fallidos`
+--
+
+INSERT INTO `intentos_fallidos` (`id_intentos`, `email`, `fecha_intento`) VALUES
+(1, 'mitalentohumanose@gmail.com', '2024-07-11'),
+(2, 'mitalentohumanose@gmail.com', '2024-07-11'),
+(3, 'mitalentohumanose@gmail.com', '2024-07-11');
 
 -- --------------------------------------------------------
 
@@ -299,22 +321,25 @@ CREATE TABLE `usuarios` (
   `password` varchar(255) DEFAULT NULL,
   `sexo` varchar(100) DEFAULT NULL,
   `id_estado_se` int(11) DEFAULT NULL,
-  `id_estado_trimestre` int(11) DEFAULT NULL,
   `id_ficha` int(11) DEFAULT NULL,
   `id_tipo_usuario` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
   `id_estado` int(11) NOT NULL,
-  `fecha_registro` datetime DEFAULT NULL
+  `fecha_registro` datetime DEFAULT NULL,
+  `fecha_nacimiento` date DEFAULT NULL,
+  `tipo_convivencia` varchar(255) DEFAULT NULL,
+  `patrocinio` varchar(50) DEFAULT NULL,
+  `empresa_patrocinadora` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_estado_trimestre`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`, `fecha_registro`) VALUES
-(1002340230, 'Natalia', 'Olmos', 'Lider de Talento Humano', 'logonegro.png', '3103452301', NULL, NULL, NULL, NULL, NULL, 3, 'nataliaolmos02@gmail.com', 1, NULL),
-(1110460410, 'Daniel ', 'Cardenas', 'Lider Sena Empresa', 'LideresSenaEmpresa.PNG', '3112301201', NULL, NULL, NULL, NULL, NULL, 3, 'danielcardenas@gmail.com', 1, NULL),
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1, NULL);
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`, `fecha_registro`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
+(1002340230, 'Natalia', 'Olmos', 'Lider de Talento Humano', 'logonegro.png', '3103452301', NULL, NULL, NULL, NULL, 3, 'nataliaolmos02@gmail.com', 1, NULL, NULL, NULL, NULL, NULL),
+(1110460410, 'Daniel ', 'Cardenas', 'Lider Sena Empresa', 'LideresSenaEmpresa.PNG', '3112301201', NULL, NULL, NULL, NULL, 3, 'danielcardenas@gmail.com', 1, NULL, NULL, NULL, NULL, NULL),
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -406,7 +431,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `cargos`
@@ -418,13 +443,13 @@ ALTER TABLE `cargos`
 -- AUTO_INCREMENT de la tabla `detalle_area_unidades`
 --
 ALTER TABLE `detalle_area_unidades`
-  MODIFY `id_detalle_areauni` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_areauni` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
 --
 ALTER TABLE `estados`
-  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `formatos`
@@ -436,7 +461,7 @@ ALTER TABLE `formatos`
 -- AUTO_INCREMENT de la tabla `intentos_fallidos`
 --
 ALTER TABLE `intentos_fallidos`
-  MODIFY `id_intentos` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_intentos` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `programas_formacion`

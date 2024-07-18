@@ -70,7 +70,7 @@ require_once("../components/sidebar.php");
                                     <span id="celular_span" class="input-group-text"><i class="fas fa-user"></i>
                                     </span>
                                     <input type="number" required minlength="2" maxlength="10" class="form-control"
-                                        name="celular" id="celular" placeholder="Ingresar corrreo electronico" />
+                                        name="celular" id="celular" placeholder="Ingresar numero de celular" />
                                 </div>
                             </div>
                             <div class="mb-3">

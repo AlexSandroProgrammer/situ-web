@@ -12,27 +12,62 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
     $documento = $_POST['documento'];
     $nombres = $_POST['nombres'];
     $apellidos = $_POST['apellidos'];
-    $nombreCargo = $_POST['nombreCargo'];
-    $estadoInicial = $_POST['estadoInicial'];
+    $email = $_POST['email'];
+    $celular = $_POST['celular'];
+    $ficha = $_POST['ficha'];
+    $fecha_nacimiento = $_POST['fecha_nacimiento'];
+    $tipo_convivencia = $_POST['tipo_convivencia'];
+    $patrocinio = $_POST['patrocinio'];
+    $empresa = $_POST['empresa'];
+    $estadoAprendiz = $_POST['estadoAprendiz'];
+    $estadoSenaEmpresa = $_POST['estadoSenaEmpresa'];
     $imagenFirma = $_FILES['imagenFirma']['name'];
 
+    echo $documento;
+    echo $nombres;
+    echo $apellidos;
+    echo $email;
+    echo $ficha;
+    echo $fecha_nacimiento;
+    echo $tipo_convivencia;
+    echo $patrocinio;
+    echo $empresa;
+    echo $estadoAprendiz;
+    echo $estadoSenaEmpresa;
+    echo $imagenFirma;
+
     // Validamos que no hayamos recibido ningún dato vacío
-    if (isEmpty([$documento, $nombres, $apellidos, $imagenFirma, $nombreCargo])) {
-        showErrorFieldsEmpty("aprendices.php");
+    if (isEmpty([
+        $documento,
+        $nombres,
+        $apellidos,
+        $email,
+        $celular,
+        $ficha,
+        $fecha_nacimiento,
+        $tipo_convivencia,
+        $patrocinio,
+        $estadoAprendiz,
+        $estadoSenaEmpresa,
+        $imagenFirma
+    ])) {
+        showErrorFieldsEmpty("registrar-aprendiz.php");
         exit();
     }
-
-    $id_funcionario = 3;
-    $documentoQuery = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento AND id_tipo_usuario = :id_tipo_usuario");
-    $documentoQuery->bindParam(':documento', $documento);
-    $documentoQuery->bindParam(':id_tipo_usuario', $id_funcionario);
-    $documentoQuery->execute();
-    $queryFetch = $documentoQuery->fetchAll();
+    // ID DEL APRENDIZ
+    $id_aprendiz = 2;
+    $userValidation = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento OR email = :email OR celular = :celular AND id_tipo_usuario = :id_tipo_usuario");
+    $userValidation->bindParam(':documento', $documento);
+    $userValidation->bindParam(':email', $email);
+    $userValidation->bindParam(':celular', $celular);
+    $userValidation->bindParam(':id_tipo_usuario', $id_tipo_usuario);
+    $userValidation->execute();
+    $resultValidation = $userValidation->fetchAll();
 
     // Condicionales dependiendo del resultado de la consulta
-    if ($queryFetch) {
+    if ($resultValidation) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya están registrados", "funcionarios.php");
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya están registrados", "registrar-aprendiz.php");
         exit();
     } else {
         if (isFileUploaded($_FILES['imagenFirma'])) {
@@ -52,33 +87,45 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                     $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
                     if ($registroImagen) {
                         // Inserta los datos en la base de datos
-                        $registerFuncionario = $connection->prepare("INSERT INTO usuarios(documento, nombres, apellidos, cargo_funcionario, foto_data, id_tipo_usuario, id_estado) VALUES(:documento, :nombres, :apellidos, :nombreCargo, :imagenFirma, :id_tipo_usuario, :id_estado)");
+                        $registerFuncionario = $connection->prepare("INSERT INTO usuarios
+                        (documentos, nombres, apellidos, email, celular, 
+                        ficha, fecha_nacimiento, tipo_convivencia, patrocinio, empresa, id_estado, id_estado_se) 
+                        VALUES
+                        (:documento, :nombres, :apellidos, :email, :celular, :ficha,:fecha_nacimiento, 
+                        :tipo_convivencia, :patrocinio, :empresa, :id_estado,:id_estado_se)");
                         $registerFuncionario->bindParam(':documento', $documento);
                         $registerFuncionario->bindParam(':nombres', $nombres);
                         $registerFuncionario->bindParam(':apellidos', $apellidos);
-                        $registerFuncionario->bindParam(':nombreCargo', $nombreCargo);
-                        $registerFuncionario->bindParam(':imagenFirma', $imagenFirma);
-                        $registerFuncionario->bindParam(':id_tipo_usuario', $id_funcionario);
-                        $registerFuncionario->bindParam(':id_estado', $estadoInicial);
+                        $registerFuncionario->bindParam(':email', $email);
+                        $registerFuncionario->bindParam(':celular', $celular);
+                        $registerFuncionario->bindParam(':ficha', $ficha);
+                        $registerFuncionario->bindParam(':fecha_nacimiento', $fecha_nacimiento);
+                        $registerFuncionario->bindParam(':tipo_convivencia', $tipo_convivencia);
+                        $registerFuncionario->bindParam(':patrocinio', $patrocinio);
+                        $registerFuncionario->bindParam(':empresa', $empresa);
+                        $registerFuncionario->bindParam(':id_estado', $id_estado);
+                        $registerFuncionario->bindParam(':id_estado_se', $id_estado_se);
+                        $registerFuncionario->bindParam(':empresa', $empresa);
+                        $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
                         $registerFuncionario->execute();
                         if ($registerFuncionario) {
-                            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "funcionarios.php");
+                            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices.php");
                             exit();
                         }
                     } else {
-                        showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos", "funcionarios.php");
+                        showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos", "registrar-aprendiz.php");
                         exit();
                     }
                 } else {
-                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo ya existe en el servidor", "funcionarios.php");
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo ya existe en el servidor", "registrar-aprendiz.php");
                     exit();
                 }
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido o supera el tamaño permitido", "funcionarios.php");
+                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido o supera el tamaño permitido", "registrar-aprendiz.php");
                 exit();
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al subir el archivo", "funcionarios.php");
+            showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al subir el archivo", "registrar-aprendiz.php");
             exit();
         }
     }
