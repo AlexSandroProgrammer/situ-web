@@ -1,13 +1,11 @@
 <?php
-$titlePage = "Lista de Funcionarios";
+$titlePage = "Lista de Aprendices || Etapa Lectiva";
 require_once("../components/sidebar.php");
 
 
-$listaFuncionarios = $connection->prepare("SELECT * FROM usuarios
-INNER JOIN 
-estados ON usuarios.id_estado = estados.id_estado WHERE usuarios.id_tipo_usuario = 3");
-$listaFuncionarios->execute();
-$funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
+$listaAprendicesLectiva = $connection->prepare("SELECT * FROM usuarios INNER JOIN estados ON usuarios.id_estado = estados.id_estado INNER JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha WHERE usuarios.id_tipo_usuario = 2");
+$listaAprendicesLectiva->execute();
+$aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!-- Content wrapper -->
 <div class="content-wrapper">
@@ -90,36 +88,37 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                             </thead>
                             <tbody>
                                 <?php
-                                foreach ($funcionarios as $funcionario) {
+                                foreach ($aprendices as $aprendiz) {
                                 ?>
                                 <tr>
                                     <!--  -->
                                     <td>
                                         <form method="GET" action="">
-                                            <input type="hidden" name="id_funcionario-delete"
-                                                value="<?= $funcionario['documento'] ?>">
+                                            <input type="hidden" name="id_aprendiz-delete"
+                                                value="<?= $aprendiz['documento'] ?>">
                                             <button class="btn btn-danger mt-2"
                                                 onclick="return confirm('desea eliminar el registro seleccionado');"
                                                 type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
                                         </form>
-                                        <form method="GET" class="mt-2" action="editar-funcionario.php">
+                                        <form method="GET" class="mt-2" action="editar-aprendiz.php">
                                             <input type="hidden" name="id_edit-document"
-                                                value="<?= $funcionario['documento'] ?>">
+                                                value="<?= $aprendiz['documento'] ?>">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit"><i class="bx bx-refresh" title="Actualizar"></i>
                                             </button>
                                         </form>
                                     </td>
-                                    <td><?php echo $funcionario['documento'] ?></td>
-                                    <td><?php echo $funcionario['nombres'] ?></td>
-                                    <td><?php echo $funcionario['apellidos'] ?></td>
-                                    <td><?php echo $funcionario['email'] ?></td>
-                                    <td><?php echo $funcionario['celular'] ?></td>
-                                    <td><?php echo $funcionario['cargo_funcionario'] ?></td>
-                                    <td><?php echo $funcionario['estado'] ?></td>
+                                    <td><?php echo $aprendiz['documento'] ?></td>
+                                    <td><?php echo $aprendiz['nombres'] ?></td>
+                                    <td><?php echo $aprendiz['apellidos'] ?></td>
+                                    <td><?php echo $aprendiz['email'] ?></td>
+                                    <td><?php echo $aprendiz['celular'] ?></td>
+                                    <td><?php echo $aprendiz['patrocinio'] ?></td>
+                                    <td><?php echo $aprendiz['empresas'] ?></td>
+                                    <td><?php echo $aprendiz['estado'] ?></td>
                                     <td style="text-align: center;"><img
-                                            src="../assets/images/<?php echo $funcionario['foto_data'] ?>" width="80"
+                                            src="../assets/images/<?php echo $aprendiz['foto_data'] ?>" width="80"
                                             alt="">
                                     </td>
                                 </tr>
