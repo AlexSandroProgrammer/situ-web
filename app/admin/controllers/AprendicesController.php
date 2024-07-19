@@ -6,9 +6,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
 
+// OBTENEMOS LA FECHA ACTUAL 
+$fecha_registro = date('Y-m-d H:i:s');
 // registro de datos de aprendices
 if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprendiz"] == "formRegisterAprendiz")) {
-    var_dump($_POST);
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $documento = $_POST['documento'];
     $nombres = $_POST['nombres'];
@@ -75,8 +76,9 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                     $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
                     if ($registroImagen) {
                         // Inserta los datos en la base de datos
-                        $registerFuncionario = $connection->prepare("INSERT INTO usuarios(documento, nombres, apellidos, email, celular, id_ficha, fecha_nacimiento, tipo_convivencia, patrocinio, empresa_patrocinadora, id_estado, id_estado_se, id_tipo_usuario) 
-                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :id_ficha, :fecha_nacimiento, :tipo_convivencia, :patrocinio, :empresa, :id_estado, :id_estado_se, :id_tipo_usuario)");
+                        $registerFuncionario = $connection->prepare("INSERT INTO usuarios
+                        (documento, nombres, apellidos, email, celular, id_ficha, fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, foto_data, empresa_patrocinadora, id_estado, id_estado_se, id_tipo_usuario) 
+                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :id_ficha, :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,:foto_data, :empresa, :id_estado, :id_estado_se, :id_tipo_usuario)");
                         $registerFuncionario->bindParam(':documento', $documento);
                         $registerFuncionario->bindParam(':nombres', $nombres);
                         $registerFuncionario->bindParam(':apellidos', $apellidos);
@@ -86,13 +88,15 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                         $registerFuncionario->bindParam(':fecha_nacimiento', $fecha_nacimiento);
                         $registerFuncionario->bindParam(':tipo_convivencia', $tipo_convivencia);
                         $registerFuncionario->bindParam(':patrocinio', $patrocinio);
+                        $registerFuncionario->bindParam(':fecha_registro', $fecha_registro);
+                        $registerFuncionario->bindParam(':foto_data', $imagenFirma);
                         $registerFuncionario->bindParam(':empresa', $empresa);
                         $registerFuncionario->bindParam(':id_estado', $estadoAprendiz);
                         $registerFuncionario->bindParam(':id_estado_se', $estadoSenaEmpresa);
                         $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
                         $registerFuncionario->execute();
                         if ($registerFuncionario) {
-                            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectivo.php");
+                            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
                             exit();
                         }
                     } else {
