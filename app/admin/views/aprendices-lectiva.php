@@ -3,7 +3,7 @@ $titlePage = "Lista de Aprendices || Etapa Lectiva";
 require_once("../components/sidebar.php");
 $listaAprendicesLectiva = $connection->prepare("SELECT * FROM usuarios 
 INNER JOIN estados AS estado_aprendiz ON usuarios.id_estado = estado_aprendiz.id_estado 
-INNER JOIN estados AS estado_sena_empresa INNER JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha WHERE usuarios.id_tipo_usuario = 2");
+INNER JOIN estados AS estado_sena_empresa ON usuarios.id_estado_se INNER JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha WHERE usuarios.id_tipo_usuario = 2");
 $listaAprendicesLectiva->execute();
 $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -79,6 +79,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Celular</th>
                                     <th>Patrocinio</th>
                                     <th>Empresa</th>
+                                    <th>Edad Aprendiz</th>
                                     <th>Estado Aprendiz</th>
                                     <th>Estado SENA EMPRESA</th>
                                 </tr>
@@ -108,6 +109,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo $aprendiz['celular'] ?></td>
                                         <td><?php echo $aprendiz['patrocinio'] ?></td>
                                         <td><?php echo $aprendiz['empresa_patrocinadora'] ?></td>
+                                        <td><?php echo $aprendiz['edad'] ?></td>
                                         <td><?php echo $aprendiz['estado'] ?></td>
                                         <td><?php echo $aprendiz['estado'] ?></td>
                                     </tr>
