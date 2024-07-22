@@ -78,7 +78,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
             );
             $limite_KB = 10000;
             if (isFileValid($_FILES['fotoAprendiz'], $permitidos, $limite_KB)) {
-                $ruta = "../assets/images/";
+                $ruta = "../assets/images/aprendices/";
                 // Obtener la extensión del archivo
                 $extension = pathinfo($_FILES['fotoAprendiz']['name'], PATHINFO_EXTENSION);
                 // Construir el nuevo nombre del archivo

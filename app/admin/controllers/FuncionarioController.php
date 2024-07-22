@@ -41,10 +41,9 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
             $limite_KB = 10000;
 
             if (isFileValid($_FILES['imagenFirma'], $permitidos, $limite_KB)) {
-                $ruta = "../assets/images/";
+                $ruta = "../assets/images/funcionarios";
                 $imagenRuta = $ruta . $_FILES['imagenFirma']['name'];
                 createDirectoryIfNotExists($ruta);
-
                 if (!file_exists($imagenRuta)) {
                     $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
                     if ($registroImagen) {
