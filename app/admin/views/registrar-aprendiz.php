@@ -134,12 +134,27 @@ require_once("../components/sidebar.php");
                                     </div>
                                 </div>
                                 <div class="mb-3 col-12 col-lg-6" id="empresa-input" style="display: none;">
-                                    <label class="form-label" for="empresa">Empresa</label>
+                                    <label for="empresa" class="form-label">Empresa</label>
                                     <div class="input-group input-group-merge">
-                                        <span id="nombre_area-span" class="input-group-text"><i
-                                                class="fas fa-user"></i></span>
-                                        <input type="text" minlength="2" maxlength="100" class="form-control"
-                                            name="empresa" id="empresa" placeholder="Ingresar nombre de la empresa" />
+                                        <span id="empresa-2" class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <select class="form-select" name="empresa" id="empresa" required>
+                                            <option value="">Seleccionar Empresa...</option>
+                                            <?php
+                                            // CONSUMO DE DATOS DE LOS PROCESOS
+                                            $list_empresas = $connection->prepare("SELECT * FROM empresas");
+                                            $list_empresas->execute();
+                                            $empresas = $list_empresas->fetchAll(PDO::FETCH_ASSOC);
+                                            // Verificar si no hay datos
+                                            if (empty($empresas)) {
+                                                echo "<option value=''>No hay datos...</option>";
+                                            } else {
+                                                // Iterar sobre los estados
+                                                foreach ($empresas as $empresa) {
+                                                    echo "<option value='{$empresa['id_empresa']}'>{$empresa['nombre_empresa']}</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
                                 </div>
                                 <!-- tipo de covivencia -->

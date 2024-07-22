@@ -17,31 +17,39 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Default Modal -->
                     <div class="col-lg-2 col-md-6">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formRegisterCargoModal">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#formRegisterCargoModal">
                             <i class="fas fa-layer-group"></i> Registrar
                         </button>
                         <!-- Modal -->
                         <div class="modal fade" id="formRegisterCargoModal" tabindex="-1" aria-hidden="true">
-                            <form class="modal-dialog" action="" method="POST" autocomplete="off" name="formRegisterCargo">
+                            <form class="modal-dialog" action="" method="POST" autocomplete="off"
+                                name="formRegisterCargo">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel1">Registro de Cargo</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label class="form-label" for="nombre_cargo">Nombre del Cargo</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="nombre_cargo-span" class="input-group-text"><i class="fas fa-layer-group"></i> </span>
-                                                <input type="text" required minlength="2" maxlength="100" autofocus class="form-control" name="nombreCargo" id="nombre_cargo" placeholder="Ingresa el nombre del cargo" />
+                                                <span id="nombre_cargo-span" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i> </span>
+                                                <input type="text" required minlength="2" maxlength="100" autofocus
+                                                    class="form-control" name="nombreCargo" id="nombre_cargo"
+                                                    placeholder="Ingresa el nombre del cargo" />
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="estadoInicial" class="form-label">Estado
                                                 Inicial</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                                                <select class="form-select" name="estadoInicial" required name="estadoInicial">
+                                                <span id="estadoInicial-2" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i></span>
+                                                <select class="form-select" name="estadoInicial" required
+                                                    name="estadoInicial">
                                                     <option value="">Seleccionar Estado...</option>
                                                     <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
@@ -67,7 +75,8 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </button>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterCargo" name="MM_formRegisterCargo"></input>
+                                        <input type="hidden" class="btn btn-info" value="formRegisterCargo"
+                                            name="MM_formRegisterCargo"></input>
                                     </div>
                                 </div>
                             </form>
@@ -91,32 +100,39 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                     $cargoSeleccionado = $listCargos->fetch(PDO::FETCH_ASSOC);
                     if ($cargoSeleccionado) {
                 ?>
-                        <div class="row">
-                            <div class="col-xl">
-                                <div class="card mb-4">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">Actualizacion datos de
-                                            <?php echo $cargoSeleccionado['tipo_cargo'] ?>
-                                        </h5>
+                <div class="row">
+                    <div class="col-xl">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Actualizacion datos de
+                                    <?php echo $cargoSeleccionado['tipo_cargo'] ?>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="" method="POST" autocomplete="off" name="formUpdateCargo">
+                                    <div class=" mb-3">
+                                        <label class="form-label" for="tipo_cargo">Tipo de Cargo</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="tipo_cargo" class="input-group-text"><i
+                                                    class="fas fa-layer-group"></i></span>
+                                            <input type="text" minlength="2" maxlength="200" autofocus
+                                                class="form-control" required name="tipo_cargo" id="tipo_cargo"
+                                                placeholder="Ingresa el tipo de cargo"
+                                                value="<?php echo $cargoSeleccionado['tipo_cargo']  ?>"
+                                                aria-describedby="tipo_cargo-2" />
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <form action="" method="POST" autocomplete="off" name="formUpdateCargo">
-                                            <div class=" mb-3">
-                                                <label class="form-label" for="tipo_cargo">Tipo de Cargo</label>
-                                                <div class="input-group input-group-merge">
-                                                    <span id="tipo_cargo" class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                                                    <input type="text" minlength="2" maxlength="200" autofocus class="form-control" required name="tipo_cargo" id="tipo_cargo" placeholder="Ingresa el tipo de cargo" value="<?php echo $cargoSeleccionado['tipo_cargo']  ?>" aria-describedby="tipo_cargo-2" />
-                                                </div>
-                                            </div>
 
-                                            <div class="mb-3">
-                                                <label for="estado_cargo" class="form-label">Estado</label>
-                                                <div class="input-group input-group-merge">
-                                                    <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                                                    <select class="form-select" required name="estado_cargo" id="estado_cargo" required>
-                                                        <option value="<?php echo $cargoSeleccionado['id_estado'] ?>">
-                                                            <?php echo $cargoSeleccionado['estado'] ?></option>
-                                                        <?php
+                                    <div class="mb-3">
+                                        <label for="estado_cargo" class="form-label">Estado</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="estadoInicial-2" class="input-group-text"><i
+                                                    class="fas fa-layer-group"></i></span>
+                                            <select class="form-select" required name="estado_cargo" id="estado_cargo"
+                                                required>
+                                                <option value="<?php echo $cargoSeleccionado['id_estado'] ?>">
+                                                    <?php echo $cargoSeleccionado['estado'] ?></option>
+                                                <?php
                                                         // CONSUMO DE DATOS DE LOS PROCESOS
                                                         $listEstados = $connection->prepare("SELECT * FROM estados");
                                                         $listEstados->execute();
@@ -127,24 +143,26 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                                                             echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
                                                         }
                                                         ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <input type="hidden" class="form-control" name="id_cargo" value="<?php echo $cargoSeleccionado['id_cargo']  ?>" />
-
-                                            <div class="modal-footer">
-                                                <a class="btn btn-danger" href="cargos.php">
-                                                    Cancelar
-                                                </a>
-                                                <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                                <input type="hidden" class="btn btn-info" value="formUpdateCargo" name="MM_formUpdateCargo"></input>
-                                            </div>
-                                        </form>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+
+                                    <input type="hidden" class="form-control" name="id_cargo"
+                                        value="<?php echo $cargoSeleccionado['id_cargo']  ?>" />
+
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" href="cargos.php">
+                                            Cancelar
+                                        </a>
+                                        <input type="submit" class="btn btn-primary" value="Actualizar"></input>
+                                        <input type="hidden" class="btn btn-info" value="formUpdateCargo"
+                                            name="MM_formUpdateCargo"></input>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                    </div>
+                </div>
                 <?php
                     } else {
                         showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "cargos.php");
@@ -155,74 +173,87 @@ $cargos = $getCargos->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 if (isset($_GET['importarExcel'])) {
                 ?>
-                    <div class="row">
-                        <div class="col-xl">
-                            <div class="card mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Importacion de Archivo Excel
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="registroCargoExcel">
-                                        <div class=" mb-3">
-                                            <label class="form-label" for="cargo_excel">Subir Archivo</label>
-                                            <div class="input-group input-group-merge">
-                                                <span id="span_csv" class="input-group-text"><i class="fas fa-file-excel"></i></span>
-                                                <input type="file" autofocus class="form-control" required name="cargo_excel" id="cargo_excel" />
-                                            </div>
+                <div class="row">
+                    <div class="col-xl">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Importacion de Archivo Excel
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
+                                    name="registroCargoExcel">
+                                    <div class=" mb-3">
+                                        <label class="form-label" for="cargo_excel">Subir Archivo</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="span_csv" class="input-group-text"><i
+                                                    class="fas fa-file-excel"></i></span>
+                                            <input type="file" autofocus class="form-control" required
+                                                name="cargo_excel" id="cargo_excel" />
                                         </div>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" href="cargos.php">
-                                                Cancelar
-                                            </a>
-                                            <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                            <input type="hidden" class="btn btn-info" value="registroCargoExcel" name="MM_registroCargoExcel"></input>
-                                        </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" href="cargos.php">
+                                            Cancelar
+                                        </a>
+                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroCargoExcel"
+                                            name="MM_registroCargoExcel"></input>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
                 <?php
                 }
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-                        <table id="example" class="table table-striped table-bordered top-table table-responsive" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Acciones</th>
-                                    <th>Nombre del Cargo</th>
-                                    <th>Estado</th>
+                        <div class="table-responsive">
+                            <table id="example" class="table table-striped table-bordered top-table m-4" cellspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Acciones</th>
+                                        <th>Nombre del Cargo</th>
+                                        <th>Estado</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($cargos as $cargo) {
-                                ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    foreach ($cargos as $cargo) {
+                                    ?>
                                     <tr>
                                         <td>
                                             <form method="GET" action="">
-                                                <input type="hidden" name="id_cargo-delete" value="<?= $cargo['id_cargo'] ?>">
-                                                <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                                <input type="hidden" name="id_cargo-delete"
+                                                    value="<?= $cargo['id_cargo'] ?>">
+                                                <button class="btn btn-danger mt-2"
+                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
                                             </form>
                                             <form method="GET" class="mt-2" action="">
                                                 <input type="hidden" name="id_cargo" value="<?= $cargo['id_cargo'] ?>">
-                                                <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
+                                                <button class="btn btn-success"
+                                                    onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
+                                                    type="submit"><i class="bx bx-refresh"
+                                                        title="Actualizar"></i></button>
                                             </form>
                                         </td>
                                         <td><?php echo $cargo['tipo_cargo'] ?></td>
                                         <td><?php echo $cargo['estado'] ?></td>
                                     </tr>
-                                <?php
+                                    <?php
 
-                                }
+                                    }
 
-                                ?>
-                            </tbody>
+                                    ?>
+                                </tbody>
 
-                        </table>
+                            </table>
+                        </div>
 
                     </div>
                 </div>

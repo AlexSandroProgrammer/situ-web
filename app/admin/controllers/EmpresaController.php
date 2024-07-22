@@ -66,7 +66,7 @@ if ((isset($_POST["MM_formUpdateEmpresa"])) && ($_POST["MM_formUpdateEmpresa"] =
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $updateEmpresa = $connection->prepare("UPDATE empresas SET nombre_empresa = :nombre_empresa, estado = :estado WHERE id_empresa = :id_empresa");
+        $updateEmpresa = $connection->prepare("UPDATE empresas SET nombre_empresa = :nombre_empresa, id_estado = :estado WHERE id_empresa = :id_empresa");
         $updateEmpresa->bindParam(':nombre_empresa', $empresa);
         $updateEmpresa->bindParam(':estado', $estado);
         $updateEmpresa->bindParam(':id_empresa', $id_empresa);

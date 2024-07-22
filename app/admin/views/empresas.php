@@ -98,7 +98,7 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                     $getEmpresas = $connection->prepare("SELECT * FROM empresas INNER JOIN estados ON empresas.id_estado = estados.id_estado WHERE id_empresa = :id_empresa");
                     $getEmpresas->bindParam(":id_empresa", $id_empresa);
                     $getEmpresas->execute();
-                    $cargoSeleccionado = $getEmpresas->fetch(PDO::FETCH_ASSOC);
+                    $empresaSeleccionada = $getEmpresas->fetch(PDO::FETCH_ASSOC);
                     if ($empresaSeleccionada) {
                 ?>
                 <div class="row">
@@ -106,31 +106,30 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Actualizacion datos de
-                                    <?php echo $empresaSeleccionada['tipo_cargo'] ?>
+                                    <?php echo $empresaSeleccionada['nombre_empresa'] ?>
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <form action="" method="POST" autocomplete="off" name="formUpdateCargo">
+                                <form action="" method="POST" autocomplete="off" name="formUpdateEmpresa">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="tipo_cargo">Tipo de Cargo</label>
+                                        <label class="form-label" for="empresa">Nombre Empresa</label>
                                         <div class="input-group input-group-merge">
-                                            <span id="tipo_cargo" class="input-group-text"><i
+                                            <span id="empresa" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
                                             <input type="text" minlength="2" maxlength="200" autofocus
-                                                class="form-control" required name="tipo_cargo" id="tipo_cargo"
-                                                placeholder="Ingresa el tipo de cargo"
-                                                value="<?php echo $empresaSeleccionada['tipo_cargo']  ?>"
-                                                aria-describedby="tipo_cargo-2" />
+                                                class="form-control" required name="empresa" id="empresa"
+                                                placeholder="Ingresa el nombre de la empresa"
+                                                value="<?php echo $empresaSeleccionada['nombre_empresa']  ?>"
+                                                aria-describedby="empresa-2" />
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="estado_cargo" class="form-label">Estado</label>
+                                        <label for="estado" class="form-label">Estado</label>
                                         <div class="input-group input-group-merge">
                                             <span id="estadoInicial-2" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
-                                            <select class="form-select" required name="estado_cargo" id="estado_cargo"
-                                                required>
+                                            <select class="form-select" required name="estado" id="estado" required>
                                                 <option value="<?php echo $empresaSeleccionada['id_estado'] ?>">
                                                     <?php echo $empresaSeleccionada['estado'] ?></option>
                                                 <?php
@@ -139,7 +138,7 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                                         $listEstados->execute();
                                                         $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
 
-                                                        // Iterar sobre los procedimientos
+                                                        // Iterar sobre los estados
                                                         foreach ($estados as $estado) {
                                                             echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
                                                         }
@@ -148,16 +147,16 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
 
-                                    <input type="hidden" class="form-control" name="id_cargo"
-                                        value="<?php echo $empresaSeleccionada['id_cargo']  ?>" />
+                                    <input type="hidden" class="form-control" name="id_empresa"
+                                        value="<?php echo $empresaSeleccionada['id_empresa']  ?>">
 
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="cargos.php">
+                                        <a class="btn btn-danger" href="empresas.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formUpdateCargo"
-                                            name="MM_formUpdateCargo"></input>
+                                        <input type="hidden" class="btn btn-info" value="formUpdateEmpresa"
+                                            name="MM_formUpdateEmpresa"></input>
                                     </div>
                                 </form>
                             </div>
@@ -166,7 +165,7 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <?php
                     } else {
-                        showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "cargos.php");
+                        showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "empresas.php");
                         exit();
                     }
                 }

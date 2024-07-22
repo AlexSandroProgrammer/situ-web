@@ -27,7 +27,7 @@ require_once("../components/sidebar.php");
                                     <span id="documento-icon" class="input-group-text"><i
                                             class="fas fa-user"></i></span>
                                     <input type="text" autofocus class="form-control"
-                                        onkeypress="return(multiplenumber(event));" minlength="10" maxlength="10"
+                                        onkeypress="return(multiplenumber(event));" minlength="6" maxlength="10"
                                         oninput="maxlengthNumber(this);" id="documento" name="documento"
                                         placeholder="Ingresa el numero de documento"
                                         aria-describedby="documento-icon" />
@@ -69,7 +69,8 @@ require_once("../components/sidebar.php");
                                 <div class="input-group input-group-merge">
                                     <span id="celular_span" class="input-group-text"><i class="fas fa-user"></i>
                                     </span>
-                                    <input type="number" required minlength="2" maxlength="10" class="form-control"
+                                    <input type="text" class="form-control" required
+                                        onkeypress="return(multiplenumber(event));" minlength="10" maxlength="10"
                                         name="celular" id="celular" placeholder="Ingresar numero de celular" />
                                 </div>
                             </div>
