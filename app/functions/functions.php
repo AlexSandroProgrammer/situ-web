@@ -9,6 +9,16 @@ function isEmpty($fields)
     return false;
 }
 
+function containsSpecialCharacters($fields)
+{
+    foreach ($fields as $field) {
+        if (!preg_match('/^[a-zA-Z\s]+$/', $field)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function isNotEmpty($fields)
 {
     foreach ($fields as $field) {

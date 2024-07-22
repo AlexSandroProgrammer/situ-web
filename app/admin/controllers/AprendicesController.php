@@ -23,8 +23,8 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
     $empresa = $_POST['empresa'];
     $estadoAprendiz = $_POST['estadoAprendiz'];
     $estadoSenaEmpresa = $_POST['estadoSenaEmpresa'];
-    $imagenFirma = $_FILES['imagenFirma']['name'];
-
+    $sexo = $_POST['sexo'];
+    $fotoAprendiz = $_FILES['fotoAprendiz']['name'];
     // Validamos que no hayamos recibido ningún dato vacío
     if (isEmpty([
         $documento,
@@ -38,9 +38,22 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
         $patrocinio,
         $estadoAprendiz,
         $estadoSenaEmpresa,
-        $imagenFirma
+        $fotoAprendiz,
+        $sexo
     ])) {
         showErrorFieldsEmpty("registrar-aprendiz.php");
+        exit();
+    }
+
+    // validamos que los datos ningun tenga un caracter especial 
+    if (containsSpecialCharacters([
+        $nombres,
+        $apellidos,
+        $tipo_convivencia,
+        $patrocinio,
+        $sexo
+    ])) {
+        showErrorOrSuccessAndRedirect("error", "Error de digitacion", "Por favor verifica que en ningun campo existan caracteres especiales, los campos como el nombre, apellido, no deben tener letras como la ñ o caracteres especiales.", "registrar-aprendiz.php");
         exit();
     }
     // ID DEL APRENDIZ
@@ -52,51 +65,82 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
     $userValidation->bindParam(':id_tipo_usuario', $id_aprendiz);
     $userValidation->execute();
     $resultValidation = $userValidation->fetchAll();
-
     // Condicionales dependiendo del resultado de la consulta
     if ($resultValidation) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya están registrados", "registrar-aprendiz.php");
         exit();
     } else {
-        if (isFileUploaded($_FILES['imagenFirma'])) {
+        if (isFileUploaded($_FILES['fotoAprendiz'])) {
             $permitidos = array(
                 'image/jpeg',
                 'image/png',
-                'image/webp'
             );
             $limite_KB = 10000;
-
-            if (isFileValid($_FILES['imagenFirma'], $permitidos, $limite_KB)) {
+            if (isFileValid($_FILES['fotoAprendiz'], $permitidos, $limite_KB)) {
                 $ruta = "../assets/images/";
-                $imagenRuta = $ruta . $_FILES['imagenFirma']['name'];
+                // Obtener la extensión del archivo
+                $extension = pathinfo($_FILES['fotoAprendiz']['name'], PATHINFO_EXTENSION);
+                // Construir el nuevo nombre del archivo
+                $nuevoNombreArchivo = $nombres . "_" . $apellidos . "_" . $ficha . "." . $extension;
+                $imagenRuta = $ruta . $nuevoNombreArchivo;
                 createDirectoryIfNotExists($ruta);
-
                 if (!file_exists($imagenRuta)) {
-                    $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
+                    $registroImagen = moveUploadedFile($_FILES['fotoAprendiz'], $imagenRuta);
                     if ($registroImagen) {
-                        // Inserta los datos en la base de datos
-                        $registerFuncionario = $connection->prepare("INSERT INTO usuarios
-                        (documento, nombres, apellidos, email, celular, id_ficha, fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, foto_data, empresa_patrocinadora, id_estado, id_estado_se, id_tipo_usuario) 
-                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :id_ficha, :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,:foto_data, :empresa, :id_estado, :id_estado_se, :id_tipo_usuario)");
-                        $registerFuncionario->bindParam(':documento', $documento);
-                        $registerFuncionario->bindParam(':nombres', $nombres);
-                        $registerFuncionario->bindParam(':apellidos', $apellidos);
-                        $registerFuncionario->bindParam(':email', $email);
-                        $registerFuncionario->bindParam(':celular', $celular);
-                        $registerFuncionario->bindParam(':id_ficha', $ficha);
-                        $registerFuncionario->bindParam(':fecha_nacimiento', $fecha_nacimiento);
-                        $registerFuncionario->bindParam(':tipo_convivencia', $tipo_convivencia);
-                        $registerFuncionario->bindParam(':patrocinio', $patrocinio);
-                        $registerFuncionario->bindParam(':fecha_registro', $fecha_registro);
-                        $registerFuncionario->bindParam(':foto_data', $imagenFirma);
-                        $registerFuncionario->bindParam(':empresa', $empresa);
-                        $registerFuncionario->bindParam(':id_estado', $estadoAprendiz);
-                        $registerFuncionario->bindParam(':id_estado_se', $estadoSenaEmpresa);
-                        $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
-                        $registerFuncionario->execute();
-                        if ($registerFuncionario) {
-                            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
+                        try {
+                            // Crear objetos DateTime para la fecha de nacimiento y la fecha actual
+                            $fechaNacimiento = new DateTime($fecha_nacimiento);
+                            $fechaActual = new DateTime();
+                            // Calcular la diferencia entre las dos fechas
+                            $diferencia = $fechaActual->diff($fechaNacimiento);
+                            // Obtener la edad en años
+                            $edad = $diferencia->y;
+                        } catch (Exception $e) {
+                            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de calcular la edad del aprendiz.", "registrar-aprendiz.php");
+                            exit();
+                        }
+                        try {
+                            // Inserta los datos en la base de datos, incluyendo la edad
+                            $registerFuncionario = $connection->prepare("
+                                INSERT INTO usuarios(
+                                    documento, nombres, apellidos, email, celular, id_ficha, 
+                                    fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, 
+                                    foto_data, empresa_patrocinadora, id_estado, id_estado_se, 
+                                    id_tipo_usuario, edad
+                                ) 
+                                VALUES(
+                                    :documento, :nombres, :apellidos, :email, :celular, :id_ficha, 
+                                    :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,
+                                    :foto_data, :empresa, :id_estado, :id_estado_se, 
+                                    :id_tipo_usuario, :edad
+                                )
+                            ");
+
+                            // Vincular los parámetros
+                            $registerFuncionario->bindParam(':documento', $documento);
+                            $registerFuncionario->bindParam(':nombres', $nombres);
+                            $registerFuncionario->bindParam(':apellidos', $apellidos);
+                            $registerFuncionario->bindParam(':email', $email);
+                            $registerFuncionario->bindParam(':celular', $celular);
+                            $registerFuncionario->bindParam(':id_ficha', $ficha);
+                            $registerFuncionario->bindParam(':fecha_nacimiento', $fecha_nacimiento);
+                            $registerFuncionario->bindParam(':tipo_convivencia', $tipo_convivencia);
+                            $registerFuncionario->bindParam(':patrocinio', $patrocinio);
+                            $registerFuncionario->bindParam(':fecha_registro', $fecha_registro);
+                            $registerFuncionario->bindParam(':foto_data', $nuevoNombreArchivo);
+                            $registerFuncionario->bindParam(':empresa', $empresa);
+                            $registerFuncionario->bindParam(':id_estado', $estadoAprendiz);
+                            $registerFuncionario->bindParam(':id_estado_se', $estadoSenaEmpresa);
+                            $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
+                            $registerFuncionario->bindParam(':edad', $edad); // Vincular el nuevo parámetro de eda
+                            $registerFuncionario->execute();
+                            if ($registerFuncionario) {
+                                showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
+                                exit();
+                            }
+                        } catch (Exception $e) {
+                            showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos.", "registrar-aprendiz.php");
                             exit();
                         }
                     } else {
@@ -108,7 +152,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                     exit();
                 }
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido o supera el tamaño permitido", "registrar-aprendiz.php");
+                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido, debe ser de tipo PNG o JPEG, y no debe superar el tamaño permitido que son 10 MB.", "registrar-aprendiz.php");
                 exit();
             }
         } else {

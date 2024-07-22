@@ -71,6 +71,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                             <thead>
                                 <tr>
                                     <th>Acciones</th>
+                                    <th>Foto del Aprendiz</th>
                                     <th>N. documento</th>
                                     <th>Nombres</th>
                                     <th>Apellidos</th>
@@ -78,9 +79,8 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Celular</th>
                                     <th>Patrocinio</th>
                                     <th>Empresa</th>
-                                    <th>Estado</th>
-                                    <th>F</th>
-                                    <th>Foto del Aprendiz</th>
+                                    <th>Estado Aprendiz</th>
+                                    <th>Estado SENA EMPRESA</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,6 +99,8 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                                 </button>
                                             </form>
                                         </td>
+                                        <td style="text-align: center;"><img class="rounded" src="../assets/images/<?php echo $aprendiz['foto_data'] ?>" width="80" alt="">
+                                        </td>
                                         <td><?php echo $aprendiz['documento'] ?></td>
                                         <td><?php echo $aprendiz['nombres'] ?></td>
                                         <td><?php echo $aprendiz['apellidos'] ?></td>
@@ -108,8 +110,6 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo $aprendiz['empresa_patrocinadora'] ?></td>
                                         <td><?php echo $aprendiz['estado'] ?></td>
                                         <td><?php echo $aprendiz['estado'] ?></td>
-                                        <td style="text-align: center;"><img class="rounded" src="../assets/images/<?php echo $aprendiz['foto_data'] ?>" width="80" alt="">
-                                        </td>
                                     </tr>
                                 <?php
                                 }

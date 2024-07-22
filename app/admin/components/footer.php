@@ -86,6 +86,50 @@ document.addEventListener('DOMContentLoaded', (event) => {
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fechaInput = document.getElementById('fecha_nacimiento');
+
+    // Obtener la fecha actual
+    const fechaActual = new Date();
+    // Obtener la fecha máxima (hace 10 años)
+    const fechaMaxima = new Date(fechaActual);
+    fechaMaxima.setFullYear(fechaMaxima.getFullYear() - 15);
+
+    // Obtener la fecha mínima (hace 90 años)
+    const fechaMinima = new Date(fechaActual);
+    fechaMinima.setFullYear(fechaMinima.getFullYear() - 90);
+
+    // Formatear las fechas en formato YYYY-MM-DD
+    const fechaMaximaFormateada = fechaMaxima.toISOString().split('T')[0];
+    const fechaMinimaFormateada = fechaMinima.toISOString().split('T')[0];
+
+    // Establecer los atributos min y max del campo de fecha
+    fechaInput.setAttribute('min', fechaMinimaFormateada);
+    fechaInput.setAttribute('max', fechaMaximaFormateada);
+    // Validar la fecha de nacimiento cuando se cambia el valor del campo
+    fechaInput.addEventListener('input', function() {
+        const fechaSeleccionada = new Date(fechaInput.value);
+
+        if (fechaSeleccionada > fechaMaxima || fechaSeleccionada < fechaMinima) {
+            fechaInput.setCustomValidity('La fecha de nacimiento debe estar entre ' +
+                fechaMinimaFormateada + ' y ' + fechaMaximaFormateada + '.');
+        } else {
+            fechaInput.setCustomValidity(''); // Restablecer el mensaje de error
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const patrocinioSelect = document.getElementById('tipo_patrocinio');
+    const empresaInput = document.getElementById('empresa-input');
+
+    patrocinioSelect.addEventListener('change', function() {
+        if (patrocinioSelect.value === 'si') {
+            empresaInput.style.display = 'block';
+        } else {
+            empresaInput.style.display = 'none';
+        }
+    });
+});
 // Creamos el arreglo para guardar las unidades seleccionadas
 let unidadesSeleccionadas = JSON.parse(localStorage.getItem('unidadesSeleccionadas')) || [];
 // creamos el arreglo para almacenar las fichas de formacion

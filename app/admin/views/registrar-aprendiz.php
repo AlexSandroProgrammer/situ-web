@@ -60,13 +60,12 @@ require_once("../components/sidebar.php");
                                 </div>
                                 <!-- cargar foto del aprendiz -->
                                 <div class="mb-3 col-12 col-lg-6">
-                                    <label class="form-label" for="imagenFirma">Foto del Aprendiz</label>
+                                    <label class="form-label" for="fotoAprendiz">Foto del Aprendiz</label>
                                     <div class="input-group input-group-merge">
                                         <span id="nombre_area-span" class="input-group-text"><i class="fas fa-image"></i></span>
-                                        <input type="file" required class="form-control" accept="image/*" name="imagenFirma" id="imagenFirma" />
+                                        <input type="file" required class="form-control" accept="image/*" name="fotoAprendiz" id="fotoAprendiz" />
                                     </div>
                                 </div>
-
                                 <!-- fecha de nacimiento -->
                                 <div class="mb-3 col-12 col-lg-6">
                                     <label class="form-label" for="fecha_nacimiento">Fecha de nacimiento</label>
@@ -130,6 +129,19 @@ require_once("../components/sidebar.php");
                                         </select>
                                     </div>
                                 </div>
+                                <!-- sexo del aprendiz -->
+                                <div class="mb-3 col-12 col-lg-6">
+                                    <label for="tipo_sexo" class="form-label">Orientacion Sexual</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="tipo_sexo-2" class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <select class="form-select" name="sexo" id="tipo_sexo" required>
+                                            <option value="">Seleccionar sexo...</option>
+                                            <option value="femenino">Femenino</option>
+                                            <option value="masculino">Masculino</option>
+                                            <option value="otro">Otro</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="mb-3 col-12 col-lg-6">
                                     <label for="estadoAprendiz" class="form-label">Estado Aprendiz</label>
                                     <div class="input-group input-group-merge">
@@ -179,7 +191,7 @@ require_once("../components/sidebar.php");
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <a href="funcionarios.php" class="btn btn-danger">
+                                    <a href="aprendices-lectiva.php" class="btn btn-danger">
                                         Cancelar
                                     </a>
                                     <input type="submit" class="btn btn-primary" value="Registrar"></input>
@@ -192,22 +204,6 @@ require_once("../components/sidebar.php");
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const patrocinioSelect = document.getElementById('tipo_patrocinio');
-            const empresaInput = document.getElementById('empresa-input');
-
-            patrocinioSelect.addEventListener('change', function() {
-                if (patrocinioSelect.value === 'si') {
-                    empresaInput.style.display = 'block';
-                } else {
-                    empresaInput.style.display = 'none';
-                }
-            });
-        });
-    </script>
-
     <?php
     require_once("../components/footer.php")
     ?>
