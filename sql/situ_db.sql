@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-07-2024 a las 22:54:57
+-- Tiempo de generación: 22-07-2024 a las 22:45:26
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -95,6 +95,27 @@ INSERT INTO `detalle_area_unidades` (`id_detalle_areauni`, `id_area`, `id_unidad
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `empresas`
+--
+
+CREATE TABLE `empresas` (
+  `id_empresa` int(11) NOT NULL,
+  `nombre_empresa` varchar(255) NOT NULL,
+  `id_estado` int(11) NOT NULL,
+  `fecha_registro` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `empresas`
+--
+
+INSERT INTO `empresas` (`id_empresa`, `nombre_empresa`, `id_estado`, `fecha_registro`) VALUES
+(4, 'Sunshine Bouquet', 1, NULL),
+(5, 'Flower Star', 1, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `estados`
 --
 
@@ -111,9 +132,7 @@ INSERT INTO `estados` (`id_estado`, `estado`) VALUES
 (1, 'activo'),
 (2, 'inactivo'),
 (4, 'Suspendido'),
-(5, 'Bloqueado'),
-(6, 'Sena Empresa'),
-(7, 'Etapa Productiva');
+(5, 'Bloqueado');
 
 -- --------------------------------------------------------
 
@@ -315,7 +334,6 @@ CREATE TABLE `usuarios` (
   `documento` int(11) NOT NULL,
   `nombres` varchar(255) NOT NULL,
   `apellidos` varchar(255) NOT NULL,
-  `cargo_funcionario` varchar(150) DEFAULT NULL,
   `foto_data` varchar(255) NOT NULL,
   `celular` varchar(20) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
@@ -324,9 +342,11 @@ CREATE TABLE `usuarios` (
   `id_ficha` int(11) DEFAULT NULL,
   `id_tipo_usuario` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `cargo_funcionario` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
   `fecha_registro` datetime DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
+  `edad` varchar(5) NOT NULL,
   `tipo_convivencia` varchar(255) DEFAULT NULL,
   `patrocinio` varchar(50) DEFAULT NULL,
   `empresa_patrocinadora` varchar(255) DEFAULT NULL
@@ -336,10 +356,8 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `cargo_funcionario`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `id_estado`, `fecha_registro`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
-(1002340230, 'Natalia', 'Olmos', 'Lider de Talento Humano', 'logonegro.png', '3103452301', NULL, NULL, NULL, NULL, 3, 'nataliaolmos02@gmail.com', 1, NULL, NULL, NULL, NULL, NULL),
-(1110460410, 'Daniel ', 'Cardenas', 'Lider Sena Empresa', 'LideresSenaEmpresa.PNG', '3112301201', NULL, NULL, NULL, NULL, 3, 'danielcardenas@gmail.com', 1, NULL, NULL, NULL, NULL, NULL),
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', NULL, 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `cargo_funcionario`, `id_estado`, `fecha_registro`, `fecha_nacimiento`, `edad`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', NULL, 1, NULL, NULL, '', NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -362,6 +380,12 @@ ALTER TABLE `cargos`
 --
 ALTER TABLE `detalle_area_unidades`
   ADD PRIMARY KEY (`id_detalle_areauni`);
+
+--
+-- Indices de la tabla `empresas`
+--
+ALTER TABLE `empresas`
+  ADD PRIMARY KEY (`id_empresa`);
 
 --
 -- Indices de la tabla `estados`
@@ -444,6 +468,12 @@ ALTER TABLE `cargos`
 --
 ALTER TABLE `detalle_area_unidades`
   MODIFY `id_detalle_areauni` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+
+--
+-- AUTO_INCREMENT de la tabla `empresas`
+--
+ALTER TABLE `empresas`
+  MODIFY `id_empresa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
