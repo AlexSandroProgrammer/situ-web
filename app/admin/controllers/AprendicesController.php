@@ -89,31 +89,19 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                     $registroImagen = moveUploadedFile($_FILES['fotoAprendiz'], $imagenRuta);
                     if ($registroImagen) {
                         try {
-                            // Crear objetos DateTime para la fecha de nacimiento y la fecha actual
-                            $fechaNacimiento = new DateTime($fecha_nacimiento);
-                            $fechaActual = new DateTime();
-                            // Calcular la diferencia entre las dos fechas
-                            $diferencia = $fechaActual->diff($fechaNacimiento);
-                            // Obtener la edad en años
-                            $edad = $diferencia->y;
-                        } catch (Exception $e) {
-                            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de calcular la edad del aprendiz.", "registrar-aprendiz.php");
-                            exit();
-                        }
-                        try {
                             // Inserta los datos en la base de datos, incluyendo la edad
                             $registerFuncionario = $connection->prepare("
                                 INSERT INTO usuarios(
                                     documento, nombres, apellidos, email, celular, id_ficha, 
                                     fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, 
                                     foto_data, empresa_patrocinadora, id_estado, id_estado_se, 
-                                    id_tipo_usuario, edad
+                                    id_tipo_usuario
                                 ) 
                                 VALUES(
                                     :documento, :nombres, :apellidos, :email, :celular, :id_ficha, 
                                     :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,
                                     :foto_data, :empresa, :id_estado, :id_estado_se, 
-                                    :id_tipo_usuario, :edad
+                                    :id_tipo_usuario
                                 )
                             ");
 
@@ -133,7 +121,6 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                             $registerFuncionario->bindParam(':id_estado', $estadoAprendiz);
                             $registerFuncionario->bindParam(':id_estado_se', $estadoSenaEmpresa);
                             $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
-                            $registerFuncionario->bindParam(':edad', $edad); // Vincular el nuevo parámetro de eda
                             $registerFuncionario->execute();
                             if ($registerFuncionario) {
                                 showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");

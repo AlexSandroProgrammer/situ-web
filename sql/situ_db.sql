@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-07-2024 a las 22:45:26
+-- Tiempo de generación: 24-07-2024 a las 22:47:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -155,7 +155,7 @@ CREATE TABLE `fichas` (
 --
 
 INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `fecha_productiva`, `id_estado`, `id_estado_se`) VALUES
-(2123002, 14, '2024-07-18', '2026-04-17', '2025-10-17', 1, 1),
+(2123002, 14, '2024-07-24', '2026-04-17', '2025-10-17', 1, 2),
 (2500591, 14, '2024-04-13', '2026-04-13', '2025-10-13', 1, 1),
 (2614312, 6, '2024-04-16', '2026-04-16', '2025-10-16', 1, 1),
 (23010199, 5, '2024-07-18', '2026-04-14', '2025-10-14', 1, 1),
@@ -346,7 +346,6 @@ CREATE TABLE `usuarios` (
   `id_estado` int(11) NOT NULL,
   `fecha_registro` datetime DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `edad` varchar(5) NOT NULL,
   `tipo_convivencia` varchar(255) DEFAULT NULL,
   `patrocinio` varchar(50) DEFAULT NULL,
   `empresa_patrocinadora` varchar(255) DEFAULT NULL
@@ -356,8 +355,10 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `cargo_funcionario`, `id_estado`, `fecha_registro`, `fecha_nacimiento`, `edad`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', NULL, 1, NULL, NULL, '', NULL, NULL, NULL);
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `cargo_funcionario`, `id_estado`, `fecha_registro`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
+(1110460410, 'Alejandro', 'Munoz Garcia', 'Alejandro_Munoz Garcia_23010199.jpg', '3102301230', NULL, NULL, 2, 23010199, 2, 'alejandro@gmail.com', NULL, 1, '2024-07-24 15:12:02', '2009-07-11', 'externo', 'si', '4'),
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 2, 'mitalentohumanose@gmail.com', NULL, 1, '2024-07-24 15:12:02', '2015-07-17', NULL, 'si', '5'),
+(2147483647, 'Juan Jose', 'Mendieta', 'Juan Jose_Mendieta_23911211.jpg', '3111000230', NULL, NULL, 2, 23911211, 2, 'mendieta@gmail.com', NULL, 1, '2024-07-24 15:13:20', '2009-07-16', 'interno', 'si', '5');
 
 --
 -- Índices para tablas volcadas

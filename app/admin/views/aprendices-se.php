@@ -1,11 +1,11 @@
 <?php
-$titlePage = "Lista de Aprendices || Etapa Lectiva";
+$titlePage = "Lista de Aprendices || Sena Empresa";
 require_once("../components/sidebar.php");
 $listaAprendicesLectiva = $connection->prepare("SELECT * FROM usuarios 
 INNER JOIN estados AS estado_aprendiz ON usuarios.id_estado = estado_aprendiz.id_estado 
 INNER JOIN estados AS estado_sena_empresa ON usuarios.id_estado_se = estado_sena_empresa.id_estado 
 INNER JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha INNER JOIN empresas ON empresas.id_empresa = usuarios.empresa_patrocinadora INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id WHERE usuarios.id_tipo_usuario = 2 
-AND usuarios.id_estado = 1 AND usuarios.id_estado_se = 2");
+AND usuarios.id_estado = 1 AND usuarios.id_estado_se = 1");
 $listaAprendicesLectiva->execute();
 $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -87,24 +87,14 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Celular</th>
                                     <th>Patrocinio</th>
                                     <th>Empresa</th>
-                                    <th>Edad</th>
+                                    <th>Edad Aprendiz</th>
                                     <th>Rol del Usuario</th>
                                     <th>Estado Aprendiz</th>
                                     <th>Estado SENA EMPRESA</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($aprendices as $aprendiz) {
-
-                                    // Crear objetos DateTime para la fecha de nacimiento y la fecha actual
-                                    $fecha_nacimiento = $aprendiz['fecha_nacimiento'];
-                                    $fechaNacimiento = new DateTime($fecha_nacimiento);
-                                    $fechaActual = new DateTime();
-                                    // Calcular la diferencia entre las dos fechas
-                                    $diferencia = $fechaActual->diff($fechaNacimiento);
-                                    // Obtener la edad en años
-                                    $edad = $diferencia->y;
-                                ?>
+                                <?php foreach ($aprendices as $aprendiz) { ?>
                                 <tr>
                                     <td>
                                         <form method="GET" action="">
@@ -137,7 +127,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     <td><?php echo $aprendiz['celular'] ?></td>
                                     <td><?php echo $aprendiz['patrocinio'] ?></td>
                                     <td><?php echo $aprendiz['nombre_empresa'] ?></td>
-                                    <td><?php echo $edad ?></td>
+                                    <td><?php echo $aprendiz['edad'] ?></td>
                                     <td><?php echo $aprendiz['tipo_usuario'] ?></td>
                                     <td><?php echo $aprendiz['estado'] ?></td>
                                     <td><?php echo $aprendiz['estado'] ?></td>
