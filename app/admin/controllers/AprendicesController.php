@@ -148,73 +148,126 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
         }
     }
 }
-// // Verificar si se ha enviado el formulario
-// if ((isset($_POST["MM_formRegisterAprendizCsv"])) && ($_POST["MM_formRegisterAprendizCsv"] == "formRegisterAprendizCsv")) {
-//     $name = $_POST['name'];
-//     $description = $_POST['description'];
-//     $file = $_FILES['file']['tmp_name'];
-//     $fileName = $_FILES['file']['name'];
-//     $fileType = $_FILES['file']['type'];
-//     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-//     // Extensiones permitidas
-//     $allowedExtensions = ['xlsx', 'xls', 'csv'];
+// editar datos de aprendices
+if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"] == "formUpdateAprendiz")) {
+    // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
+    $documento = $_POST['documento'];
+    $nombres = $_POST['nombres'];
+    $apellidos = $_POST['apellidos'];
+    $email = $_POST['email'];
+    $celular = $_POST['celular'];
+    $ficha = $_POST['ficha_formacion'];
+    $tipo_convivencia = $_POST['tipo_convivencia'];
+    $patrocinio = $_POST['patrocinio'];
+    $empresa = $_POST['empresa'];
+    $estadoAprendiz = $_POST['estadoAprendiz'];
+    $estadoSenaEmpresa = $_POST['estadoSenaEmpresa'];
+    $sexo = $_POST['sexo'];
+    // Validamos que no hayamos recibido ningún dato vacío
+    if (isEmpty([
+        $documento,
+        $nombres,
+        $apellidos,
+        $email,
+        $celular,
+        $ficha,
+        $tipo_convivencia,
+        $patrocinio,
+        $estadoAprendiz,
+        $estadoSenaEmpresa,
+        $sexo
+    ])) {
+        showErrorFieldsEmpty("editar-aprendiz.php?id_aprendiz-edit=" . $documento);
+        exit();
+    }
 
-//     // Validar la extensión del archivo
-//     if (!in_array($fileExtension, $allowedExtensions)) {
-//         die("Error: Tipo de archivo no permitido. Por favor, sube un archivo Excel.");
-//     }
+    // validamos que los datos ningun tenga un caracter especial 
+    if (containsSpecialCharacters([
+        $nombres,
+        $apellidos,
+        $tipo_convivencia,
+        $patrocinio,
+        $sexo
+    ])) {
+        showErrorOrSuccessAndRedirect(
+            "error",
+            "Error de digitacion",
+            "Por favor verifica que en ningun campo existan caracteres especiales, los campos como el nombre, apellido, no deben tener letras como la ñ o caracteres especiales.",
+            "editar-aprendiz.php?id_aprendiz-edit=" . $documento
+        );
+        exit();
+    }
+    // ID DEL APRENDIZ
+    $id_aprendiz = 2;
+    $userValidation = $connection->prepare("SELECT * FROM usuarios WHERE (email = :email OR celular = :celular) AND documento <> :documento AND id_tipo_usuario = :id_tipo_usuario");
+    $userValidation->bindParam(':documento', $documento);
+    $userValidation->bindParam(':email', $email);
+    $userValidation->bindParam(':celular', $celular);
+    $userValidation->bindParam(':id_tipo_usuario', $id_aprendiz);
+    $userValidation->execute();
+    $resultValidation = $userValidation->fetchAll();
+    // Condicionales dependiendo del resultado de la consulta
+    if ($resultValidation) {
+        // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Por favor revisa los datos ingresados, porque ya estan registrados.", "editar-aprendiz.php?id_aprendiz-edit=" . $documento);
+        exit();
+    } else {
+        $fecha_actualizacion = date('Y-m-d H:i:s'); // O cualquier otro valor que necesites
 
-//     // Cargar el archivo Excel
-//     $spreadsheet = IOFactory::load($file);
-//     $sheet = $spreadsheet->getActiveSheet();
+        // Inserción de los datos en la base de datos, incluyendo la edad
+        $editarDatosAprendiz = $connection->prepare("UPDATE usuarios 
+        SET nombres = :nombres, apellidos = :apellidos, 
+        celular = :celular, sexo = :sexo, email = :email, id_ficha = :id_ficha,
+        tipo_convivencia = :tipo_convivencia, patrocinio = :patrocinio, fecha_actualizacion = :fecha_actualizacion, 
+        empresa_patrocinadora = :empresa, id_estado = :id_estado, id_estado_se = :id_estado_se WHERE documento = :documento");
 
-//     // Directorio donde se guardarán las imágenes
-//     $imageDirectory = 'imagenes/';
-//     if (!is_dir($imageDirectory)) {
-//         mkdir($imageDirectory, 0777, true);
-//     }
+        // Vincular los parámetros
+        $editarDatosAprendiz->bindParam(':nombres', $nombres);
+        $editarDatosAprendiz->bindParam(':apellidos', $apellidos);
+        $editarDatosAprendiz->bindParam(':celular', $celular);
+        $editarDatosAprendiz->bindParam(':sexo', $sexo);
+        $editarDatosAprendiz->bindParam(':id_ficha', $ficha);
+        $editarDatosAprendiz->bindParam(':tipo_convivencia', $tipo_convivencia);
+        $editarDatosAprendiz->bindParam(':patrocinio', $patrocinio);
+        $editarDatosAprendiz->bindParam(':fecha_actualizacion', $fecha_actualizacion);
+        $editarDatosAprendiz->bindParam(':empresa', $empresa);
+        $editarDatosAprendiz->bindParam(':id_estado', $estadoAprendiz);
+        $editarDatosAprendiz->bindParam(':id_estado_se', $estadoSenaEmpresa);
+        $editarDatosAprendiz->bindParam(':documento', $documento);
+        $editarDatosAprendiz->execute();
+        if ($editarDatosAprendiz) {
+            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
+            exit();
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", "editar-aprendiz.php?id_aprendiz-edit=" . $documento);
+            exit();
+        }
+    }
+}
 
-//     // Recorrer las imágenes en el archivo Excel
-//     foreach ($sheet->getDrawingCollection() as $drawing) {
-//         if ($drawing instanceof Drawing || $drawing instanceof MemoryDrawing) {
-//             // Obtener el nombre original de la imagen
-//             $imageName = $drawing->getName();
-//             // Ruta completa de la nueva imagen
-//             $imagePath = $imageDirectory . $imageName;
-
-//             // Guardar la imagen en el directorio
-//             if ($drawing instanceof Drawing) {
-//                 // Si es una imagen incrustada
-//                 copy($drawing->getPath(), $imagePath);
-//             } elseif ($drawing instanceof MemoryDrawing) {
-//                 // Si es una imagen generada en memoria
-//                 $image = $drawing->getImageResource();
-//                 $renderingFunction = $drawing->getRenderingFunction();
-
-//                 if ($renderingFunction == MemoryDrawing::RENDERING_JPEG) {
-//                     imagejpeg($image, $imagePath);
-//                 } elseif ($renderingFunction == MemoryDrawing::RENDERING_GIF) {
-//                     imagegif($image, $imagePath);
-//                 } elseif ($renderingFunction == MemoryDrawing::RENDERING_PNG) {
-//                     imagepng($image, $imagePath);
-//                 }
-//             }
-
-//             // Guardar el nombre de la imagen en la base de datos
-//             $sql = "INSERT INTO $table (nombre, descripcion, nombre_imagen) VALUES (:name, :description, :imageName)";
-//             $stmt = $conn->prepare($sql);
-//             $stmt->bindParam(':name', $name);
-//             $stmt->bindParam(':description', $description);
-//             $stmt->bindParam(':imageName', $imageName);
-
-//             if ($stmt->execute()) {
-//                 echo "Nombre de imagen guardado correctamente: $imageName<br>";
-//             } else {
-//                 echo "Error al guardar el nombre de la imagen.<br>";
-//             }
-//         }
-//     }
-
-//     echo "Proceso completado.";
-// }
+// metodo para borrar el registro
+if (isset($_GET['id_aprendiz-delete'])) {
+    $id_aprendiz = $_GET["id_aprendiz-delete"];
+    $ruta = $_GET["ruta"];
+    if (isEmpty([$id_aprendiz])) {
+        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", $ruta);
+    } else {
+        $deleteAprendiz = $connection->prepare("SELECT * FROM usuarios WHERE documento = :id_aprendiz");
+        $deleteAprendiz->bindParam(":id_aprendiz", $id_aprendiz);
+        $deleteAprendiz->execute();
+        $deleteAprendizSelect = $deleteAprendiz->fetch(PDO::FETCH_ASSOC);
+        if ($deleteAprendizSelect) {
+            $delete = $connection->prepare("DELETE  FROM usuarios WHERE documento = :id_aprendiz");
+            $delete->bindParam(':id_aprendiz', $id_aprendiz);
+            $delete->execute();
+            if ($delete) {
+                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", $ruta);
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", $ruta);
+            }
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", $ruta);
+        }
+    }
+}

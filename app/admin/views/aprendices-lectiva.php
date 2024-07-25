@@ -1,11 +1,37 @@
 <?php
 $titlePage = "Lista de Aprendices || Etapa Lectiva";
 require_once("../components/sidebar.php");
-$listaAprendicesLectiva = $connection->prepare("SELECT * FROM usuarios 
-INNER JOIN estados AS estado_aprendiz ON usuarios.id_estado = estado_aprendiz.id_estado 
-INNER JOIN estados AS estado_sena_empresa ON usuarios.id_estado_se = estado_sena_empresa.id_estado 
-INNER JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha INNER JOIN empresas ON empresas.id_empresa = usuarios.empresa_patrocinadora INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id WHERE usuarios.id_tipo_usuario = 2 
-AND usuarios.id_estado = 1 AND usuarios.id_estado_se = 2");
+// arreglo con ids de la consulta
+$array_keys = [1, 2];
+$listaAprendicesLectiva = $connection->prepare("SELECT 
+        usuarios.nombres,
+        usuarios.documento,
+        usuarios.apellidos,
+        usuarios.foto_data,
+        usuarios.celular,
+        usuarios.sexo,
+        usuarios.email,
+        usuarios.fecha_registro,
+        usuarios.fecha_nacimiento,
+        usuarios.tipo_convivencia,
+        usuarios.patrocinio,
+        usuarios.empresa_patrocinadora,
+        usuarios.id_ficha,
+        empresas.nombre_empresa,
+        tipo_usuario.tipo_usuario,
+        estado_usuario.estado AS estado_aprendiz,
+        estado_se.estado AS nombre_estado_se
+    FROM usuarios
+    INNER JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha 
+    INNER JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa
+    INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id
+    INNER JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado
+    INNER JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado
+    WHERE usuarios.id_tipo_usuario = :id_tipo_usuario AND usuarios.id_estado = :id_estado 
+    AND usuarios.id_estado_se = :id_estado_se");
+$listaAprendicesLectiva->bindParam(":id_tipo_usuario", $array_keys[1]);
+$listaAprendicesLectiva->bindParam(":id_estado", $array_keys[0]);
+$listaAprendicesLectiva->bindParam(":id_estado_se", $array_keys[1]);
 $listaAprendicesLectiva->execute();
 $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -95,7 +121,6 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                             </thead>
                             <tbody>
                                 <?php foreach ($aprendices as $aprendiz) {
-
                                     // Crear objetos DateTime para la fecha de nacimiento y la fecha actual
                                     $fecha_nacimiento = $aprendiz['fecha_nacimiento'];
                                     $fechaNacimiento = new DateTime($fecha_nacimiento);
@@ -110,6 +135,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" action="">
                                             <input type="hidden" name="id_aprendiz-delete"
                                                 value="<?= $aprendiz['documento'] ?>">
+                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
                                             <button class="btn btn-danger mt-2"
                                                 onclick="return confirm('¿Desea eliminar el registro seleccionado?');"
                                                 type="submit">
@@ -117,7 +143,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                             </button>
                                         </form>
                                         <form method="GET" class="mt-2" action="editar-aprendiz.php">
-                                            <input type="hidden" name="id_edit-document"
+                                            <input type="hidden" name="id_aprendiz-edit"
                                                 value="<?= $aprendiz['documento'] ?>">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
@@ -126,10 +152,27 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                             </button>
                                         </form>
                                     </td>
+                                    <?php
+
+                                        if (isEmpty([$aprendiz['foto_data']])) {
+                                        ?>
+                                    <td class="avatar">
+                                        <img src="../assets/images/perfil_sin_foto.jpg" alt
+                                            class="w-px-75 mb-3 h-auto rounded-circle" />
+                                        <p>Sin foto</p>
+                                    </td>
+
+                                    <?php
+                                        } else {
+                                        ?>
                                     <td class="avatar">
                                         <img src="../assets/images/aprendices/<?php echo $aprendiz['foto_data'] ?>" alt
-                                            class="w-px-75 mb-3 h-auto rounded-circle" />
+                                            class="w-px-75  h-auto rounded-circle" />
+
                                     </td>
+                                    <?php
+                                        }
+                                        ?>
                                     <td><?php echo $aprendiz['documento'] ?></td>
                                     <td><?php echo $aprendiz['nombres'] ?></td>
                                     <td><?php echo $aprendiz['apellidos'] ?></td>
@@ -139,8 +182,8 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     <td><?php echo $aprendiz['nombre_empresa'] ?></td>
                                     <td><?php echo $edad ?></td>
                                     <td><?php echo $aprendiz['tipo_usuario'] ?></td>
-                                    <td><?php echo $aprendiz['estado'] ?></td>
-                                    <td><?php echo $aprendiz['estado'] ?></td>
+                                    <td><?php echo $aprendiz['estado_aprendiz'] ?></td>
+                                    <td><?php echo $aprendiz['nombre_estado_se'] ?></td>
                                 </tr>
                                 <?php } ?>
                             </tbody>
