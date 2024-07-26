@@ -149,6 +149,100 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
     }
 }
 
+if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz"] == "updateImageAprendiz")) {
+    // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
+    $ruta = $_POST['ruta'];
+    $document = $_POST['document'];
+    $fotoAprendiz = $_FILES['fotoAprendiz']['name'];
+
+    // Validamos que no hayamos recibido ningún dato vacío
+    if (isEmpty([$document, $fotoAprendiz, $ruta])) {
+        showErrorFieldsEmpty("aprendices-lectiva.php");
+        exit();
+    }
+
+    $imageValidation = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
+    $imageValidation->bindParam(':documento', $document);
+    $imageValidation->execute();
+    $fetch = $imageValidation->fetch(PDO::FETCH_ASSOC);
+
+    // Condicionales dependiendo del resultado de la consulta
+    if ($fetch) {
+        if (isFileUploaded($_FILES['fotoAprendiz'])) {
+            $permitidos = ['image/jpeg', 'image/png'];
+            $limite_KB = 10000;
+
+            if (isFileValid($_FILES['fotoAprendiz'], $permitidos, $limite_KB)) {
+                $ficha = $fetch['id_ficha'];
+                $archivo_anterior = $fetch['foto_data'];
+                $nombres = $fetch['nombres'];
+                $apellidos = $fetch['apellidos'];
+                $rutaImagen = "../assets/images/aprendices/";
+
+                // Obtener la extensión del archivo
+                $extension = pathinfo($_FILES['fotoAprendiz']['name'], PATHINFO_EXTENSION);
+
+                // Construir el nuevo nombre del archivo
+                $nuevoNombreArchivo = $nombres . "_" . $apellidos . "_" . $ficha . "." . $extension;
+                $imagenRutaEditada = $rutaImagen . $nuevoNombreArchivo;
+
+                createDirectoryIfNotExists($rutaImagen);
+
+                // Si existe una imagen anterior, tratar de eliminarla
+                if ($archivo_anterior) {
+                    $imagenRuta = $rutaImagen . $archivo_anterior;
+                    if (file_exists($imagenRuta) && !unlink($imagenRuta)) {
+                        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al eliminar la imagen anterior", $ruta . '?document=' . $document);
+                        exit();
+                    }
+                }
+
+                if (!file_exists($imagenRutaEditada)) {
+                    $registroImagen = moveUploadedFile($_FILES['fotoAprendiz'], $imagenRutaEditada);
+
+                    if ($registroImagen) {
+                        try {
+                            // Inserción de los datos en la base de datos, incluyendo la edad
+                            $cambiarImagenAprendiz = $connection->prepare("UPDATE usuarios SET foto_data = :foto_data WHERE documento = :documento");
+
+                            // Vincular los parámetros
+                            $cambiarImagenAprendiz->bindParam(':foto_data', $nuevoNombreArchivo);
+                            $cambiarImagenAprendiz->bindParam(':documento', $document);
+                            $cambiarImagenAprendiz->execute();
+
+                            if ($cambiarImagenAprendiz) {
+                                showErrorOrSuccessAndRedirect("success", "Foto Agregada", "Los datos se han actualizado correctamente", "aprendices-lectiva.php");
+                                exit();
+                            }
+                        } catch (Exception $e) {
+                            showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos.", $ruta . '?document=' . $document);
+                            exit();
+                        }
+                    } else {
+                        showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos, error al momento de registrar la imagen.", $ruta . '?document=' . $document);
+                        exit();
+                    }
+                } else {
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "La imagen ya esta registrada.", $ruta . '?document=' . $document);
+                    exit();
+                }
+            } else {
+                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido, debe ser de tipo PNG o JPEG, y no debe superar el tamaño permitido que son 10 MB.", $ruta . '?document=' . $document);
+                exit();
+            }
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al subir el archivo", $ruta . '?document=' . $document);
+            exit();
+        }
+    } else {
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", $ruta . '?document=' . $document);
+        exit();
+    }
+}
+
+
+
+
 // editar datos de aprendices
 if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"] == "formUpdateAprendiz")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
@@ -257,10 +351,26 @@ if (isset($_GET['id_aprendiz-delete'])) {
         $deleteAprendiz->bindParam(":id_aprendiz", $id_aprendiz);
         $deleteAprendiz->execute();
         $deleteAprendizSelect = $deleteAprendiz->fetch(PDO::FETCH_ASSOC);
+
         if ($deleteAprendizSelect) {
-            $delete = $connection->prepare("DELETE  FROM usuarios WHERE documento = :id_aprendiz");
+            // nos traemos la ruta de la imagen
+            $ruta_imagenes = "../assets/images/aprendices/";
+            $directorioImagen = $ruta_imagenes . $deleteAprendizSelect['foto_data'];
+
+            // Verificamos si la imagen existe antes de intentar eliminarla
+            if (file_exists($directorioImagen)) {
+                // Intentamos eliminar la imagen
+                if (!unlink($directorioImagen)) {
+                    showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo un error al momento de eliminar la foto del aprendiz", $ruta);
+                    exit;
+                }
+            }
+
+            // Borramos el registro del aprendiz de la base de datos
+            $delete = $connection->prepare("DELETE FROM usuarios WHERE documento = :id_aprendiz");
             $delete->bindParam(':id_aprendiz', $id_aprendiz);
             $delete->execute();
+
             if ($delete) {
                 showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", $ruta);
             } else {

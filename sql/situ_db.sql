@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-07-2024 a las 22:47:44
+-- Tiempo de generación: 26-07-2024 a las 22:52:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -45,7 +45,8 @@ INSERT INTO `areas` (`id_area`, `nombreArea`, `id_estado`, `fecha_registro`, `fe
 (22, 'Agroindustria', 1, '2024-07-03 07:41:04', '2024-07-03 07:42:19'),
 (23, 'Gestion', 1, '2024-07-03 07:41:54', '2024-07-03 07:42:54'),
 (24, 'Ambiental', 1, '2024-07-03 07:42:07', '2024-07-03 07:42:59'),
-(25, 'Innovacion', 1, '2024-07-03 07:43:13', '2024-07-03 07:50:50');
+(25, 'Innovacion', 1, '2024-07-03 07:43:13', '2024-07-03 07:50:50'),
+(31, 'Mecanización', 1, '2024-07-26 15:28:34', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -345,6 +346,7 @@ CREATE TABLE `usuarios` (
   `cargo_funcionario` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
   `fecha_registro` datetime DEFAULT NULL,
+  `fecha_actualizacion` datetime DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
   `tipo_convivencia` varchar(255) DEFAULT NULL,
   `patrocinio` varchar(50) DEFAULT NULL,
@@ -355,10 +357,10 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `cargo_funcionario`, `id_estado`, `fecha_registro`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
-(1110460410, 'Alejandro', 'Munoz Garcia', 'Alejandro_Munoz Garcia_23010199.jpg', '3102301230', NULL, NULL, 2, 23010199, 2, 'alejandro@gmail.com', NULL, 1, '2024-07-24 15:12:02', '2009-07-11', 'externo', 'si', '4'),
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 2, 'mitalentohumanose@gmail.com', NULL, 1, '2024-07-24 15:12:02', '2015-07-17', NULL, 'si', '5'),
-(2147483647, 'Juan Jose', 'Mendieta', 'Juan Jose_Mendieta_23911211.jpg', '3111000230', NULL, NULL, 2, 23911211, 2, 'mendieta@gmail.com', NULL, 1, '2024-07-24 15:13:20', '2009-07-16', 'interno', 'si', '5');
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `cargo_funcionario`, `id_estado`, `fecha_registro`, `fecha_actualizacion`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`) VALUES
+(1005717700, 'Natalia', 'Olmos Villarraga', 'Natalia_Olmos Villarraga_23911202.jpeg', '3043254508', NULL, NULL, 2, 23911202, 2, 'nataliaolmos02@gmail.com', NULL, 1, '2024-07-26 15:18:22', NULL, '2003-08-06', 'externo', 'si', '4'),
+(1110460410, 'Alejandro', 'Munoz', 'Alejandro_Munoz_23911202.jpg', '3201201122', NULL, NULL, 2, 23911202, 2, 'alejandro@gmail.com', NULL, 1, '2024-07-26 15:36:13', NULL, '2009-07-11', 'externo', 'si', '4'),
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', NULL, 1, '2024-07-24 15:12:02', NULL, '2015-07-17', NULL, 'si', '5');
 
 --
 -- Índices para tablas volcadas
@@ -456,7 +458,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_area` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `cargos`
