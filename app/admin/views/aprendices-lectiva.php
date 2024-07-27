@@ -171,6 +171,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" class="mt-2" action="editar-aprendiz.php">
                                             <input type="hidden" name="id_aprendiz-edit"
                                                 value="<?= $aprendiz['documento'] ?>">
+                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit">
@@ -182,7 +183,6 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                                 class='bx bx-image-add'></i></a>
                                     </td>
                                     <?php
-
                                         if (isEmpty([$aprendiz['foto_data']])) {
                                         ?>
                                     <td class="avatar">
