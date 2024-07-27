@@ -121,15 +121,45 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     const patrocinioSelect = document.getElementById('tipo_patrocinio');
     const empresaInput = document.getElementById('empresa-input');
+    const empresa = document.getElementById('empresa');
 
     patrocinioSelect.addEventListener('change', function() {
         if (patrocinioSelect.value === 'si') {
             empresaInput.style.display = 'block';
+            empresa.focus(); // Se posiciona el cursor en el campo de empresa
+            empresa.setAttribute('required',
+            'required'); // Establece el atributo required correctamente
         } else {
             empresaInput.style.display = 'none';
+            empresa.removeAttribute('required');
         }
     });
 });
+
+
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Seleccionar todos los botones con la clase 'view-photo-btn'
+    const viewPhotoButtons = document.querySelectorAll('.view-photo-btn');
+
+    // Añadir un event listener a cada botón
+    viewPhotoButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Obtener la URL de la imagen desde el atributo data-photo
+            const photoUrl = button.getAttribute('data-photo');
+
+            // Mostrar la imagen en un SweetAlert
+            Swal.fire({
+                title: 'Foto del Aprendiz',
+                imageUrl: photoUrl,
+                imageWidth: 400,
+                imageHeight: 400,
+                imageAlt: 'Foto del Aprendiz'
+            });
+        });
+    });
+});
+
 // Creamos el arreglo para guardar las unidades seleccionadas
 let unidadesSeleccionadas = JSON.parse(localStorage.getItem('unidadesSeleccionadas')) || [];
 // creamos el arreglo para almacenar las fichas de formacion

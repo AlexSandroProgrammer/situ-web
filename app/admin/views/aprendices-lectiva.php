@@ -227,34 +227,9 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-    <script>
-    // Esperar a que el DOM esté completamente cargado
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Seleccionar todos los botones con la clase 'view-photo-btn'
-        const viewPhotoButtons = document.querySelectorAll('.view-photo-btn');
 
-        // Añadir un event listener a cada botón
-        viewPhotoButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Obtener la URL de la imagen desde el atributo data-photo
-                const photoUrl = button.getAttribute('data-photo');
-
-                // Mostrar la imagen en un SweetAlert
-                Swal.fire({
-                    title: 'Foto del Aprendiz',
-                    imageUrl: photoUrl,
-                    imageWidth: 400,
-                    imageHeight: 400,
-                    imageAlt: 'Foto del Aprendiz'
-                });
-            });
-        });
-    });
-    </script>
 
     <?php
     require_once("../components/footer.php")

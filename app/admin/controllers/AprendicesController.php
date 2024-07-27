@@ -238,6 +238,7 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
     $estadoAprendiz = $_POST['estadoAprendiz'];
     $estadoSenaEmpresa = $_POST['estadoSenaEmpresa'];
     $sexo = $_POST['sexo'];
+    $rutaDireccion = $_POST['ruta'];
     // Validamos que no hayamos recibido ningún dato vacío
     if (isEmpty([
         $documento,
@@ -250,7 +251,8 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
         $patrocinio,
         $estadoAprendiz,
         $estadoSenaEmpresa,
-        $sexo
+        $sexo,
+        $rutaDireccion
     ])) {
         showErrorFieldsEmpty("editar-aprendiz.php?id_aprendiz-edit=" . $documento);
         exit();
@@ -311,7 +313,7 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
         $editarDatosAprendiz->bindParam(':documento', $documento);
         $editarDatosAprendiz->execute();
         if ($editarDatosAprendiz) {
-            showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos se han actualizado correctamente", "aprendices-lectiva.php");
+            showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos se han actualizado correctamente", $rutaDireccion);
             exit();
         } else {
             showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", "editar-aprendiz.php?id_aprendiz-edit=" . $documento);
