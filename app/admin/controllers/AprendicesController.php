@@ -90,21 +90,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                     if ($registroImagen) {
                         try {
                             // Inserta los datos en la base de datos, incluyendo la edad
-                            $registerFuncionario = $connection->prepare("
-                                INSERT INTO usuarios(
-                                    documento, nombres, apellidos, email, celular, id_ficha, 
-                                    fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, 
-                                    foto_data, empresa_patrocinadora, id_estado, id_estado_se, 
-                                    id_tipo_usuario
-                                ) 
-                                VALUES(
-                                    :documento, :nombres, :apellidos, :email, :celular, :id_ficha, 
-                                    :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,
-                                    :foto_data, :empresa, :id_estado, :id_estado_se, 
-                                    :id_tipo_usuario
-                                )
-                            ");
-
+                            $registerFuncionario = $connection->prepare("INSERT INTO usuarios(documento, nombres, apellidos, email, celular, id_ficha, fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, foto_data, empresa_patrocinadora, id_estado, id_estado_se, id_tipo_usuario, sexo) VALUES(:documento, :nombres, :apellidos, :email, :celular, :id_ficha, :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,:foto_data, :empresa, :id_estado, :id_estado_se, :id_tipo_usuario, :sexo)");
                             // Vincular los parámetros
                             $registerFuncionario->bindParam(':documento', $documento);
                             $registerFuncionario->bindParam(':nombres', $nombres);
@@ -121,6 +107,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                             $registerFuncionario->bindParam(':id_estado', $estadoAprendiz);
                             $registerFuncionario->bindParam(':id_estado_se', $estadoSenaEmpresa);
                             $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
+                            $registerFuncionario->bindParam(':sexo', $sexo);
                             $registerFuncionario->execute();
                             if ($registerFuncionario) {
                                 showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
@@ -135,7 +122,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                         exit();
                     }
                 } else {
-                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo ya existe en el servidor", "registrar-aprendiz.php");
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "La imagen con los datos del aprendiz ya se encuentra registrada. comunicate con tu administrador.", "registrar-aprendiz.php");
                     exit();
                 }
             } else {
@@ -148,24 +135,21 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
         }
     }
 }
-
+//* cambiar foto del aprendiz
 if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz"] == "updateImageAprendiz")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $ruta = $_POST['ruta'];
     $document = $_POST['document'];
     $fotoAprendiz = $_FILES['fotoAprendiz']['name'];
-
     // Validamos que no hayamos recibido ningún dato vacío
     if (isEmpty([$document, $fotoAprendiz, $ruta])) {
         showErrorFieldsEmpty("aprendices-lectiva.php");
         exit();
     }
-
     $imageValidation = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
     $imageValidation->bindParam(':documento', $document);
     $imageValidation->execute();
     $fetch = $imageValidation->fetch(PDO::FETCH_ASSOC);
-
     // Condicionales dependiendo del resultado de la consulta
     if ($fetch) {
         if (isFileUploaded($_FILES['fotoAprendiz'])) {
@@ -239,11 +223,7 @@ if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz
         exit();
     }
 }
-
-
-
-
-// editar datos de aprendices
+//* editar datos de aprendices
 if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"] == "formUpdateAprendiz")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
     $documento = $_POST['documento'];
@@ -315,12 +295,12 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
         celular = :celular, sexo = :sexo, email = :email, id_ficha = :id_ficha,
         tipo_convivencia = :tipo_convivencia, patrocinio = :patrocinio, fecha_actualizacion = :fecha_actualizacion, 
         empresa_patrocinadora = :empresa, id_estado = :id_estado, id_estado_se = :id_estado_se WHERE documento = :documento");
-
         // Vincular los parámetros
         $editarDatosAprendiz->bindParam(':nombres', $nombres);
         $editarDatosAprendiz->bindParam(':apellidos', $apellidos);
         $editarDatosAprendiz->bindParam(':celular', $celular);
         $editarDatosAprendiz->bindParam(':sexo', $sexo);
+        $editarDatosAprendiz->bindParam(':email', $email);
         $editarDatosAprendiz->bindParam(':id_ficha', $ficha);
         $editarDatosAprendiz->bindParam(':tipo_convivencia', $tipo_convivencia);
         $editarDatosAprendiz->bindParam(':patrocinio', $patrocinio);
@@ -331,7 +311,7 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
         $editarDatosAprendiz->bindParam(':documento', $documento);
         $editarDatosAprendiz->execute();
         if ($editarDatosAprendiz) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
+            showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos se han actualizado correctamente", "aprendices-lectiva.php");
             exit();
         } else {
             showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", "editar-aprendiz.php?id_aprendiz-edit=" . $documento);
