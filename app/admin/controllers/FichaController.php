@@ -85,12 +85,14 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $cierre_formacion = $_POST['cierre_formacion'];
     $estado_ficha = $_POST['estado_ficha'];
     $estado_se = $_POST['estado_se'];
-    // validamos que no hayamos recibido ningun dato vacio
+
+    // Validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$codigo_ficha, $id_programa, $inicio_formacion, $cierre_formacion, $estado_ficha, $estado_se])) {
-        showErrorFieldsEmpty("editar_ficha.php?'id_ficha-edit=" . $codigo_ficha);
+        showErrorFieldsEmpty("editar_ficha.php?id_ficha-edit=" . $codigo_ficha); // Corrección en la comilla
         exit();
     }
-    // Inserta los datos en la base de datos
+
+    // Actualizar datos en la tabla 'fichas'
     $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se WHERE codigoFicha = :codigo_ficha");
     $fichaUpdateFindById->bindParam(':id_programa', $id_programa);
     $fichaUpdateFindById->bindParam(':inicio_formacion', $inicio_formacion);
@@ -99,13 +101,36 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $fichaUpdateFindById->bindParam(':estado_se', $estado_se);
     $fichaUpdateFindById->bindParam(':codigo_ficha', $codigo_ficha);
     $fichaUpdateFindById->execute();
-    if ($fichaUpdateFindById) {
-        showErrorOrSuccessAndRedirect("success", "Actualizacion exitosa", "Los datos se han actualizado correctamente", "fichas.php");
+
+    // Verificamos si la actualización fue exitosa
+    if ($fichaUpdateFindById->rowCount() > 0) {
+        if ($estado_se == 1) {
+            $tipo_usuario = 2; // Estado para aprobados
+            // Actualizar estado de los aprendices de la ficha en una sola consulta
+            $aprendices = $connection->prepare("UPDATE usuarios SET id_estado_se = :id_estado WHERE id_ficha = :codigo AND id_tipo_usuario = :id_usuario");
+            $aprendices->bindParam(":id_estado", $estado_se);
+            $aprendices->bindParam(":codigo", $codigo_ficha);
+            $aprendices->bindParam(":id_usuario", $tipo_usuario);
+            $aprendices->execute();
+        } else if ($estado_se == 2) {
+            $tipo_usuario = 2;
+            // Actualizar estado de los aprendices de la ficha en una sola consulta
+            $aprendices = $connection->prepare("UPDATE usuarios SET id_estado_se = :id_estado WHERE id_ficha = :codigo AND id_tipo_usuario = :id_usuario");
+            $aprendices->bindParam(":id_estado", $estado_se);
+            $aprendices->bindParam(":codigo", $codigo_ficha);
+            $aprendices->bindParam(":id_usuario", $tipo_usuario);
+            $aprendices->execute();
+        } else {
+            showErrorOrSuccessAndRedirect("error", "Error de actualización", "Error al momento de actualizar los datos, por favor inténtalo nuevamente", "fichas.php?id_ficha-edit=" . $codigo_ficha);
+        }
+
+        showErrorOrSuccessAndRedirect("success", "Actualización exitosa", "Los datos se han actualizado correctamente", "fichas.php");
         exit();
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "fichas.php?id_ficha-edit=" . $codigo_ficha);
+        showErrorOrSuccessAndRedirect("error", "Error de actualización", "Error al momento de actualizar los datos, por favor inténtalo nuevamente", "fichas.php?id_ficha-edit=" . $codigo_ficha);
     }
 }
+
 
 // ELIMINAR PROCESO
 if (isset($_GET['id_ficha-delete'])) {

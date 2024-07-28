@@ -4,23 +4,23 @@ require_once("../components/sidebar.php");
 if (!empty($_GET['id_ficha-edit'])) {
     $id_ficha = $_GET['id_ficha-edit'];
     $getFindByIdFicha = $connection->prepare("SELECT 
-        usuarios.documento,
-        usuarios.nombres,
-        usuarios.apellidos,
-        usuarios.celular,
-        usuarios.sexo,
-        usuarios.email,
-        usuarios.email,
-        usuarios.fin_formacion,
-        usuarios.fecha_productiva,
+        fichas.codigoFicha,
+        programas_formacion.id_programa,
+        programas_formacion.nombre_programa,
+        fichas.inicio_formacion,
+        fichas.fin_formacion,
+        fichas.fecha_productiva,
+        fichas.id_estado,
+        fichas.id_estado_se,
         estado_ficha.id_estado AS estado_ficha_id,
-        estado_ficha.estado AS nombre_estado_ficha,
         estado_se.id_estado AS estado_se_id,
-        estado_se.estado AS nombre_estado_se
-    FROM usuarios
-    INNER JOIN ficha ON fichas.id_programa = programas_formacion.id_programa
-    INNER JOIN estados AS estado_ficha ON fichas.id_estado = estado_ficha.id_estado
-    INNER JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado
+        estado_ficha.estado AS nombre_estado_ficha,
+        estado_se.estado AS nombre_estado_se,
+        (SELECT COUNT(*) FROM usuarios WHERE usuarios.id_ficha = fichas.codigoFicha) AS cantidad_aprendices
+    FROM fichas
+    LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa
+    LEFT JOIN estados AS estado_ficha ON fichas.id_estado = estado_ficha.id_estado
+    LEFT JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado
     WHERE codigoFicha = :id_ficha");
     $getFindByIdFicha->bindParam(":id_ficha", $id_ficha);
     $getFindByIdFicha->execute();

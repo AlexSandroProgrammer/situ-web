@@ -16,12 +16,21 @@ if (isset($_GET['details'])) {
             try {
                 // estado activo
                 $id_estado = 1;
+                $tipo_usuario = 2;
                 $registerDetails = $connection->prepare("UPDATE fichas SET id_estado_se = :id_estado WHERE codigoFicha = :codigo");
+                // cambiamos los estados de los aprendices que tienen la ficha de formacion de se en listaran en sena empresa
+                $aprendices = $connection->prepare("UPDATE usuarios SET id_estado_se = :id_estado WHERE id_ficha = :codigo AND id_tipo_usuario = :id_usuario");
                 foreach ($data as $ficha) {
                     $codigo = $ficha['id'];
+                    // Actualizar estado de la ficha
                     $registerDetails->bindParam(":id_estado", $id_estado);
                     $registerDetails->bindParam(":codigo", $codigo);
                     $registerDetails->execute();
+                    // Actualizar estado de los aprendices
+                    $aprendices->bindParam(":id_estado", $id_estado);
+                    $aprendices->bindParam(":codigo", $codigo);
+                    $aprendices->bindParam(":id_usuario", $tipo_usuario);
+                    $aprendices->execute();
                 }
             } catch (PDOException $e) {
                 // Manejo de errores de base de datos
