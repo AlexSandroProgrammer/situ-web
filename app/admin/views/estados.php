@@ -206,23 +206,16 @@ $states = $getStates->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo $state['estado'] ?></td>
                                     </tr>
                                     <?php
-
                                     }
-
                                     ?>
                                 </tbody>
-
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
     <?php
     require_once("../components/footer.php")
     ?>

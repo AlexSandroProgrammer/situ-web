@@ -1,5 +1,5 @@
 <?php
-$titlePage = "Listado de Fichas || Etapa Lectiva";
+$titlePage = "Listado de Fichas || Historico";
 require_once("../components/sidebar.php");
 $getFichas = $connection->prepare("SELECT 
         fichas.codigoFicha,
@@ -13,8 +13,7 @@ $getFichas = $connection->prepare("SELECT
     FROM fichas
     LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa
     LEFT JOIN estados AS estado_ficha ON fichas.id_estado = estado_ficha.id_estado
-    LEFT JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado
-");
+    LEFT JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado WHERE fichas.id_estado_se = 2 AND fichas.id_estado = 9");
 $getFichas->execute();
 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -28,14 +27,14 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-body">
                 <div class="row gy-2 text-left">
                     <!-- Default Modal -->
-                    <div class="col-xl-3 col-lg-4">
+                    <div class="col-xl-3 col-4">
                         <!-- Button trigger modal -->
                         <a href="registrar-ficha.php" class="btn btn-primary text-white">
                             <i class="fas fa-layer-group"></i> Registrar
                         </a>
                     </div>
                     <!-- Vertically Centered Modal -->
-                    <div class="col-xl-3 col-lg-4">
+                    <div class="col-xl-3 col-4">
                         <!-- Button trigger modal -->
                         <a href="fichas.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
@@ -57,17 +56,11 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-4 mt-5">
-                        <!-- Button trigger modal -->
-                        <a href="estado-fichas.php" class="btn btn-info"><i class="fas fa-info"></i> Enlistar a
-                            Sena Empresa
-                        </a>
-                    </div>
                 </div>
                 <?php
                 if (isset($_GET["importarExcel"])) {
                 ?>
-                <div class="row mt-2">
+                <div class="row">
                     <div class="col-xl">
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
@@ -104,6 +97,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
+
                         <table id="example" class="table table-striped table-bordered top-table table-responsive"
                             cellspacing="0" width="100%">
                             <thead>
@@ -163,12 +157,11 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                 }
                                 ?>
                             </tbody>
-
                         </table>
-
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <?php

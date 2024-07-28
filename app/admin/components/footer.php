@@ -54,17 +54,6 @@
     <!-- datatables JS -->
     <script type="text/javascript" src="../../libraries/datatables/datatables.min.js"></script>
 
-    <script>
-document.addEventListener('DOMContentLoaded', (event) => {
-    const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
-    const inicioFormacionInput = document.getElementById('inicio_formacion');
-
-    inicioFormacionInput.setAttribute('min', formattedDate);
-    inicioFormacionInput.value = formattedDate;
-});
-    </script>
-
     <!-- para usar botones en datatables JS -->
     <script src="../../libraries/datatables/Buttons-1.5.6/js/dataTables.buttons.min.js"></script>
     <script src="../../libraries/datatables/JSZip-2.5.0/jszip.min.js"></script>
@@ -365,6 +354,18 @@ function cerrarVistaEstados(event) {
         window.location.href = "fichas.php";
     }
 };
+
+
+function cerrarVistaFichas(event) {
+    event.preventDefault();
+    localStorage.removeItem('fichasSeleccionadas');
+    fichasSeleccionadas = [];
+    // verificamos que los items esten vacios
+    if (fichasSeleccionadas.length === 0) {
+        window.location.href = "fichas-se.php";
+    }
+};
+
 
 function removerUnidadDeTabla(unidadId) {
     const row = document.querySelector(`#tabla-unidades-seleccionadas tr[data-unidad-id="${unidadId}"]`);

@@ -90,13 +90,16 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
         showErrorFieldsEmpty("editar_ficha.php?id_ficha-edit=" . $codigo_ficha); // Corrección en la comilla
         exit();
     }
+    // creamos una variable para almacenar la fecha en que la ficha sale a etapa productiva
+    $etapa_productiva = date('Y-m-d', strtotime('-6 months', strtotime($cierre_formacion)));
     // Actualizar datos en la tabla 'fichas'
-    $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se WHERE codigoFicha = :codigo_ficha");
+    $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se, fecha_productiva = :fecha_productiva WHERE codigoFicha = :codigo_ficha");
     $fichaUpdateFindById->bindParam(':id_programa', $id_programa);
     $fichaUpdateFindById->bindParam(':inicio_formacion', $inicio_formacion);
     $fichaUpdateFindById->bindParam(':cierre_formacion', $cierre_formacion);
     $fichaUpdateFindById->bindParam(':estado_ficha', $estado_ficha);
     $fichaUpdateFindById->bindParam(':estado_se', $estado_se);
+    $fichaUpdateFindById->bindParam(':fecha_productiva', $etapa_productiva);
     $fichaUpdateFindById->bindParam(':codigo_ficha', $codigo_ficha);
     $fichaUpdateFindById->execute();
     // Verificamos si la actualización fue exitosa

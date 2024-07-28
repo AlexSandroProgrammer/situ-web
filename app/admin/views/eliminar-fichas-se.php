@@ -68,11 +68,12 @@ if (isset($_GET['details'])) {
                 <div class="card mb-4">
                     <div class="card-header justify-content-between align-items-center">
                         <h3 class="fw-bold py-2"><span class="text-muted fw-light"></span>Enlistamiento de fichas</h3>
-                        <h6 class="mb-0">En esta seccion puedes seleccionar las diferentes fichas de formacion que se
-                            encuentran activas y que pasaran a Sena Empresa.</h6>
+                        <as class="mb-0">En esta seccion puedes seleccionar las diferentes fichas que se encuentran en
+                            Sena Empresa y deseas eliminarlas para agregar las del nuevo trimestre</h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" id="agregarUnidadAreaForm" enctype="multipart/form-data" name="agregarUnidadArea" autocomplete="off">
+                        <form method="POST" id="agregarUnidadAreaForm" enctype="multipart/form-data"
+                            name="agregarUnidadArea" autocomplete="off">
                             <div class="row">
                                 <label for="estadoInicial" class="form-label">Seleccionar Fichas</label>
                                 <?php
@@ -81,37 +82,40 @@ if (isset($_GET['details'])) {
                                 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                 if (empty($fichas)) {
                                 ?>
-                                    <div class="d-flex my-3 col-md-12 col-lg-6 col-xl-4">
-                                        <div class="flex-grow-1 row">
-                                            <div class="col-9 mb-sm-0 mb-2">
-                                                <h6 class="mb-0">No existen registros</h6>
-                                                <small class="text-muted">Actualmente no tienes fichas registradas</small>
-                                            </div>
+                                <div class="d-flex my-3 col-md-12 col-lg-6 col-xl-4">
+                                    <div class="flex-grow-1 row">
+                                        <div class="col-9 mb-sm-0 mb-2">
+                                            <h6 class="mb-0">No existen registros</h6>
+                                            <small class="text-muted">Actualmente no tienes fichas registradas</small>
                                         </div>
                                     </div>
-                                    <?php
+                                </div>
+                                <?php
                                 } else {
                                     foreach ($fichas as $ficha) {
                                     ?>
-                                        <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-3">
-                                            <div class="flex-grow-1 row">
-                                                <div class="col-6 mb-sm-0 mb-2">
-                                                    <h6 class="mb-0"> <?php echo $ficha['codigoFicha'] ?> </h6>
-                                                </div>
-                                                <div class="col-3 text-start">
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input float-end ficha-checkbox" type="checkbox" data-ficha-id="<?php echo $ficha['codigoFicha'] ?>" data-ficha-nombre="<?php echo $ficha['codigoFicha'] ?>" />
-                                                    </div>
-                                                </div>
+                                <div class="d-flex mb-3 col-md-12 col-lg-6 col-xl-3">
+                                    <div class="flex-grow-1 row">
+                                        <div class="col-6 mb-sm-0 mb-2">
+                                            <h6 class="mb-0"> <?php echo $ficha['codigoFicha'] ?> </h6>
+                                        </div>
+                                        <div class="col-3 text-start">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input float-end ficha-checkbox" type="checkbox"
+                                                    data-ficha-id="<?php echo $ficha['codigoFicha'] ?>"
+                                                    data-ficha-nombre="<?php echo $ficha['codigoFicha'] ?>" />
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
                                 <?php
                                     }
                                 }
                                 ?>
                                 <div class="mt-4">
-                                    <button class="btn btn-danger" onclick="cerrarVistaEstados(event)">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary" onclick="actualizarEstadoFichas(event)">Actualizar</button>
+                                    <button class="btn btn-danger" onclick="cerrarVistaFichas(event)">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary"
+                                        onclick="actualizarEstadoFichas(event)">Actualizar</button>
                                     <input type="hidden" id="fichas-seleccionadas" name="fichas-seleccionadas" value="">
                                 </div>
                             </div>
