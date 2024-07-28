@@ -85,13 +85,11 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $cierre_formacion = $_POST['cierre_formacion'];
     $estado_ficha = $_POST['estado_ficha'];
     $estado_se = $_POST['estado_se'];
-
     // Validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$codigo_ficha, $id_programa, $inicio_formacion, $cierre_formacion, $estado_ficha, $estado_se])) {
         showErrorFieldsEmpty("editar_ficha.php?id_ficha-edit=" . $codigo_ficha); // Corrección en la comilla
         exit();
     }
-
     // Actualizar datos en la tabla 'fichas'
     $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se WHERE codigoFicha = :codigo_ficha");
     $fichaUpdateFindById->bindParam(':id_programa', $id_programa);
@@ -101,7 +99,6 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $fichaUpdateFindById->bindParam(':estado_se', $estado_se);
     $fichaUpdateFindById->bindParam(':codigo_ficha', $codigo_ficha);
     $fichaUpdateFindById->execute();
-
     // Verificamos si la actualización fue exitosa
     if ($fichaUpdateFindById->rowCount() > 0) {
         if ($estado_se == 1) {

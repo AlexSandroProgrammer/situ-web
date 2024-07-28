@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             empresaInput.style.display = 'block';
             empresa.focus(); // Se posiciona el cursor en el campo de empresa
             empresa.setAttribute('required',
-            'required'); // Establece el atributo required correctamente
+                'required'); // Establece el atributo required correctamente
         } else {
             empresaInput.style.display = 'none';
             empresa.removeAttribute('required');
@@ -249,6 +249,23 @@ function registrarFichas(event) {
     window.location.href = 'estado-fichas.php?details=' + JSON.stringify(fichasSeleccionadas);
 }
 
+function actualizarEstadoFichas(event) {
+    event.preventDefault();
+    const fichasSeleccionadas = JSON.parse(localStorage.getItem('fichasSeleccionadas'));
+    console.log(fichasSeleccionadas);
+    if (!fichasSeleccionadas || fichasSeleccionadas.length == 0) {
+        swal.fire({
+            title: 'Error',
+            text: 'Debes seleccionar al menos una ficha para eliminar de Sena Empresa.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        }).then(() => {
+            window.location = 'eliminar-fichas-se.php'
+        });
+        return;
+    }
+    window.location.href = 'eliminar-fichas-se.php?details=' + JSON.stringify(fichasSeleccionadas);
+}
 
 
 // evento el cual permita agregar y deseleccionar checkbox
