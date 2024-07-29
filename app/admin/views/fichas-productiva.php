@@ -27,20 +27,20 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-body">
                 <div class="row gy-2 text-left">
                     <!-- Default Modal -->
-                    <div class="col-xl-3 col-4">
+                    <div class="col-xl-3 col-lg-4">
                         <!-- Button trigger modal -->
                         <a href="registrar-ficha.php" class="btn btn-primary text-white">
                             <i class="fas fa-layer-group"></i> Registrar
                         </a>
                     </div>
                     <!-- Vertically Centered Modal -->
-                    <div class="col-xl-3 col-4">
+                    <div class="col-xl-3 col-lg-4">
                         <!-- Button trigger modal -->
                         <a href="fichas.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
                     </div>
-                    <div class="col-xl-3 col-4">
+                    <div class="col-xl-3 col-lg-4">
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
                                 aria-expanded="false">

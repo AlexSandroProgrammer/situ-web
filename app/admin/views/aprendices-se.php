@@ -20,18 +20,38 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
             <div class="card-body">
                 <div class="row gy-3 mb-3">
                     <!-- Default Modal -->
-                    <div class="col-lg-2 col-md-6">
+                    <div class="col-xl-3 col-lg-4">
                         <!-- Button trigger modal -->
                         <a class="btn btn-primary" href="registrar-aprendiz.php">
                             <i class="fas fa-layer-group"></i> Registrar
                         </a>
                     </div>
                     <!-- Vertically Centered Modal -->
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-xl-3 col-lg-4">
                         <!-- Button trigger modal -->
                         <a href="funcionarios.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
+                    </div>
+                    <div class="col-xl-3 col-lg-4">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fas fa-star"></i> Filtrar Aprendices
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="aprendices-lectiva.php">Aprendices Etapa Lectiva</a>
+                                </li>
+                                <li><a class="dropdown-item" href="aprendices-se.php">Aprendices SENA EMPRESA</a></li>
+                                <li><a class="dropdown-item" href="aprendices-productiva.php">Aprendices Etapa
+                                        Productiva</a>
+                                </li>
+                                <li><a class="dropdown-item" href="aprendices-historico.php">Aprendices Historico</a>
+                                </li>
+                                <li><a class="dropdown-item" href="aprendices-bloqueadas.php">Aprendices Bloqueados</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <?php
@@ -120,7 +140,7 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
                 }
                 ?>
                 <div class="row">
-                    <div class="col-lg-12 mt-3">
+                    <div class="col-lg-12 mt-5">
                         <table id="example"
                             class="table table-striped table-bordered top-table table-responsive text-center"
                             cellspacing="0" width="100%">

@@ -1,17 +1,17 @@
 <?php
-$titlePage = "Lista de Aprendices || Etapa Lectiva";
+$titlePage = "Lista de Aprendices || Historico";
 require_once("../components/sidebar.php");
 // arreglo con ids de la consulta
-$array_keys = [1, 2];
-$listaAprendicesLectiva = $connection->prepare("SELECT usuarios.nombres,usuarios.documento,usuarios.apellidos,usuarios.foto_data,usuarios.celular,usuarios.sexo,usuarios.email,usuarios.fecha_registro,usuarios.fecha_nacimiento,usuarios.tipo_convivencia,usuarios.patrocinio,usuarios.empresa_patrocinadora,usuarios.id_ficha,empresas.nombre_empresa,programas_formacion.nombre_programa,tipo_usuario.tipo_usuario,estado_usuario.estado AS estado_aprendiz,estado_se.estado AS nombre_estado_se FROM usuarios LEFT JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha  LEFT JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa LEFT JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id LEFT JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado LEFT JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa WHERE usuarios.id_tipo_usuario = :id_tipo_usuario  AND usuarios.id_estado = :id_estado  AND usuarios.id_estado_se = :id_estado_se
+$array_keys = [1, 2, 5];
+$listaAprendicesbloqueados = $connection->prepare("SELECT usuarios.nombres,usuarios.documento,usuarios.apellidos,usuarios.foto_data,usuarios.celular,usuarios.sexo,usuarios.email,usuarios.fecha_registro,usuarios.fecha_nacimiento,usuarios.tipo_convivencia,usuarios.patrocinio,usuarios.empresa_patrocinadora,usuarios.id_ficha,empresas.nombre_empresa,programas_formacion.nombre_programa,tipo_usuario.tipo_usuario,estado_usuario.estado AS estado_aprendiz,estado_se.estado AS nombre_estado_se FROM usuarios LEFT JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha  LEFT JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa LEFT JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id LEFT JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado LEFT JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa WHERE usuarios.id_tipo_usuario = :id_tipo_usuario  AND usuarios.id_estado = :id_estado  AND usuarios.id_estado_se = :id_estado_se
 ");
-$listaAprendicesLectiva->bindParam(":id_tipo_usuario", $array_keys[1]);
-$listaAprendicesLectiva->bindParam(":id_estado", $array_keys[0]);
-$listaAprendicesLectiva->bindParam(":id_estado_se", $array_keys[1]);
-$listaAprendicesLectiva->execute();
-$aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
+$listaAprendicesbloqueados->bindParam(":id_tipo_usuario", $array_keys[1]);
+$listaAprendicesbloqueados->bindParam(":id_estado", $array_keys[2]);
+$listaAprendicesbloqueados->bindParam(":id_estado_se", $array_keys[1]);
+$listaAprendicesbloqueados->execute();
+$aprendices = $listaAprendicesbloqueados->fetchAll(PDO::FETCH_ASSOC);
 
-?>
+?>x
 <!-- Content wrapper -->
 <div class="content-wrapper">
     <!-- Content -->
@@ -41,7 +41,8 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="fas fa-star"></i> Filtrar Aprendices
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="aprendices-lectiva.php">Aprendices Etapa Lectiva</a>
+                                <li><a class="dropdown-item" href="aprendices-lectiva.php">Aprendices Etapa
+                                        Lectiva</a>
                                 </li>
                                 <li><a class="dropdown-item" href="aprendices-se.php">Aprendices SENA EMPRESA</a></li>
                                 <li><a class="dropdown-item" href="aprendices-productiva.php">Aprendices Etapa
@@ -78,7 +79,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-lectiva.php">
+                                        <a class="btn btn-danger" href="aprendices-bloqueados.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Imagen"></input>
@@ -122,10 +123,10 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                                 name="fotoAprendiz" id="aprendiz_foto" />
                                         </div>
                                         <input type="hidden" name="document" value="<?php echo $documento ?>">
-                                        <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                        <input type="hidden" name="ruta" value="aprendices-bloqueados.php">
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-lectiva.php">
+                                        <a class="btn btn-danger" href="aprendices-bloqueados.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
@@ -181,7 +182,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" action="">
                                             <input type="hidden" name="id_aprendiz-delete"
                                                 value="<?= $aprendiz['documento'] ?>">
-                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                            <input type="hidden" name="ruta" value="aprendices-bloqueados.php">
                                             <button class="btn btn-danger mt-2"
                                                 onclick="return confirm('¿Desea eliminar el registro seleccionado?');"
                                                 type="submit">
@@ -191,14 +192,14 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" class="mt-2" action="editar-aprendiz.php">
                                             <input type="hidden" name="id_aprendiz-edit"
                                                 value="<?= $aprendiz['documento'] ?>">
-                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                            <input type="hidden" name="ruta" value="aprendices-bloqueados.php">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit">
                                                 <i class="bx bx-refresh" title="Actualizar"></i>
                                             </button>
                                         </form>
-                                        <a href="aprendices-lectiva.php?document=<?php echo $aprendiz['documento'] ?>"
+                                        <a href="aprendices-bloqueados.php?document=<?php echo $aprendiz['documento'] ?>"
                                             class="btn btn-info mt-2" title="Cambiar Imagen"><i
                                                 class='bx bx-image-add'></i></a>
                                     </td>

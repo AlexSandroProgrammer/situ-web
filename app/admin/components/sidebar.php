@@ -223,6 +223,11 @@
                                 </a>
                             </li>
                             <li class="menu-item">
+                                <a href="fichas-bloqueadas.php" class="menu-link">
+                                    <div data-i18n="Error">Listado Fichas Bloqueadas</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
                                 <a href="fichas-historico.php" class="menu-link">
                                     <div data-i18n="Error">Listado Historico de Fichas</div>
                                 </a>
@@ -261,7 +266,12 @@
                                 </a>
                             </li>
                             <li class="menu-item">
-                                <a href="aprendices-productiva.php" class="menu-link">
+                                <a href="aprendices-bloqueados.php" class="menu-link">
+                                    <div data-i18n="Error">Lista de Aprendices Bloqueados</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="aprendices-historico.php" class="menu-link">
                                     <div data-i18n="Error">Lista de Aprendices Historico</div>
                                 </a>
                             </li>

@@ -41,7 +41,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
                     </div>
-                    <div class="col-xl-3 col-4">
+                    <div class="col-xl-3 col-lg-4">
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -147,9 +147,9 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                     <td><?php echo $ficha['codigoFicha'] ?></td>
                                     <td><?php echo $ficha['nombre_programa'] ?></td>
                                     <td>
-                                        <div class="row p-3 text-center">
+                                        <div class="row p-1 text-center">
                                             <p><?php echo $ficha['cantidad_aprendices'] ?></p>
-                                            <a href="aprendices.php?id_ficha=<?= $ficha['codigoFicha'] ?>"
+                                            <a href="aprendices.php?id_ficha=<?= $ficha['codigoFicha'] ?>&ruta=fichas.php"
                                                 class="btn btn-primary"><i class="fas fa-eye"></i> Ver Aprendices</a>
                                         </div>
                                     </td>
