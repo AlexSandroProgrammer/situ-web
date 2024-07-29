@@ -143,7 +143,7 @@ if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz
     $fotoAprendiz = $_FILES['fotoAprendiz']['name'];
     // Validamos que no hayamos recibido ningún dato vacío
     if (isEmpty([$document, $fotoAprendiz, $ruta])) {
-        showErrorFieldsEmpty("aprendices-lectiva.php");
+        showErrorFieldsEmpty($ruta . "document=" . $document . "&ruta=" . $ruta);
         exit();
     }
     $imageValidation = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
@@ -155,7 +155,6 @@ if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz
         if (isFileUploaded($_FILES['fotoAprendiz'])) {
             $permitidos = ['image/jpeg', 'image/png'];
             $limite_KB = 10000;
-
             if (isFileValid($_FILES['fotoAprendiz'], $permitidos, $limite_KB)) {
                 $ficha = $fetch['id_ficha'];
                 $archivo_anterior = $fetch['foto_data'];
@@ -169,57 +168,52 @@ if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz
                 // Construir el nuevo nombre del archivo
                 $nuevoNombreArchivo = $nombres . "_" . $apellidos . "_" . $ficha . "." . $extension;
                 $imagenRutaEditada = $rutaImagen . $nuevoNombreArchivo;
-
                 createDirectoryIfNotExists($rutaImagen);
-
                 // Si existe una imagen anterior, tratar de eliminarla
                 if ($archivo_anterior) {
                     $imagenRuta = $rutaImagen . $archivo_anterior;
                     if (file_exists($imagenRuta) && !unlink($imagenRuta)) {
-                        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al eliminar la imagen anterior", $ruta . '?document=' . $document);
+                        showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al eliminar la imagen anterior", $ruta . "document=" . $document . "&ruta=" . $ruta);
                         exit();
                     }
                 }
-
                 if (!file_exists($imagenRutaEditada)) {
                     $registroImagen = moveUploadedFile($_FILES['fotoAprendiz'], $imagenRutaEditada);
-
                     if ($registroImagen) {
                         try {
                             // Inserción de los datos en la base de datos, incluyendo la edad
                             $cambiarImagenAprendiz = $connection->prepare("UPDATE usuarios SET foto_data = :foto_data WHERE documento = :documento");
-
                             // Vincular los parámetros
                             $cambiarImagenAprendiz->bindParam(':foto_data', $nuevoNombreArchivo);
                             $cambiarImagenAprendiz->bindParam(':documento', $document);
                             $cambiarImagenAprendiz->execute();
 
                             if ($cambiarImagenAprendiz) {
-                                showErrorOrSuccessAndRedirect("success", "Foto Agregada", "Los datos se han actualizado correctamente", "aprendices-lectiva.php");
+                                showErrorOrSuccessAndRedirect("success", "Foto Agregada", "Los datos se han actualizado correctamente", $ruta);
                                 exit();
                             }
                         } catch (Exception $e) {
-                            showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos.", $ruta . '?document=' . $document);
+                            showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos.", $ruta . "document=" . $document . "&ruta=" . $ruta);
                             exit();
                         }
                     } else {
-                        showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos, error al momento de registrar la imagen.", $ruta . '?document=' . $document);
+                        showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos, error al momento de registrar la imagen.", $ruta . "document=" . $document . "&ruta=" . $ruta);
                         exit();
                     }
                 } else {
-                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "La imagen ya esta registrada.", $ruta . '?document=' . $document);
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "La imagen ya esta registrada.", $ruta . "document=" . $document . "&ruta=" . $ruta);
                     exit();
                 }
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido, debe ser de tipo PNG o JPEG, y no debe superar el tamaño permitido que son 10 MB.", $ruta . '?document=' . $document);
+                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido, debe ser de tipo PNG o JPEG, y no debe superar el tamaño permitido que son 10 MB.", $ruta . "document=" . $document . "&ruta=" . $ruta);
                 exit();
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al subir el archivo", $ruta . '?document=' . $document);
+            showErrorOrSuccessAndRedirect("error", "Error de archivo", "Error al subir el archivo", $ruta . "document=" . $document . "&ruta=" . $ruta);
             exit();
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", $ruta . '?document=' . $document);
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", $ruta . "document=" . $document . "&ruta=" . $ruta);
         exit();
     }
 }
@@ -254,7 +248,7 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
         $sexo,
         $rutaDireccion
     ])) {
-        showErrorFieldsEmpty("editar-aprendiz.php?id_aprendiz-edit=" . $documento);
+        showErrorFieldsEmpty("editar-aprendiz.php?id_aprendiz-edit=" . $documento . "&ruta=" . $rutaDireccion);
         exit();
     }
 
@@ -270,7 +264,7 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
             "error",
             "Error de digitacion",
             "Por favor verifica que en ningun campo existan caracteres especiales, los campos como el nombre, apellido, no deben tener letras como la ñ o caracteres especiales.",
-            "editar-aprendiz.php?id_aprendiz-edit=" . $documento
+            "editar-aprendiz.php?id_aprendiz-edit=" . $documento . "&ruta=" . $rutaDireccion
         );
         exit();
     }
@@ -286,11 +280,10 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
     // Condicionales dependiendo del resultado de la consulta
     if ($resultValidation) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Por favor revisa los datos ingresados, porque ya estan registrados.", "editar-aprendiz.php?id_aprendiz-edit=" . $documento);
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Por favor revisa los datos ingresados, porque ya estan registrados.", "editar-aprendiz.php?id_aprendiz-edit=" . $documento . "&ruta=" . $rutaDireccion);
         exit();
     } else {
         $fecha_actualizacion = date('Y-m-d H:i:s'); // O cualquier otro valor que necesites
-
         // Inserción de los datos en la base de datos, incluyendo la edad
         $editarDatosAprendiz = $connection->prepare("UPDATE usuarios 
         SET nombres = :nombres, apellidos = :apellidos, 
@@ -316,7 +309,7 @@ if ((isset($_POST["MM_formUpdateAprendiz"])) && ($_POST["MM_formUpdateAprendiz"]
             showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos se han actualizado correctamente", $rutaDireccion);
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", "editar-aprendiz.php?id_aprendiz-edit=" . $documento);
+            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos", "editar-aprendiz.php?id_aprendiz-edit=" . $documento . "&ruta=" . $rutaDireccion);
             exit();
         }
     }

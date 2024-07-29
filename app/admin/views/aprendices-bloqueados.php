@@ -1,5 +1,5 @@
 <?php
-$titlePage = "Lista de Aprendices || Historico";
+$titlePage = "Lista de Aprendices || Bloquedos";
 require_once("../components/sidebar.php");
 // arreglo con ids de la consulta
 $array_keys = [1, 2, 5];
@@ -50,7 +50,7 @@ $aprendices = $listaAprendicesbloqueados->fetchAll(PDO::FETCH_ASSOC);
                                 </li>
                                 <li><a class="dropdown-item" href="aprendices-historico.php">Aprendices Historico</a>
                                 </li>
-                                <li><a class="dropdown-item" href="aprendices-bloqueadas.php">Aprendices Bloqueados</a>
+                                <li><a class="dropdown-item" href="aprendices-bloqueados.php">Aprendices Bloqueados</a>
                                 </li>
                             </ul>
                         </div>
@@ -95,8 +95,9 @@ $aprendices = $listaAprendicesbloqueados->fetchAll(PDO::FETCH_ASSOC);
                 }
                 ?>
                 <?php
-                if (isset($_GET['document'])) {
+                if (isset($_GET['document'], $_GET['ruta'])) {
                     $documento = $_GET['document'];
+                    $ruta = $_GET['ruta'];
                     $datosAprendiz = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
                     $datosAprendiz->bindParam(":documento", $documento);
                     $datosAprendiz->execute();
@@ -123,10 +124,10 @@ $aprendices = $listaAprendicesbloqueados->fetchAll(PDO::FETCH_ASSOC);
                                                 name="fotoAprendiz" id="aprendiz_foto" />
                                         </div>
                                         <input type="hidden" name="document" value="<?php echo $documento ?>">
-                                        <input type="hidden" name="ruta" value="aprendices-bloqueados.php">
+                                        <input type="hidden" name="ruta" value="<?php echo $ruta ?>">
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-bloqueados.php">
+                                        <a class="btn btn-danger" href="<?php echo $ruta ?>">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
@@ -199,7 +200,7 @@ $aprendices = $listaAprendicesbloqueados->fetchAll(PDO::FETCH_ASSOC);
                                                 <i class="bx bx-refresh" title="Actualizar"></i>
                                             </button>
                                         </form>
-                                        <a href="aprendices-bloqueados.php?document=<?php echo $aprendiz['documento'] ?>"
+                                        <a href="aprendices-bloqueados.php?document=<?php echo $aprendiz['documento'] ?>&ruta=aprendices-bloqueados.php"
                                             class="btn btn-info mt-2" title="Cambiar Imagen"><i
                                                 class='bx bx-image-add'></i></a>
                                     </td>

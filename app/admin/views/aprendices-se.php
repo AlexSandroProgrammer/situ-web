@@ -29,7 +29,7 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Vertically Centered Modal -->
                     <div class="col-xl-3 col-lg-4">
                         <!-- Button trigger modal -->
-                        <a href="funcionarios.php?importarExcel" class="btn btn-success">
+                        <a href="aprendices-lectiva.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
                     </div>
@@ -48,7 +48,7 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
                                 </li>
                                 <li><a class="dropdown-item" href="aprendices-historico.php">Aprendices Historico</a>
                                 </li>
-                                <li><a class="dropdown-item" href="aprendices-bloqueadas.php">Aprendices Bloqueados</a>
+                                <li><a class="dropdown-item" href="aprendices-bloqueados.php">Aprendices Bloqueados</a>
                                 </li>
                             </ul>
                         </div>
@@ -93,7 +93,7 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
                 }
                 ?>
                 <?php
-                if (isset($_GET['document'])) {
+                if (isset($_GET['document'], $_GET['ruta'])) {
                     $documento = $_GET['document'];
                     $datosAprendiz = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
                     $datosAprendiz->bindParam(":documento", $documento);
@@ -121,10 +121,10 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
                                                 name="fotoAprendiz" id="aprendiz_foto" />
                                         </div>
                                         <input type="hidden" name="document" value="<?php echo $documento ?>">
-                                        <input type="hidden" name="ruta" value="aprendices-se.php">
+                                        <input type="hidden" name="ruta" value="<?php echo $ruta ?>">
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-se.php">
+                                        <a class="btn btn-danger" href="<?php echo $ruta ?>">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
@@ -197,7 +197,7 @@ $aprendices = $listaAprendicesSE->fetchAll(PDO::FETCH_ASSOC);
                                                 <i class="bx bx-refresh" title="Actualizar"></i>
                                             </button>
                                         </form>
-                                        <a href="aprendices-se.php?document=<?php echo $aprendiz['documento'] ?>"
+                                        <a href="aprendices-se.php?document=<?php echo $aprendiz['documento'] ?>&ruta=aprendices-se.php"
                                             class="btn btn-info mt-2" title="Cambiar Imagen"><i
                                                 class='bx bx-image-add'></i></a>
                                     </td>

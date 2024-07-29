@@ -140,6 +140,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" class="mt-2" action="editar-ficha.php">
                                             <input type="hidden" name="id_ficha-edit"
                                                 value="<?= $ficha['codigoFicha'] ?>">
+                                            <input type="hidden" name="ruta" value="fichas-se.php">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>

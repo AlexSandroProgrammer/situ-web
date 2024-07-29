@@ -85,15 +85,17 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $cierre_formacion = $_POST['cierre_formacion'];
     $estado_ficha = $_POST['estado_ficha'];
     $estado_se = $_POST['estado_se'];
+    $ruta_archivo = $_POST['ruta'];
     // Validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$codigo_ficha, $id_programa, $inicio_formacion, $cierre_formacion, $estado_ficha, $estado_se])) {
-        showErrorFieldsEmpty("editar_ficha.php?id_ficha-edit=" . $codigo_ficha); // Corrección en la comilla
+        showErrorFieldsEmpty(""); // Corrección en la comilla
         exit();
     }
     // creamos una variable para almacenar la fecha en que la ficha sale a etapa productiva
     $etapa_productiva = date('Y-m-d', strtotime('-6 months', strtotime($cierre_formacion)));
     // Actualizar datos en la tabla 'fichas'
-    $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se, fecha_productiva = :fecha_productiva WHERE codigoFicha = :codigo_ficha");
+    $fichaUpdateFindById = $connection->prepare("UPDATE fichas SET id_programa = :id_programa, inicio_formacion = :inicio_formacion, 
+    fin_formacion = :cierre_formacion, id_estado = :estado_ficha, id_estado_se = :estado_se, fecha_productiva = :fecha_productiva WHERE codigoFicha = :codigo_ficha");
     $fichaUpdateFindById->bindParam(':id_programa', $id_programa);
     $fichaUpdateFindById->bindParam(':inicio_formacion', $inicio_formacion);
     $fichaUpdateFindById->bindParam(':cierre_formacion', $cierre_formacion);
@@ -103,7 +105,7 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
     $fichaUpdateFindById->bindParam(':codigo_ficha', $codigo_ficha);
     $fichaUpdateFindById->execute();
     // Verificamos si la actualización fue exitosa
-    if ($fichaUpdateFindById->rowCount() > 0) {
+    if ($fichaUpdateFindById) {
         if ($estado_se == 1) {
             $tipo_usuario = 2; // Estado para aprobados
             // Actualizar estado de los aprendices de la ficha en una sola consulta
@@ -121,13 +123,17 @@ if ((isset($_POST["MM_formUpdateFicha"])) && ($_POST["MM_formUpdateFicha"] == "f
             $aprendices->bindParam(":id_usuario", $tipo_usuario);
             $aprendices->execute();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de actualización", "Error al momento de actualizar los datos, por favor inténtalo nuevamente", "fichas.php?id_ficha-edit=" . $codigo_ficha);
+            showErrorOrSuccessAndRedirect(
+                "error",
+                "Error de actualización",
+                "Error al momento de actualizar los datos, por favor inténtalo nuevamente",
+                ""
+            );
         }
-
-        showErrorOrSuccessAndRedirect("success", "Actualización exitosa", "Los datos se han actualizado correctamente", "fichas.php");
+        showErrorOrSuccessAndRedirect("success", "Actualización exitosa", "Los datos se han actualizado correctamente", $ruta_archivo);
         exit();
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error de actualización", "Error al momento de actualizar los datos, por favor inténtalo nuevamente", "fichas.php?id_ficha-edit=" . $codigo_ficha);
+        showErrorOrSuccessAndRedirect("error", "Error de actualización", "Error al momento de actualizar los datos, por favor inténtalo nuevamente", "");
     }
 }
 

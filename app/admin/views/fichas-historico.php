@@ -57,47 +57,8 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                     </div>
                 </div>
-                <?php
-                if (isset($_GET["importarExcel"])) {
-                ?>
-                <div class="row">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Importacion de Archivo Excel
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="formRegisterExcelFichas">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="ficha_excel">Cargar Archivo Excel</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="ficha_excel-2" class="input-group-text"><i
-                                                    class="fas fa-file-excel"></i></span>
-                                            <input type="file" autofocus class="form-control" required
-                                                name="ficha_excel" id="ficha_excel" aria-describedby="ficha_excel-2" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="fichas.php">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterExcelFichas"
-                                            name="MM_formRegisterExcelFichas"></input>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php
-                }
-                ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-
                         <table id="example" class="table table-striped table-bordered top-table table-responsive"
                             cellspacing="0" width="100%">
                             <thead>
@@ -133,6 +94,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" class="mt-2" action="editar-ficha.php">
                                             <input type="hidden" name="id_ficha-edit"
                                                 value="<?= $ficha['codigoFicha'] ?>">
+                                            <input type="hidden" name="ruta" value="fichas-historico.php">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>

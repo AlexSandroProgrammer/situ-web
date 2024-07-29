@@ -14,6 +14,7 @@ $getFichas = $connection->prepare("SELECT
     LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa
     LEFT JOIN estados AS estado_ficha ON fichas.id_estado = estado_ficha.id_estado
     LEFT JOIN estados AS estado_se ON fichas.id_estado_se = estado_se.id_estado
+    WHERE fichas.id_estado_se = 2 AND fichas.id_estado = 1
 ");
 $getFichas->execute();
 $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
@@ -139,6 +140,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" class="mt-2" action="editar-ficha.php">
                                             <input type="hidden" name="id_ficha-edit"
                                                 value="<?= $ficha['codigoFicha'] ?>">
+                                            <input type="hidden" name="ruta" value="fichas.php">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>

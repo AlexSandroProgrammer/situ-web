@@ -49,7 +49,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                 </li>
                                 <li><a class="dropdown-item" href="aprendices-historico.php">Aprendices Historico</a>
                                 </li>
-                                <li><a class="dropdown-item" href="aprendices-bloqueadas.php">Aprendices Bloqueados</a>
+                                <li><a class="dropdown-item" href="aprendices-bloqueados.php">Aprendices Bloqueados</a>
                                 </li>
                             </ul>
                         </div>
@@ -78,7 +78,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-lectiva.php">
+                                        <a class="btn btn-danger" href="aprendices-productiva.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Imagen"></input>
@@ -94,7 +94,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                 }
                 ?>
                 <?php
-                if (isset($_GET['document'])) {
+                if (isset($_GET['document'], $_GET['ruta'])) {
                     $documento = $_GET['document'];
                     $datosAprendiz = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
                     $datosAprendiz->bindParam(":documento", $documento);
@@ -122,10 +122,10 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                                 name="fotoAprendiz" id="aprendiz_foto" />
                                         </div>
                                         <input type="hidden" name="document" value="<?php echo $documento ?>">
-                                        <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                        <input type="hidden" name="ruta" value="<?php echo $ruta ?>">
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-lectiva.php">
+                                        <a class="btn btn-danger" href="<?php echo $ruta ?>">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
@@ -181,7 +181,7 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" action="">
                                             <input type="hidden" name="id_aprendiz-delete"
                                                 value="<?= $aprendiz['documento'] ?>">
-                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                            <input type="hidden" name="ruta" value="aprendices-productiva.php">
                                             <button class="btn btn-danger mt-2"
                                                 onclick="return confirm('¿Desea eliminar el registro seleccionado?');"
                                                 type="submit">
@@ -191,14 +191,14 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                         <form method="GET" class="mt-2" action="editar-aprendiz.php">
                                             <input type="hidden" name="id_aprendiz-edit"
                                                 value="<?= $aprendiz['documento'] ?>">
-                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                            <input type="hidden" name="ruta" value="aprendices-productiva.php">
                                             <button class="btn btn-success"
                                                 onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
                                                 type="submit">
                                                 <i class="bx bx-refresh" title="Actualizar"></i>
                                             </button>
                                         </form>
-                                        <a href="aprendices-lectiva.php?document=<?php echo $aprendiz['documento'] ?>"
+                                        <a href="aprendices-productiva.php?document=<?php echo $aprendiz['documento'] ?>&ruta=aprendices-productiva.php"
                                             class="btn btn-info mt-2" title="Cambiar Imagen"><i
                                                 class='bx bx-image-add'></i></a>
                                     </td>

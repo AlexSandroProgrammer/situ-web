@@ -1,8 +1,9 @@
 <?php
 $titlePage = "Actualizacion Ficha de Formacion";
 require_once("../components/sidebar.php");
-if (!empty($_GET['id_ficha-edit'])) {
+if (isNotEmpty([$_GET['id_ficha-edit'], $_GET['ruta']])) {
     $id_ficha = $_GET['id_ficha-edit'];
+    $ruta = $_GET['ruta'];
     $getFindByIdFicha = $connection->prepare("SELECT 
         fichas.codigoFicha,
         programas_formacion.id_programa,
@@ -42,14 +43,15 @@ if (!empty($_GET['id_ficha-edit'])) {
                         </div>
                         <div class="card-body">
                             <form method="post" action="" autocomplete="off" name="formUpdateFicha">
+                                <input type="hidden" name="ruta" value="<?php echo $ruta ?>">
                                 <div class="mb-3">
                                     <label class="form-label" for="ficha_formacion">Ficha de formacion</label>
                                     <div class="input-group input-group-merge">
                                         <span id="ficha_formacion-span" class="input-group-text"><i
                                                 class="fas fa-layer-group"></i> </span>
                                         <input type="text" required minlength="2" maxlength="200"
-                                            value="<?php echo $fichaFindById['codigoFicha'] ?>" readonly
-                                            class="form-control" name="ficha_formacion" id="ficha_formacion"
+                                            value="<?php echo $id_ficha ?>" readonly class="form-control"
+                                            name="ficha_formacion" id="ficha_formacion"
                                             placeholder="Ingresa tu ficha de formacion" />
                                     </div>
                                 </div>
@@ -152,7 +154,7 @@ if (!empty($_GET['id_ficha-edit'])) {
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <a href="fichas.php" class="btn btn-danger">
+                                    <a href="<?php echo $ruta ?>" class="btn btn-danger">
                                         Cancelar
                                     </a>
                                     <input type="submit" class="btn btn-primary" value="Actualizar"></input>
@@ -172,7 +174,6 @@ if (!empty($_GET['id_ficha-edit'])) {
         showErrorOrSuccessAndRedirect("error", "Error de Ruta", "Los datos no fueron encontrados", "fichas.php");
     }
 } else {
-
     showErrorOrSuccessAndRedirect("error", "Error de Consulta", "Error al momento de obtener los datos del registro.", "fichas.php");
 }
     ?>
