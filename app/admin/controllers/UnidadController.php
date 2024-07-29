@@ -150,12 +150,10 @@ if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel
     $fileType = $_FILES['unidad_excel']['type'];
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
-
     // Validar si el archivo no está vacío y si tiene una extensión válida
     if (isEmpty([$fileName])) {
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "unidades.php?importarExcel");
     }
-
     if (isFileUploaded($_FILES['unidad_excel'])) {
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         $maxSizeKB = 10000;
@@ -163,29 +161,23 @@ if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel
             // Cargar el archivo Excel
             $spreadsheet = IOFactory::load($fileTmpPath);
             $hojaDatosUnidad = $spreadsheet->getSheetByName('Datos');
-
             if ($hojaDatosUnidad) {
                 $data = $hojaDatosUnidad->toArray();
                 $requiredColumnCount = 6; // Se ajusta el número de columnas según el archivo
-
                 if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
                     showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos seis columnas", "unidades.php?importarExcel");
                     exit();
                 }
-
                 // Validar campos de hora
                 $invalidTimeRows = [];
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-
                     $hora_apertura = $row[3];
                     $hora_cierre = $row[4];
-
                     if (!isValidTime($hora_apertura) || !isValidTime($hora_cierre)) {
                         $invalidTimeRows[] = $index + 1;
                         continue; // No detener la verificación para otras filas
                     }
-
                     // Convertir horas a objetos DateTime para comparar
                     $horaAperturaObj = DateTime::createFromFormat('H:i', $hora_apertura);
                     $horaCierreObj = DateTime::createFromFormat('H:i', $hora_cierre);
@@ -194,7 +186,6 @@ if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel
                         $invalidTimeRows[] = $index + 1;
                     }
                 }
-
                 if (!empty($invalidTimeRows)) {
                     $invalidTimeRowsList = implode(', ', $invalidTimeRows);
                     showErrorOrSuccessAndRedirect(
@@ -254,7 +245,6 @@ if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel
                 $invalidArea = []; // Arreglo para guardar las filas con ids inválidos
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-
                     $id_area = $row[1];
                     if (isNotEmpty([$id_area])) {
                         $isNumeric = filter_var($id_area, FILTER_VALIDATE_INT);
@@ -283,12 +273,30 @@ if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel
                     );
                     exit();
                 }
-
+                // VALIDAR QUE NO SE REPITA EL NOMBRE DE UNA UNIDAD
+                $checkValidation = $connection->prepare("SELECT COUNT(*) FROM unidad WHERE nombre_unidad = :nombre_unidad");
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $nombre_unidad = $row[0];
+                    if (isNotEmpty([$nombre_unidad])) {
+                        $checkValidation->bindParam(":nombre_unidad", $nombre_unidad);
+                        $checkValidation->execute();
+                        $result = $checkValidation->fetchColumn();
+                        if ($result) {
+                            showErrorOrSuccessAndRedirect(
+                                "error",
+                                "Error!",
+                                "La unidad ya existe en la base de datos. Por favor verifica el archivo y vuelve a intentarlo.",
+                                "unidades.php?importarExcel"
+                            );
+                            exit();
+                        }
+                    }
+                }
                 // Si no se encontraron problemas, realizar el registro en la base de datos
                 $registerUnity = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado, fecha_registro) 
                 VALUES (:nombre_unidad, :id_area, :hora_inicio, :hora_finalizacion, :cantidad_aprendices, :id_estado, :fecha_registro)");
                 $fecha_registro = date('Y-m-d H:i:s');
-
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
 
@@ -322,11 +330,4 @@ if ((isset($_POST["MM_registroUnidadExcel"])) && ($_POST["MM_registroUnidadExcel
     } else {
         showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "unidades.php?importarExcel");
     }
-}
-
-function isValidTime($time)
-{
-    $format = 'H:i';
-    $parsedTime = DateTime::createFromFormat($format, $time);
-    return $parsedTime && $parsedTime->format($format) === $time;
 }

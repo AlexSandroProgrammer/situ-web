@@ -42,6 +42,12 @@ function showErrorOrSuccessAndRedirect($icon, $title, $description, $location)
         });</script>";
 }
 
+function isValidTime($time)
+{
+    $format = 'H:i';
+    $parsedTime = DateTime::createFromFormat($format, $time);
+    return $parsedTime && $parsedTime->format($format) === $time;
+}
 function showErrorFieldsEmpty($location)
 {
     echo "<script>

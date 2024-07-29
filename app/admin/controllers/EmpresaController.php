@@ -102,72 +102,125 @@ if (isset($_GET['id_empresa-delete'])) {
     }
 }
 // REGISTRO ARCHIVO DE EXCEL 
-if ((isset($_POST["MM_registroCargoExcel"])) && ($_POST["MM_registroCargoExcel"] == "registroCargoExcel")) {
-    $fileTmpPath = $_FILES['cargo_excel']['tmp_name'];
-    $fileName = $_FILES['cargo_excel']['name'];
-    $fileSize = $_FILES['cargo_excel']['size'];
-    $fileType = $_FILES['cargo_excel']['type'];
+if ((isset($_POST["MM_registroEmpresaExcel"])) && ($_POST["MM_registroEmpresaExcel"] == "registroEmpresaExcel")) {
+    // Validar que se haya subido un archivo
+    $fileTmpPath = $_FILES['empresa_excel']['tmp_name'];
+    $fileName = $_FILES['empresa_excel']['name'];
+    $fileSize = $_FILES['empresa_excel']['size'];
+    $fileType = $_FILES['empresa_excel']['type'];
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
+    // Validar si el archivo no está vacío y si tiene una extensión válida
     if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "cargos.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "empresas.php?importarExcel");
     }
-    // Validar la extensión del archivo
-    if (isFileUploaded($_FILES['cargo_excel'])) {
-        // Extensiones permitidas
+    if (isFileUploaded($_FILES['empresa_excel'])) {
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
         $maxSizeKB = 10000;
-        if (isFileValid($_FILES['cargo_excel'], $allowedExtensions, $maxSizeKB)) {
+        if (isFileValid($_FILES['empresa_excel'], $allowedExtensions, $maxSizeKB)) {
             // Cargar el archivo Excel
             $spreadsheet = IOFactory::load($fileTmpPath);
-            // Seleccionar la hoja de datos
-            $hojaDatosArea = $spreadsheet->getSheetByName('Datos');
-            // Escogemos la hoja correcta para el registro de datos
-            if ($hojaDatosArea) {
-                $data = $hojaDatosArea->toArray();
+            $hojaDatosEmpresa = $spreadsheet->getSheetByName('Datos');
+            if ($hojaDatosEmpresa) {
+                $data = $hojaDatosEmpresa->toArray();
                 $requiredColumnCount = 2;
                 if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "cargos.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos columnas", "empresas.php?importarExcel");
                     exit();
                 }
-                $queryDuplicatePost = $connection->prepare("SELECT COUNT(*) FROM cargos WHERE tipo_cargo = :tipo_cargo");
-                $registerPost = $connection->prepare("INSERT INTO cargos(tipo_cargo, estado, fecha_registro) VALUES (:tipo_cargo, :estado, :fecha_registro)");
-                // creamos la variable para guardar la fecha de registro
-                // Obtener la fecha y hora actual
-                $fecha_registro = date('Y-m-d H:i:s');
+                // Verificar duplicados en el arreglo
+                $uniqueData = [];
+                $duplicateFound = false;
+                $duplicateData = '';
                 foreach ($data as $index => $row) {
-                    // Saltar la primera fila si es el encabezado
-                    if ($index == 0) continue;
-                    $tipo_cargo = $row[0];
-                    $estado = $row[1];
-                    // Validar que los datos no estén vacíos antes de insertar
-                    if (isNotEmpty([$tipo_cargo, $estado])) {
-                        $queryDuplicatePost->bindParam(':tipo_cargo', $tipo_cargo);
-                        $queryDuplicatePost->execute();
-                        $exists = $queryDuplicatePost->fetchColumn();
-                        if ($exists) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "El cargo ya esta registrada en la base de datos, por favor verifica el listado de cargos", "cargos.php?importarExcel");
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $nombreEmpresa = $row[0];
+                    $id_estado = $row[1];
+                    if (isNotEmpty([$nombreEmpresa, $id_estado])) {
+                        // Verificar si el área ya está en el arreglo
+                        if (in_array($nombreEmpresa, $uniqueData)) {
+                            $duplicateFound = true;
+                            $duplicateData = $nombreEmpresa;
+                            break; // Salir del ciclo si se encuentra un duplicado
+                        } else {
+                            $uniqueData[] = $nombreEmpresa; // Agregar al arreglo de datos únicos
+                        }
+                    }
+                }
+                if ($duplicateFound) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados, por favor verifica el archivo", "empresas.php?importarExcel");
+                    exit();
+                }
+                // Consultar los ids válidos
+                $get_estados = $connection->prepare("SELECT id_estado FROM estados");
+                $get_estados->execute();
+                $valid_ids = $get_estados->fetchAll(PDO::FETCH_COLUMN, 0); // Obtener solo la columna id_estado en un array
+                // Validar ids en el archivo
+                $invalidRows = []; // Arreglo para guardar las filas con ids inválidos
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $id_estado = $row[1];
+                    if (isNotEmpty([$id_estado])) {
+                        $isNumeric = filter_var($id_estado, FILTER_VALIDATE_INT);
+                        if (!$isNumeric) {
+                            showErrorOrSuccessAndRedirect(
+                                "error",
+                                "Error!",
+                                "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
+                                "empresas.php?importarExcel"
+                            );
                             exit();
                         }
-                        $registerPost->bindParam(":tipo_cargo", $tipo_cargo);
-                        $registerPost->bindParam(":estado", $estado);
-                        $registerPost->bindParam(":fecha_registro", $fecha_registro);
-                        $registerPost->execute();
-                    } else {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "cargos.php?importarExcel");
+                        if (!in_array($id_estado, $valid_ids)) {
+                            $invalidRows[] = $index + 1; // Guardar el número de la fila con id inválido
+                        }
+                    }
+                }
+                if (!empty($invalidRows)) {
+                    $invalidRowsList = implode(', ', $invalidRows);
+                    showErrorOrSuccessAndRedirect(
+                        "error",
+                        "Error!",
+                        "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
+                        "empresas.php?importarExcel"
+                    );
+                    exit();
+                }
+                // Si no se encontraron problemas, realizar el registro en la base de datos
+                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM empresas WHERE nombre_empresa = :nombre_empresa");
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $nombre_empresa = $row[0];
+                    $stmtCheck->bindParam(':nombre_empresa', $nombre_empresa);
+                    $stmtCheck->execute();
+                    $exists = $stmtCheck->fetchColumn();
+                    if ($exists) {
+                        showErrorOrSuccessAndRedirect("error", "Error!", "Y ya está registrada en la base de datos, por favor verifica el listado de áreas", "empresas.php?importarExcel");
                         exit();
                     }
                 }
-                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "cargos.php");
+                $registerEmpresa = $connection->prepare("INSERT INTO empresas(nombre_empresa, id_estado, fecha_registro) VALUES (:nombre_empresa, :id_estado, :fecha_registro)");
+                $fecha_registro = date('Y-m-d H:i:s');
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $nombre_empresa = $row[0];
+                    $id_estado = $row[1];
+                    if (isNotEmpty([$nombre_empresa, $id_estado])) {
+                        $registerEmpresa->bindParam(":nombre_empresa", $nombre_empresa);
+                        $registerEmpresa->bindParam(":estado", $id_estado);
+                        $registerEmpresa->bindParam(":fecha_registro", $fecha_registro);
+                        $registerEmpresa->execute();
+                    }
+                }
+                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "empresas.php");
                 exit();
             } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "cargos.php?importarExcel");
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "empresas.php?importarExcel");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "cargos.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "empresas.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "cargos.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "empresas.php?importarExcel");
     }
 }

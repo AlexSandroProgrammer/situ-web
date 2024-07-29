@@ -86,7 +86,7 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Vertically Centered Modal -->
                     <div class="col-lg-4 col-md-6">
                         <!-- Button trigger modal -->
-                        <a href="cargos.php?importarExcel" class="btn btn-success">
+                        <a href="empresas.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
                     </div>
@@ -182,23 +182,23 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="card-body">
                                 <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="registroCargoExcel">
+                                    name="registroEmpresaExcel">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="cargo_excel">Subir Archivo</label>
+                                        <label class="form-label" for="empresa_excel">Subir Archivo</label>
                                         <div class="input-group input-group-merge">
                                             <span id="span_csv" class="input-group-text"><i
                                                     class="fas fa-file-excel"></i></span>
                                             <input type="file" autofocus class="form-control" required
-                                                name="cargo_excel" id="cargo_excel" />
+                                                name="empresa_excel" id="empresa_excel" />
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="cargos.php">
+                                        <a class="btn btn-danger" href="empresas.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                        <input type="hidden" class="btn btn-info" value="registroCargoExcel"
-                                            name="MM_registroCargoExcel"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroEmpresaExcel"
+                                            name="MM_registroEmpresaExcel"></input>
                                     </div>
                                 </form>
                             </div>
