@@ -54,14 +54,14 @@ if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "for
     $estado_area = $_POST['estado_area'];
     $id_area = $_POST['id_area'];
 
-    // // validamos que no hayamos recibido ningun dato vacio
+    // validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$nombre_area, $estado_area, $id_area])) {
         showErrorFieldsEmpty("areas.php?id_area=" . $id_area);
         exit();
     }
 
     // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
+    // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
     $areaQueryUpdate = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea AND id_area <> :id_area");
     $areaQueryUpdate->bindParam(':nombreArea', $nombre_area);
     $areaQueryUpdate->bindParam(':id_area', $id_area);
