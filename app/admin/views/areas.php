@@ -1,8 +1,6 @@
 <?php
 $titlePage = "Listado de Areas";
 require_once("../components/sidebar.php");
-
-
 $getAreas = $connection->prepare("SELECT * FROM areas INNER JOIN estados ON areas.id_estado = estados.id_estado WHERE areas.id_estado = estados.id_estado");
 $getAreas->execute();
 $areas = $getAreas->fetchAll(PDO::FETCH_ASSOC);

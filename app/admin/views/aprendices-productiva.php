@@ -1,16 +1,21 @@
 <?php
-$titlePage = "Lista de Aprendices || Etapa Lectiva";
+$titlePage = "Lista de Aprendices || Etapa Productiva";
 require_once("../components/sidebar.php");
 // arreglo con ids de la consulta
 $array_keys = [1, 2, 8];
-$listaAprendicesLectiva = $connection->prepare("SELECT usuarios.nombres,usuarios.documento,usuarios.apellidos,usuarios.foto_data,usuarios.celular,usuarios.sexo,usuarios.email,usuarios.fecha_registro,usuarios.fecha_nacimiento,usuarios.tipo_convivencia,usuarios.patrocinio,usuarios.empresa_patrocinadora,usuarios.id_ficha,empresas.nombre_empresa,programas_formacion.nombre_programa,tipo_usuario.tipo_usuario,estado_usuario.estado AS estado_aprendiz,estado_se.estado AS nombre_estado_se FROM usuarios LEFT JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha  LEFT JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa LEFT JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id LEFT JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado LEFT JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa WHERE usuarios.id_tipo_usuario = :id_tipo_usuario  AND usuarios.id_estado = :id_estado  AND usuarios.id_estado_se = :id_estado_se
-");
+$listaAprendicesLectiva = $connection->prepare("SELECT usuarios.nombres,usuarios.documento,usuarios.apellidos,usuarios.foto_data,
+usuarios.celular,usuarios.sexo,usuarios.email,usuarios.fecha_registro,usuarios.fecha_nacimiento,usuarios.tipo_convivencia,
+usuarios.patrocinio,usuarios.empresa_patrocinadora,usuarios.id_ficha,empresas.nombre_empresa,programas_formacion.nombre_programa,
+tipo_usuario.tipo_usuario,estado_usuario.estado AS estado_aprendiz,estado_se.estado AS nombre_estado_se FROM usuarios LEFT JOIN fichas 
+ON usuarios.id_ficha = fichas.codigoFicha  LEFT JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa LEFT JOIN tipo_usuario 
+ON usuarios.id_tipo_usuario = tipo_usuario.id LEFT JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado 
+LEFT JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa 
+WHERE usuarios.id_tipo_usuario = :id_tipo_usuario  AND usuarios.id_estado = :id_estado  AND usuarios.id_estado_se = :id_estado_se");
 $listaAprendicesLectiva->bindParam(":id_tipo_usuario", $array_keys[1]);
 $listaAprendicesLectiva->bindParam(":id_estado", $array_keys[2]);
 $listaAprendicesLectiva->bindParam(":id_estado_se", $array_keys[1]);
 $listaAprendicesLectiva->execute();
 $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 <!-- Content wrapper -->
 <div class="content-wrapper">

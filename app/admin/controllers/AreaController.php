@@ -101,7 +101,6 @@ if (isset($_GET['id_area-delete'])) {
         $deleteArea->bindParam(":id_area", $id_area);
         $deleteArea->execute();
         $deleteAreaSelect = $deleteArea->fetch(PDO::FETCH_ASSOC);
-
         if ($deleteAreaSelect) {
             $delete = $connection->prepare("DELETE  FROM areas WHERE id_area = :id_area");
             $delete->bindParam(':id_area', $id_area);
@@ -119,70 +118,120 @@ if (isset($_GET['id_area-delete'])) {
 
 // REGISTRO ARCHIVO DE EXCEL 
 if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExcel"] == "registroArchivoExcel")) {
+    // Validar que se haya subido un archivo
     $fileTmpPath = $_FILES['area_excel']['tmp_name'];
     $fileName = $_FILES['area_excel']['name'];
     $fileSize = $_FILES['area_excel']['size'];
     $fileType = $_FILES['area_excel']['type'];
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
-
+    // Validar si el archivo no está vacío y si tiene una extensión válida
     if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el arhivo, adjunta un archivo valido", "areas.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "areas.php?importarExcel");
     }
-    // Validar la extensión del archivo
     if (isFileUploaded($_FILES['area_excel'])) {
-        // Extensiones permitidas
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
         $maxSizeKB = 10000;
         if (isFileValid($_FILES['area_excel'], $allowedExtensions, $maxSizeKB)) {
             // Cargar el archivo Excel
             $spreadsheet = IOFactory::load($fileTmpPath);
-            // Seleccionar la hoja de datos
             $hojaDatosArea = $spreadsheet->getSheetByName('Datos');
-            // Escogemos la hoja correcta para el registro de datos
             if ($hojaDatosArea) {
                 $data = $hojaDatosArea->toArray();
                 $requiredColumnCount = 2;
+
                 if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos filas", "areas.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos columnas", "areas.php?importarExcel");
                     exit();
                 }
-                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
-                $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado, fecha_registro) VALUES (:nombreArea, :estado, :fecha_registro)");
-                // creamos la variable para guardar la fecha de registro
-                // Obtener la fecha y hora actual
-                $fecha_registro = date('Y-m-d H:i:s');
+                // Verificar duplicados en el arreglo
+                $uniqueData = [];
+                $duplicateFound = false;
+                $duplicateData = '';
                 foreach ($data as $index => $row) {
-                    // Saltar la primera fila si es el encabezado
-                    if ($index == 0) continue;
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
                     $nombreArea = $row[0];
                     $id_estado = $row[1];
-                    // Validar que los datos no estén vacíos antes de insertar
+                    if (isNotEmpty([$nombreArea, $id_estado])) {
+                        // Verificar si el área ya está en el arreglo
+                        if (in_array($nombreArea, $uniqueData)) {
+                            $duplicateFound = true;
+                            $duplicateData = $nombreArea;
+                            break; // Salir del ciclo si se encuentra un duplicado
+                        } else {
+                            $uniqueData[] = $nombreArea; // Agregar al arreglo de datos únicos
+                        }
+                    }
+                }
+                if ($duplicateFound) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados, por favor verifica el archivo", "areas.php?importarExcel");
+                    exit();
+                }
+                // Consultar los ids válidos
+                $get_estados = $connection->prepare("SELECT id_estado FROM estados");
+                $get_estados->execute();
+                $valid_ids = $get_estados->fetchAll(PDO::FETCH_COLUMN, 0); // Obtener solo la columna id_estado en un array
+                // Validar ids en el archivo
+                $invalidRows = []; // Arreglo para guardar las filas con ids inválidos
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $id_estado = $row[1];
+                    if (isNotEmpty([$id_estado])) {
+                        $isNumeric = filter_var($id_estado, FILTER_VALIDATE_INT);
+                        if (!$isNumeric) {
+                            showErrorOrSuccessAndRedirect(
+                                "error",
+                                "Error!",
+                                "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
+                                "areas.php?importarExcel"
+                            );
+                            exit();
+                        }
+                        if (!in_array($id_estado, $valid_ids)) {
+                            $invalidRows[] = $index + 1; // Guardar el número de la fila con id inválido
+                        }
+                    }
+                }
+                if (!empty($invalidRows)) {
+                    $invalidRowsList = implode(', ', $invalidRows);
+                    showErrorOrSuccessAndRedirect(
+                        "error",
+                        "Error!",
+                        "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
+                        "areas.php?importarExcel"
+                    );
+                    exit();
+                }
+                // Si no se encontraron problemas, realizar el registro en la base de datos
+                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
+                $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado, fecha_registro) VALUES (:nombreArea, :estado, :fecha_registro)");
+                $fecha_registro = date('Y-m-d H:i:s');
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $nombreArea = $row[0];
+                    $id_estado = $row[1];
+
                     if (isNotEmpty([$nombreArea, $id_estado])) {
                         $stmtCheck->bindParam(':nombreArea', $nombreArea);
                         $stmtCheck->execute();
                         $exists = $stmtCheck->fetchColumn();
                         if ($exists) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "El área ya esta registrada en la base de datos, por favor verifica el listado de areas", "areas.php?importarExcel");
+                            showErrorOrSuccessAndRedirect("error", "Error!", "El área '{$nombreArea}' ya está registrada en la base de datos, por favor verifica el listado de áreas", "areas.php?importarExcel");
                             exit();
                         }
                         $queryRegister->bindParam(":nombreArea", $nombreArea);
                         $queryRegister->bindParam(":estado", $id_estado);
                         $queryRegister->bindParam(":fecha_registro", $fecha_registro);
                         $queryRegister->execute();
-                    } else {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "areas.php?importarExcel");
-                        exit();
                     }
                 }
                 showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "areas.php");
                 exit();
             } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "areas.php?importarExcel");
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "areas.php?importarExcel");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "areas.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "areas.php?importarExcel");
         }
     } else {
         showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "areas.php?importarExcel");

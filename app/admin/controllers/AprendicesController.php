@@ -187,7 +187,6 @@ if ((isset($_POST["MM_updateImageAprendiz"])) && ($_POST["MM_updateImageAprendiz
                             $cambiarImagenAprendiz->bindParam(':foto_data', $nuevoNombreArchivo);
                             $cambiarImagenAprendiz->bindParam(':documento', $document);
                             $cambiarImagenAprendiz->execute();
-
                             if ($cambiarImagenAprendiz) {
                                 showErrorOrSuccessAndRedirect("success", "Foto Agregada", "Los datos se han actualizado correctamente", $ruta);
                                 exit();
