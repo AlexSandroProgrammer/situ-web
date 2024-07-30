@@ -129,7 +129,7 @@ if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExc
     if (isEmpty([$fileName])) {
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "areas.php?importarExcel");
     }
-    if ($fileName == "area_excel") {
+    if ($fileName !== "area_excel.xlsx") {
         showErrorOrSuccessAndRedirect("error", "��Ops...!", "Error al momento de subir el archivo, el nombre del archivo debe llamarse 'area_excel'", "areas.php?importarExcel");
         exit();
     }

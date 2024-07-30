@@ -122,7 +122,7 @@ if ((isset($_POST["MM_registroProgramaExcel"])) && ($_POST["MM_registroProgramaE
     if (isEmpty([$fileName])) {
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "programas.php?importarExcel");
     }
-    if ($fileName == "programa_excel") {
+    if ($fileName !== "programa_excel.xlsx") {
         showErrorOrSuccessAndRedirect("error", "��Ops...!", "Error al momento de subir el archivo, el nombre del archivo no es válido, debe ser 'programa_excel'", "programas.php?importarExcel");
     }
     if (isFileUploaded($_FILES['programa_excel'])) {

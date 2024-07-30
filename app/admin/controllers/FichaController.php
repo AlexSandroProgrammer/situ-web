@@ -162,8 +162,8 @@ if (isset($_GET['id_ficha-delete'])) {
     }
 }
 
-// REGISTRO ARCHIVO DE EXCEL 
 // REGISTRO DATOS DE EXCEL MEDIANTE ARCHIVO EXCEL
+
 if ((isset($_POST["MM_registroFichaExcel"])) && ($_POST["MM_registroFichaExcel"] == "registroFichaExcel")) {
     // Validar que se haya subido un archivo
     $fileTmpPath = $_FILES['ficha_excel']['tmp_name'];
@@ -172,187 +172,158 @@ if ((isset($_POST["MM_registroFichaExcel"])) && ($_POST["MM_registroFichaExcel"]
     $fileType = $_FILES['ficha_excel']['type'];
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
+
     // Validar si el archivo no está vacío y si tiene una extensión válida
-    if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "unidades.php?importarExcel");
+    if (empty($fileName)) {
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "fichas.php?importarExcel");
+        exit();
     }
-    if ($fileName == "ficha_excel") {
-        showErrorOrSuccessAndRedirect("error", "Ops...!", "El nombre del archivo no puede ser 'ficha_excel'", "unidades.php?importarExcel");
+
+    if ($fileName !== "ficha_excel.xlsx") {
+        showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, el nombre del archivo debe llamarse 'ficha_excel.xlsx'", "fichas.php?importarExcel");
+        exit();
     }
+
     if (isFileUploaded($_FILES['ficha_excel'])) {
-        $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        $allowedExtensions = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
         $maxSizeKB = 10000;
-        if (isFileValid($_FILES['ficha_excel'], $allowedExtensions, $maxSizeKB)) {
-            // Cargar el archivo Excel
-            $spreadsheet = IOFactory::load($fileTmpPath);
-            $hojaDatosUnidad = $spreadsheet->getSheetByName('Datos');
-            if ($hojaDatosUnidad) {
-                $data = $hojaDatosUnidad->toArray();
-                $requiredColumnCount = 6; // Se ajusta el número de columnas según el archivo
-                if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos seis columnas", "unidades.php?importarExcel");
-                    exit();
-                }
-                // Validar campos de hora
-                $invalidTimeRows = [];
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $hora_apertura = $row[3];
-                    $hora_cierre = $row[4];
-                    if (!isValidTime($hora_apertura) || !isValidTime($hora_cierre)) {
-                        $invalidTimeRows[] = $index + 1;
-                        continue; // No detener la verificación para otras filas
-                    }
-                    // Convertir horas a objetos DateTime para comparar
-                    $horaAperturaObj = DateTime::createFromFormat('H:i', $hora_apertura);
-                    $horaCierreObj = DateTime::createFromFormat('H:i', $hora_cierre);
 
-                    if ($horaAperturaObj >= $horaCierreObj) {
-                        $invalidTimeRows[] = $index + 1;
-                    }
-                }
-                if (!empty($invalidTimeRows)) {
-                    $invalidTimeRowsList = implode(', ', $invalidTimeRows);
-                    showErrorOrSuccessAndRedirect(
-                        "error",
-                        "Error!",
-                        "Las horas de apertura y cierre en las filas " . $invalidTimeRowsList . " no son válidas. Asegúrate de que las horas estén en formato HH:MM y que la hora de cierre sea después de la hora de apertura.",
-                        "unidades.php?importarExcel"
-                    );
-                    exit();
-                }
+        if (!isFileValid($_FILES['ficha_excel'], $allowedExtensions, $maxSizeKB)) {
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "fichas.php?importarExcel");
+            exit();
+        }
+        // Cargar el archivo Excel
+        $spreadsheet = IOFactory::load($fileTmpPath);
+        $hojaDatosFichas = $spreadsheet->getSheetByName('Datos');
+        if ($hojaDatosFichas) {
+            $data = $hojaDatosFichas->toArray();
+            $requiredColumnCount = 6; // Actualizar según el número de columnas necesarias
 
-                // Consultar los ids válidos de la tabla estados
-                $get_estados = $connection->prepare("SELECT id_estado FROM estados");
-                $get_estados->execute();
-                $valid_ids = $get_estados->fetchAll(PDO::FETCH_COLUMN, 0); // Obtener solo la columna id_estado en un array
-
-                // Validar ids en el archivo
-                $invalidRows = []; // Arreglo para guardar las filas con ids inválidos
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-
-                    $id_estado = $row[5];
-                    if (isNotEmpty([$id_estado])) {
-                        $isNumeric = filter_var($id_estado, FILTER_VALIDATE_INT);
-                        if (!$isNumeric) {
-                            showErrorOrSuccessAndRedirect(
-                                "error",
-                                "Error!",
-                                "El id_estado en la fila " . ($index + 1) . " debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
-                                "unidades.php?importarExcel"
-                            );
-                            exit();
-                        }
-                        if (!in_array($id_estado, $valid_ids)) {
-                            $invalidRows[] = $index + 1; // Guardar el número de la fila con id inválido
-                        }
-                    }
-                }
-
-                if (!empty($invalidRows)) {
-                    $invalidRowsList = implode(', ', $invalidRows);
-                    showErrorOrSuccessAndRedirect(
-                        "error",
-                        "Error!",
-                        "El id_estado en las filas " . $invalidRowsList . " no es válido. Verifica el archivo y vuelve a intentarlo.",
-                        "unidades.php?importarExcel"
-                    );
-                    exit();
-                }
-
-                // Consultar los ids válidos de la tabla areas
-                $get_areas = $connection->prepare("SELECT id_area FROM areas");
-                $get_areas->execute();
-                $valid_ids_areas = $get_areas->fetchAll(PDO::FETCH_COLUMN, 0); // Obtener solo la columna id_area en un array
-
-                // Validar ids en el archivo
-                $invalidArea = []; // Arreglo para guardar las filas con ids inválidos
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $id_area = $row[1];
-                    if (isNotEmpty([$id_area])) {
-                        $isNumeric = filter_var($id_area, FILTER_VALIDATE_INT);
-                        if (!$isNumeric) {
-                            showErrorOrSuccessAndRedirect(
-                                "error",
-                                "Error!",
-                                "El id_area en la fila " . ($index + 1) . " debe ser un número entero, no puedes subir el archivo con id_area no numérico.",
-                                "unidades.php?importarExcel"
-                            );
-                            exit();
-                        }
-                        if (!in_array($id_area, $valid_ids_areas)) {
-                            $invalidArea[] = $index + 1; // Guardar el número de la fila con id inválido
-                        }
-                    }
-                }
-
-                if (!empty($invalidArea)) {
-                    $invalidAreaList = implode(', ', $invalidArea);
-                    showErrorOrSuccessAndRedirect(
-                        "error",
-                        "Error!",
-                        "El id_area en las filas " . $invalidAreaList . " no es válido. Verifica el archivo y vuelve a intentarlo.",
-                        "unidades.php?importarExcel"
-                    );
-                    exit();
-                }
-                // VALIDAR QUE NO SE REPITA EL NOMBRE DE UNA UNIDAD
-                $checkValidation = $connection->prepare("SELECT COUNT(*) FROM unidad WHERE nombre_unidad = :nombre_unidad");
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $nombre_unidad = $row[0];
-                    if (isNotEmpty([$nombre_unidad])) {
-                        $checkValidation->bindParam(":nombre_unidad", $nombre_unidad);
-                        $checkValidation->execute();
-                        $result = $checkValidation->fetchColumn();
-                        if ($result) {
-                            showErrorOrSuccessAndRedirect(
-                                "error",
-                                "Error!",
-                                "La unidad ya existe en la base de datos. Por favor verifica el archivo y vuelve a intentarlo.",
-                                "unidades.php?importarExcel"
-                            );
-                            exit();
-                        }
-                    }
-                }
-                // Si no se encontraron problemas, realizar el registro en la base de datos
-                $registerUnity = $connection->prepare("INSERT INTO unidad(nombre_unidad, id_area, hora_inicio, hora_finalizacion, cantidad_aprendices, id_estado, fecha_registro) 
-                VALUES (:nombre_unidad, :id_area, :hora_inicio, :hora_finalizacion, :cantidad_aprendices, :id_estado, :fecha_registro)");
-                $fecha_registro = date('Y-m-d H:i:s');
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-
-                    $nombre_unidad = $row[0];
-                    $id_area = $row[1];
-                    $aprendices_requeridos = $row[2];
-                    $hora_apertura = $row[3];
-                    $hora_cierre = $row[4];
-                    $id_estado = $row[5];
-
-                    if (isNotEmpty([$nombre_unidad, $id_area, $aprendices_requeridos, $hora_apertura, $hora_cierre, $id_estado])) {
-                        $registerUnity->bindParam(":nombre_unidad", $nombre_unidad);
-                        $registerUnity->bindParam(":id_area", $id_area);
-                        $registerUnity->bindParam(":cantidad_aprendices", $aprendices_requeridos);
-                        $registerUnity->bindParam(":hora_inicio", $hora_apertura);
-                        $registerUnity->bindParam(":hora_finalizacion", $hora_cierre);
-                        $registerUnity->bindParam(":id_estado", $id_estado);
-                        $registerUnity->bindParam(":fecha_registro", $fecha_registro);
-                        $registerUnity->execute();
-                    }
-                }
-
-                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "unidades.php");
+            // Validar la existencia de encabezado y cantidad de columnas
+            if (empty($data[0]) || count($data[0]) < $requiredColumnCount) {
+                showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos seis columnas", "fichas.php?importarExcel");
                 exit();
-            } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "unidades.php?importarExcel");
             }
+            // Verificar duplicados en el arreglo
+            $uniqueData = [];
+            $duplicateFound = false;
+            $duplicateData = '';
+            foreach ($data as $index => $row) {
+                if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+
+                list($codigoFicha, $id_programa, $inicio_formacion, $cierre_formacion, $id_estado, $id_estado_se) = $row;
+
+                // Validar que las celdas no estén vacías
+                if (!empty($codigoFicha) && !empty($id_programa) && !empty($inicio_formacion) && !empty($cierre_formacion) && !empty($id_estado) && !empty($id_estado_se)) {
+                    // Verificar si el código ficha ya está en el arreglo
+                    if (in_array($codigoFicha, $uniqueData)) {
+                        $duplicateFound = true;
+                        $duplicateData = $codigoFicha;
+                        break;
+                    } else {
+                        $uniqueData[] = $codigoFicha;
+                    }
+                }
+            }
+
+            if ($duplicateFound) {
+                showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados, por favor verifica el archivo", "fichas.php?importarExcel");
+                exit();
+            }
+
+            // Consultar ids válidos
+            $valid_ids = fetchValidIds($connection, "estados", "id_estado");
+            $valid_programas = fetchValidIds($connection, "programas_formacion", "id_programa");
+
+            // Validar ids en el archivo
+            $invalidRows = validateRows($data, $valid_ids, $valid_programas);
+
+            if (!empty($invalidRows['estado'])) {
+                showErrorOrSuccessAndRedirect("error", "Error!", "Error en los IDs de estado: " . implode(', ', $invalidRows['estado']), "fichas.php?importarExcel");
+                exit();
+            }
+
+            if (!empty($invalidRows['programa'])) {
+                showErrorOrSuccessAndRedirect("error", "Error!", "Error en los IDs de programa: " . implode(', ', $invalidRows['programa']), "fichas.php?importarExcel");
+                exit();
+            }
+
+            // Validar fechas
+            foreach ($data as $index => $row) {
+                if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+
+                list($codigoFicha, $id_programa, $inicio_formacion, $cierre_formacion, $id_estado, $id_estado_se) = $row;
+
+                if (validateDate($inicio_formacion) && validateDate($cierre_formacion)) {
+                    // Convertir fechas
+                    $inicio_formacion = convertDateToISO($inicio_formacion);
+                    $cierre_formacion = convertDateToISO($cierre_formacion);
+
+                    // Insertar en la base de datos
+                    $queryRegister = $connection->prepare("INSERT INTO fichas(codigoFicha, id_programa, inicio_formacion, fin_formacion, id_estado, id_estado_se) 
+                        VALUES (:codigoFicha, :id_programa, :inicio_formacion, :fin_formacion, :id_estado, :id_estado_se)");
+                    $queryRegister->bindParam(":codigoFicha", $codigoFicha);
+                    $queryRegister->bindParam(":id_programa", $id_programa);
+                    $queryRegister->bindParam(":inicio_formacion", $inicio_formacion);
+                    $queryRegister->bindParam(":fin_formacion", $cierre_formacion);
+                    $queryRegister->bindParam(":id_estado", $id_estado);
+                    $queryRegister->bindParam(":id_estado_se", $id_estado_se);
+                    $queryRegister->execute();
+                } else {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "Las fechas deben estar en un formato válido", "fichas.php?importarExcel");
+                    exit();
+                }
+            }
+
+            showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "fichas.php");
+            exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "unidades.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "fichas.php?importarExcel");
         }
     } else {
-        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "unidades.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "fichas.php?importarExcel");
     }
+}
+
+function fetchValidIds($connection, $tableName, $idColumn)
+{
+    $query = $connection->prepare("SELECT $idColumn FROM $tableName");
+    $query->execute();
+    return $query->fetchAll(PDO::FETCH_COLUMN, 0);
+}
+
+function validateRows($data, $valid_ids, $valid_programas)
+{
+    $invalidRows = [
+        'estado' => [],
+        'programa' => []
+    ];
+
+    foreach ($data as $index => $row) {
+        if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+
+        list(, $id_programa,,, $id_estado) = $row;
+
+        if (!in_array($id_estado, $valid_ids) || !filter_var($id_estado, FILTER_VALIDATE_INT)) {
+            $invalidRows['estado'][] = $index + 1;
+        }
+
+        if (!in_array($id_programa, $valid_programas) || !filter_var($id_programa, FILTER_VALIDATE_INT)) {
+            $invalidRows['programa'][] = $index + 1;
+        }
+    }
+
+    return $invalidRows;
+}
+
+function validateDate($date)
+{
+    $d = DateTime::createFromFormat('d/m/Y', $date);
+    return $d && $d->format('d/m/Y') === $date;
+}
+
+function convertDateToISO($date)
+{
+    $d = DateTime::createFromFormat('d/m/Y', $date);
+    return $d->format('Y-m-d');
 }
