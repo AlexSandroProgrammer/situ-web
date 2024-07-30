@@ -108,58 +108,112 @@ if (isset($_GET['id_programa-delete'])) {
     }
 }
 
-// REGISTRO DATOS DE EXCEL MEDIANTE ARCHIVO EXCEL
+
+// REGISTRO ARCHIVO DE EXCEL 
 if ((isset($_POST["MM_registroProgramaExcel"])) && ($_POST["MM_registroProgramaExcel"] == "registroProgramaExcel")) {
+    // Validar que se haya subido un archivo
     $fileTmpPath = $_FILES['programa_excel']['tmp_name'];
     $fileName = $_FILES['programa_excel']['name'];
     $fileSize = $_FILES['programa_excel']['size'];
     $fileType = $_FILES['programa_excel']['type'];
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
+    // Validar si el archivo no está vacío y si tiene una extensión válida
     if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "programas.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "programas.php?importarExcel");
     }
-    // Validar la extensión del archivo
+    if ($fileName == "programa_excel") {
+        showErrorOrSuccessAndRedirect("error", "��Ops...!", "Error al momento de subir el archivo, el nombre del archivo no es válido, debe ser 'programa_excel'", "programas.php?importarExcel");
+    }
     if (isFileUploaded($_FILES['programa_excel'])) {
-        // Extensiones permitidas
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        // CANTIDAD MAXIMA TAMAÑO DE ARCHIVO
         $maxSizeKB = 10000;
         if (isFileValid($_FILES['programa_excel'], $allowedExtensions, $maxSizeKB)) {
             // Cargar el archivo Excel
             $spreadsheet = IOFactory::load($fileTmpPath);
-            // Seleccionar la hoja de datos
             $hojaDatosPrograma = $spreadsheet->getSheetByName('Datos');
-            // Escogemos la hoja correcta para el registro de datos
             if ($hojaDatosPrograma) {
                 $data = $hojaDatosPrograma->toArray();
-                $requiredColumnCount = 3;
+                $requiredColumnCount = 2;
                 if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos tres columnas requeridas", "programas.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos columnas", "programas.php?importarExcel");
                     exit();
                 }
-                // consulta para validar que no haya una unidad ya registrada
-                $checkProgram = $connection->prepare("SELECT COUNT(*) FROM programas_formacion WHERE nombre_programa = :nombre_programa");
-                $queryRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, descripcion, id_estado) VALUES 
-                (:nombre_programa, :descripcion, :id_estado)");
+                // Verificar duplicados en el arreglo
+                $uniqueData = [];
+                $duplicateFound = false;
+                $duplicateData = '';
                 foreach ($data as $index => $row) {
-                    // Saltar la primera fila si es el encabezado
-                    if ($index == 0) continue;
-                    // asignamos cada fila a una variable que posteriormente utilizaremos para registrar los datos.
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $nombre_programa = $row[0];
+                    $id_estado = $row[2];
+                    if (isNotEmpty([$nombre_programa, $id_estado])) {
+                        // Verificar si el área ya está en el arreglo
+                        if (in_array($nombre_programa, $uniqueData)) {
+                            $duplicateFound = true;
+                            $duplicateData = $nombre_programa;
+                            break; // Salir del ciclo si se encuentra un duplicado
+                        } else {
+                            $uniqueData[] = $nombre_programa; // Agregar al arreglo de datos únicos
+                        }
+                    }
+                }
+                if ($duplicateFound) {
+                    showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados, por favor verifica el archivo", "programas.php?importarExcel");
+                    exit();
+                }
+                // Consultar los ids válidos
+                $get_estados = $connection->prepare("SELECT id_estado FROM estados");
+                $get_estados->execute();
+                $valid_ids = $get_estados->fetchAll(PDO::FETCH_COLUMN, 0); // Obtener solo la columna id_estado en un array
+                // Validar ids en el archivo
+                $invalidRows = []; // Arreglo para guardar las filas con ids inválidos
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
+                    $id_estado = $row[2];
+                    if (isNotEmpty([$id_estado])) {
+                        $isNumeric = filter_var($id_estado, FILTER_VALIDATE_INT);
+                        if (!$isNumeric) {
+                            showErrorOrSuccessAndRedirect(
+                                "error",
+                                "Error!",
+                                "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
+                                "programas.php?importarExcel"
+                            );
+                            exit();
+                        }
+                        if (!in_array($id_estado, $valid_ids)) {
+                            $invalidRows[] = $index + 1; // Guardar el número de la fila con id inválido
+                        }
+                    }
+                }
+                if (!empty($invalidRows)) {
+                    $invalidRowsList = implode(', ', $invalidRows);
+                    showErrorOrSuccessAndRedirect(
+                        "error",
+                        "Error!",
+                        "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
+                        "programas.php?importarExcel"
+                    );
+                    exit();
+                }
+                // Si no se encontraron problemas, realizar el registro en la base de datos
+                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM programas_formacion WHERE nombre_programa = :nombre_programa");
+                $queryRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, descripcion, id_estado) VALUES (:nombre_programa, :descripcion, :id_estado)");
+                $fecha_registro = date('Y-m-d H:i:s');
+                foreach ($data as $index => $row) {
+                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
                     $nombre_programa = $row[0];
                     $descripcion = $row[1];
                     $id_estado = $row[2];
-                    // Validar que los datos no estén vacíos antes de insertar
-                    if (isNotEmpty([$nombre_programa, $descripcion, $id_estado])) {
-                        // generamos la consula para validar que cada fila no tenga un mismo nombre de programa registrado en la base de datos
-                        $checkProgram->bindParam(':nombre_programa', $nombre_programa);
-                        $checkProgram->execute();
-                        $existsProgram = $checkProgram->fetchColumn();
-                        if ($existsProgram) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "El programa ya esta registrada en la base de datos, por favor verifica el listado de programas", "programas.php?importarExcel");
+                    if (isNotEmpty([$nombre_programa, $id_estado])) {
+                        $stmtCheck->bindParam(':nombre_programa', $nombre_programa);
+                        $stmtCheck->execute();
+                        $exists = $stmtCheck->fetchColumn();
+                        if ($exists) {
+                            showErrorOrSuccessAndRedirect("error", "Error!", "El programa de formacion ya está registrado en la base de datos, por favor verifica el listado de áreas", "programas.php?importarExcel");
                             exit();
                         }
-                        // Realizar registro de los datos
                         $queryRegister->bindParam(":nombre_programa", $nombre_programa);
                         $queryRegister->bindParam(":descripcion", $descripcion);
                         $queryRegister->bindParam(":id_estado", $id_estado);
@@ -169,10 +223,10 @@ if ((isset($_POST["MM_registroProgramaExcel"])) && ($_POST["MM_registroProgramaE
                 showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "programas.php");
                 exit();
             } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo valido", "programas.php?importarExcel");
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "programas.php?importarExcel");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extension del archivo es incorrecta, la extension debe ser .XLSX o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "programas.php?importarExcel");
+            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "programas.php?importarExcel");
         }
     } else {
         showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "programas.php?importarExcel");

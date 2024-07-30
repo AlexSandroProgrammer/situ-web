@@ -129,6 +129,10 @@ if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExc
     if (isEmpty([$fileName])) {
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "areas.php?importarExcel");
     }
+    if ($fileName == "area_excel") {
+        showErrorOrSuccessAndRedirect("error", "��Ops...!", "Error al momento de subir el archivo, el nombre del archivo debe llamarse 'area_excel'", "areas.php?importarExcel");
+        exit();
+    }
     if (isFileUploaded($_FILES['area_excel'])) {
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         $maxSizeKB = 10000;
@@ -216,7 +220,7 @@ if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExc
                         $stmtCheck->execute();
                         $exists = $stmtCheck->fetchColumn();
                         if ($exists) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "El área '{$nombreArea}' ya está registrada en la base de datos, por favor verifica el listado de áreas", "areas.php?importarExcel");
+                            showErrorOrSuccessAndRedirect("error", "Error!", "El área ya está registrada en la base de datos, por favor verifica el listado de áreas", "areas.php?importarExcel");
                             exit();
                         }
                         $queryRegister->bindParam(":nombreArea", $nombreArea);

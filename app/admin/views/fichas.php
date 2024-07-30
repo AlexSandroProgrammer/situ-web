@@ -77,7 +77,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="card-body">
                                 <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="formRegisterExcelFichas">
+                                    name="registroFichaExcel">
                                     <div class=" mb-3">
                                         <label class="form-label" for="ficha_excel">Cargar Archivo Excel</label>
                                         <div class="input-group input-group-merge">
@@ -92,8 +92,8 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterExcelFichas"
-                                            name="MM_formRegisterExcelFichas"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroFichaExcel"
+                                            name="MM_registroFichaExcel"></input>
                                     </div>
                                 </form>
                             </div>

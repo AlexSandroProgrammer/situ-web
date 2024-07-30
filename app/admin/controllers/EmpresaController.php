@@ -120,6 +120,10 @@ if ((isset($_POST["MM_registroEmpresaExcel"])) && ($_POST["MM_registroEmpresaExc
     if (isEmpty([$fileName])) {
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "empresas.php?importarExcel");
     }
+    if ($fileName == "empresa_excel") {
+        showErrorOrSuccessAndRedirect("error", "��Ops...!", "El nombre del archivo no es correcto, debe ser 'empresa_excel'", "empresas.php?importarExcel");
+        exit();
+    }
     if (isFileUploaded($_FILES['empresa_excel'])) {
         $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         $maxSizeKB = 10000;
