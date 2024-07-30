@@ -6,18 +6,21 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 //  REGISTRO DE CARGO
 if ((isset($_POST["MM_formRegisterEmpresa"])) && ($_POST["MM_formRegisterEmpresa"] == "formRegisterEmpresa")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
+    $id_empresa = $_POST['id_empresa'];
     $nombre_empresa = $_POST['nombre_empresa'];
     $estado = $_POST['estado'];
+    $fecha_registro = date('Y-m-d H:i:s');
 
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_empresa, $estado])) {
+    if (isEmpty([$nombre_empresa, $id_empresa, $estado])) {
         showErrorFieldsEmpty("empresas.php");
         exit();
     }
     // validamos que no se repitan los datos del nombre de la empresa
     // CONSULTA SQL PARA VERIFICR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $queryValidationEmpresa = $connection->prepare("SELECT * FROM empresas WHERE nombre_empresa = :nombre_empresa");
+    $queryValidationEmpresa = $connection->prepare("SELECT * FROM empresas WHERE nombre_empresa = :nombre_empresa OR id_empresa = :id_empresa");
     $queryValidationEmpresa->bindParam(':nombre_empresa', $nombre_empresa);
+    $queryValidationEmpresa->bindParam(':id_empresa', $id_empresa);
     $queryValidationEmpresa->execute();
     $queryFetch = $queryValidationEmpresa->fetchAll();
     // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
@@ -27,9 +30,12 @@ if ((isset($_POST["MM_formRegisterEmpresa"])) && ($_POST["MM_formRegisterEmpresa
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $insertEmpresa = $connection->prepare("INSERT INTO empresas(nombre_empresa, id_estado) VALUES(:nombre_empresa, :estado)");
+        $insertEmpresa = $connection->prepare("INSERT INTO empresas(id_empresa, nombre_empresa, id_estado, fecha_registro) VALUES(
+        :id_empresa, :nombre_empresa, :id_estado, :fecha_registro)");
+        $insertEmpresa->bindParam(':id_empresa', $id_empresa);
         $insertEmpresa->bindParam(':nombre_empresa', $nombre_empresa);
-        $insertEmpresa->bindParam(':estado', $estado);
+        $insertEmpresa->bindParam(':id_estado', $estado);
+        $insertEmpresa->bindParam(':fecha_registro', $fecha_registro);
         $insertEmpresa->execute();
         if ($insertEmpresa) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "empresas.php");
@@ -129,26 +135,38 @@ if ((isset($_POST["MM_registroEmpresaExcel"])) && ($_POST["MM_registroEmpresaExc
                     exit();
                 }
                 // Verificar duplicados en el arreglo
-                $uniqueData = [];
                 $duplicateFound = false;
-                $duplicateData = '';
+                // arreglo nit de empresas
+                $uniqueNit = [];
+                // arreglo nombre de empresas
+                $uniqueName = [];
+                // Variables para controlar duplicados
+                $duplicateName = '';
+                $duplicateNit = '';
+                // ciclo para recorrer los datos
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $nombreEmpresa = $row[0];
-                    $id_estado = $row[1];
-                    if (isNotEmpty([$nombreEmpresa, $id_estado])) {
+                    $nitEmpresa = $row[0];
+                    $nombreEmpresa = $row[1];
+                    $id_estado = $row[2];
+                    if (isNotEmpty([$nitEmpresa, $nombreEmpresa, $id_estado])) {
                         // Verificar si el área ya está en el arreglo
-                        if (in_array($nombreEmpresa, $uniqueData)) {
+                        if (in_array($nombreEmpresa, $uniqueName)) {
                             $duplicateFound = true;
-                            $duplicateData = $nombreEmpresa;
+                            $duplicateName = $nombreEmpresa;
+                            break; // Salir del ciclo si se encuentra un duplicado
+                        } else if (in_array($nitEmpresa, $uniqueNit)) {
+                            $duplicateFound = true;
+                            $duplicateNit = $nitEmpresa;
                             break; // Salir del ciclo si se encuentra un duplicado
                         } else {
-                            $uniqueData[] = $nombreEmpresa; // Agregar al arreglo de datos únicos
+                            $uniqueName[] = $nombreEmpresa; // Agregar al arreglo de datos únicos
+                            $uniqueNit[] = $nitEmpresa; // Agregar al arreglo de datos únicos
                         }
                     }
                 }
                 if ($duplicateFound) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados, por favor verifica el archivo", "empresas.php?importarExcel");
+                    showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados en las filas, por favor verifica el archivo", "empresas.php?importarExcel");
                     exit();
                 }
                 // Consultar los ids válidos
@@ -159,7 +177,7 @@ if ((isset($_POST["MM_registroEmpresaExcel"])) && ($_POST["MM_registroEmpresaExc
                 $invalidRows = []; // Arreglo para guardar las filas con ids inválidos
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $id_estado = $row[1];
+                    $id_estado = $row[2];
                     if (isNotEmpty([$id_estado])) {
                         $isNumeric = filter_var($id_estado, FILTER_VALIDATE_INT);
                         if (!$isNumeric) {
@@ -187,27 +205,31 @@ if ((isset($_POST["MM_registroEmpresaExcel"])) && ($_POST["MM_registroEmpresaExc
                     exit();
                 }
                 // Si no se encontraron problemas, realizar el registro en la base de datos
-                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM empresas WHERE nombre_empresa = :nombre_empresa");
+                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM empresas WHERE id_empresa = :id_empresa OR nombre_empresa = :nombre_empresa ");
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $nombre_empresa = $row[0];
+                    $id_empresa = $row[0];
+                    $nombre_empresa = $row[1];
+                    $stmtCheck->bindParam(':id_empresa', $id_empresa);
                     $stmtCheck->bindParam(':nombre_empresa', $nombre_empresa);
                     $stmtCheck->execute();
                     $exists = $stmtCheck->fetchColumn();
                     if ($exists) {
-                        showErrorOrSuccessAndRedirect("error", "Error!", "Y ya está registrada en la base de datos, por favor verifica el listado de áreas", "empresas.php?importarExcel");
+                        showErrorOrSuccessAndRedirect("error", "Error!", "La empresa o el NIT ya están registrados en la base de datos, por favor verifica el listado de Empresas en la App.", "empresas.php?importarExcel");
                         exit();
                     }
                 }
-                $registerEmpresa = $connection->prepare("INSERT INTO empresas(nombre_empresa, id_estado, fecha_registro) VALUES (:nombre_empresa, :id_estado, :fecha_registro)");
+                $registerEmpresa = $connection->prepare("INSERT INTO empresas(id_empresa, nombre_empresa, id_estado, fecha_registro) VALUES (:id_empresa, :nombre_empresa, :id_estado, :fecha_registro)");
                 $fecha_registro = date('Y-m-d H:i:s');
                 foreach ($data as $index => $row) {
                     if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $nombre_empresa = $row[0];
-                    $id_estado = $row[1];
-                    if (isNotEmpty([$nombre_empresa, $id_estado])) {
+                    $id_empresa = $row[0];
+                    $nombre_empresa = $row[1];
+                    $id_estado = $row[2];
+                    if (isNotEmpty([$id_empresa, $nombre_empresa, $id_estado])) {
+                        $registerEmpresa->bindParam(":id_empresa", $id_empresa);
                         $registerEmpresa->bindParam(":nombre_empresa", $nombre_empresa);
-                        $registerEmpresa->bindParam(":estado", $id_estado);
+                        $registerEmpresa->bindParam(":id_estado", $id_estado);
                         $registerEmpresa->bindParam(":fecha_registro", $fecha_registro);
                         $registerEmpresa->execute();
                     }
@@ -215,7 +237,7 @@ if ((isset($_POST["MM_registroEmpresaExcel"])) && ($_POST["MM_registroEmpresaExc
                 showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "empresas.php");
                 exit();
             } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "empresas.php?importarExcel");
+                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido, ten en cuenta que la hoja se debe llamar Datos.", "empresas.php?importarExcel");
             }
         } else {
             showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "empresas.php?importarExcel");

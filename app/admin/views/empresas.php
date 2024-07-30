@@ -34,6 +34,18 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="modal-body">
                                         <!-- input nombre de la empresa -->
                                         <div class="mb-3">
+                                            <label class="form-label" for="id_empresa">NIT de Empresa</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="id_empresa-span" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i> </span>
+                                                <input type="number" required
+                                                    onkeypress="return(multiplenumber(event));"
+                                                    oninput="maxlengthNumber(this);" minlength="9" maxlength="11"
+                                                    autofocus class="form-control" name="id_empresa" id="id_empresa"
+                                                    placeholder="Ingresa el Nit de la empresa" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
                                             <label class="form-label" for="nombre_empresa">Nombre de la empresa</label>
                                             <div class="input-group input-group-merge">
                                                 <span id="nombre_empresa-span" class="input-group-text"><i
@@ -216,9 +228,10 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
+                                        <th>NIT Empresa</th>
                                         <th>Nombre Empresa</th>
                                         <th>Estado</th>
-
+                                        <th>Fecha de Registro</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -243,8 +256,10 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                                         title="Actualizar"></i></button>
                                             </form>
                                         </td>
+                                        <td><?php echo $empresa['id_empresa'] ?></td>
                                         <td><?php echo $empresa['nombre_empresa'] ?></td>
                                         <td><?php echo $empresa['estado'] ?></td>
+                                        <td><?php echo $empresa['fecha_registro'] ?></td>
                                     </tr>
                                     <?php
 
