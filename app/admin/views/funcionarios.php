@@ -1,11 +1,7 @@
 <?php
 $titlePage = "Lista de Funcionarios";
 require_once("../components/sidebar.php");
-
-
-$listaFuncionarios = $connection->prepare("SELECT * FROM usuarios
-INNER JOIN estados ON usuarios.id_estado = estados.id_estado 
-INNER JOIN cargos ON usuarios.cargo_funcionario = cargos.id_cargo WHERE usuarios.id_tipo_usuario = 3");
+$listaFuncionarios = $connection->prepare("SELECT * FROM usuarios INNER JOIN cargos ON usuarios.cargo_funcionario = cargos.id_cargo INNER JOIN estados ON usuarios.id_estado = estados.id_estado WHERE usuarios.id_tipo_usuario = 3");
 $listaFuncionarios->execute();
 $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -69,77 +65,79 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-                        <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0" width="100%">
-                                <thead>
+
+                        <table id="example" class="table table-striped table-bordered top-table table-responsive" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Acciones</th>
+                                    <th>Firma</th>
+                                    <th>N. documento</th>
+                                    <th>Nombres</th>
+                                    <th>Apellidos</th>
+                                    <th>Email</th>
+                                    <th>Celular</th>
+                                    <th>Sexo</th>
+                                    <th>Nombre de Cargo</th>
+                                    <th>Fecha de Registro</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($funcionarios as $funcionario) {
+                                ?>
                                     <tr>
-                                        <th>Acciones</th>
-                                        <th>N. documento</th>
-                                        <th>Nombres</th>
-                                        <th>Apellidos</th>
-                                        <th>Email</th>
-                                        <th>Celular</th>
-                                        <th>Sexo</th>
-                                        <th>Nombre de Cargo</th>
-                                        <th>Estado</th>
-                                        <th>Firma</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    foreach ($funcionarios as $funcionario) {
-                                    ?>
-                                        <tr>
-                                            <!-- mapeo de datos  -->
-                                            <td>
-                                                <form method="GET" action="">
-                                                    <input type="hidden" name="id_funcionario-delete" value="<?= $funcionario['documento'] ?>">
-                                                    <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                                </form>
-                                                <form method="GET" class="mt-2" action="editar-funcionario.php">
-                                                    <input type="hidden" name="id_edit-document" value="<?= $funcionario['documento'] ?>">
-                                                    <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i>
-                                                    </button>
-                                                </form>
+                                        <!-- mapeo de datos  -->
+                                        <td>
+                                            <form method="GET" action="">
+                                                <input type="hidden" name="id_funcionario-delete" value="<?= $funcionario['documento'] ?>">
+                                                <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                            </form>
+                                            <form method="GET" class="mt-2" action="editar-funcionario.php">
+                                                <input type="hidden" name="id_edit-document" value="<?= $funcionario['documento'] ?>">
+                                                <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <?php
+                                        if (isEmpty([$funcionario['foto_data']])) {
+                                        ?>
+                                            <td class="avatar">
+                                                <img src="../assets/images/perfil_sin_foto.jpg" alt class="w-px-100 mb-3 h-px-100 rounded-circle" />
+                                                <p>Sin foto</p>
                                             </td>
-                                            <td><?php echo $funcionario['documento'] ?></td>
-                                            <td><?php echo $funcionario['nombres'] ?></td>
-                                            <td><?php echo $funcionario['apellidos'] ?></td>
-                                            <td><?php echo $funcionario['email'] ?></td>
-                                            <td><?php echo $funcionario['celular'] ?></td>
-                                            <td><?php echo $funcionario['sexo'] ?></td>
-                                            <td><?php echo $funcionario['tipo_cargo'] ?></td>
-                                            <td><?php echo $funcionario['estado'] ?></td>
-                                            <?php
-                                            if (isEmpty([$funcionario['foto_data']])) {
-                                            ?>
-                                                <td class="avatar">
-                                                    <img src="../assets/images/perfil_sin_foto.jpg" alt class="w-px-100 mb-3 h-px-100 rounded-circle" />
-                                                    <p>Sin foto</p>
-                                                </td>
 
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <td class="avatar text-center">
-                                                    <img src="../assets/images/funcionarios/<?php echo $funcionario['foto_data'] ?>" alt class="w-px-100 h-px-100 rounded" />
-                                                    <button class="btn btn-primary mt-2 view-photo-btn" data-photo="../assets/images/funcionarios/<?php echo $funcionario['foto_data'] ?>">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                </td>
-                                            <?php
-                                            }
-                                            ?>
-                                        </tr>
-                                    <?php
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <td class="avatar text-center">
+                                                <img src="../assets/images/funcionarios/<?php echo $funcionario['foto_data'] ?>" alt class="w-px-100 h-px-100 rounded" />
+                                                <button class="btn btn-primary mt-2 view-photo-btn" data-photo="../assets/images/funcionarios/<?php echo $funcionario['foto_data'] ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        <?php
+                                        }
+                                        ?>
+                                        <td><?php echo $funcionario['documento'] ?></td>
+                                        <td><?php echo $funcionario['nombres'] ?></td>
+                                        <td><?php echo $funcionario['apellidos'] ?></td>
+                                        <td><?php echo $funcionario['email'] ?></td>
+                                        <td><?php echo $funcionario['celular'] ?></td>
+                                        <td><?php echo $funcionario['sexo'] ?></td>
+                                        <td><?php echo $funcionario['tipo_cargo'] ?></td>
+                                        <td><?php echo date('d-m-Y', strtotime($funcionario['fecha_registro'])) ?></td>
+                                        <td><?php echo $funcionario['estado'] ?></td>
+                                    </tr>
+                                <?php
 
-                                    }
+                                }
 
-                                    ?>
-                                </tbody>
+                                ?>
+                            </tbody>
 
-                            </table>
-                        </div>
+                        </table>
+
 
                     </div>
                 </div>

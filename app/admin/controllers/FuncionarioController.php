@@ -13,9 +13,11 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
     $celular = $_POST['celular'];
     $nombreCargo = $_POST['nombreCargo'];
     $estadoInicial = $_POST['estadoInicial'];
+    $sexo = $_POST['sexo'];
     $imagenFirma = $_FILES['imagenFirma']['name'];
+
     // Validamos que no hayamos recibido ningún dato vacío
-    if (isEmpty([$documento, $nombres, $apellidos, $email, $celular, $imagenFirma, $nombreCargo])) {
+    if (isEmpty([$documento, $nombres, $apellidos, $email, $celular, $imagenFirma, $nombreCargo, $sexo])) {
         showErrorFieldsEmpty("registrar-funcionario.php");
         exit();
     }
@@ -50,10 +52,12 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
                 if (!file_exists($imagenRuta)) {
                     $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
                     if ($registroImagen) {
+                        // guardamos la fecha de registro
+                        $fecha_registro = date("Y-m-d H:i:s");
                         // Inserta los datos en la base de datos
                         $registerFuncionario = $connection->prepare("INSERT INTO usuarios(
-                        documento, nombres, apellidos, email, celular, cargo_funcionario, foto_data, id_tipo_usuario, id_estado) 
-                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :nombreCargo, :imagenFirma, :id_tipo_usuario, :id_estado)");
+                        documento, nombres, apellidos, email, celular, cargo_funcionario, foto_data, id_tipo_usuario, id_estado, sexo, fecha_registro) 
+                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :nombreCargo, :imagenFirma, :id_tipo_usuario, :id_estado, :sexo, :fecha_registro)");
                         $registerFuncionario->bindParam(':documento', $documento);
                         $registerFuncionario->bindParam(':nombres', $nombres);
                         $registerFuncionario->bindParam(':apellidos', $apellidos);
@@ -63,6 +67,8 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
                         $registerFuncionario->bindParam(':imagenFirma', $imagenFirma);
                         $registerFuncionario->bindParam(':id_tipo_usuario', $id_funcionario);
                         $registerFuncionario->bindParam(':id_estado', $estadoInicial);
+                        $registerFuncionario->bindParam(':sexo', $sexo);
+                        $registerFuncionario->bindParam(':fecha_registro', $fecha_registro);
                         $registerFuncionario->execute();
                         if ($registerFuncionario) {
                             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "funcionarios.php");
@@ -97,10 +103,11 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
     $celular = $_POST['celular'];
     $nombreCargo = $_POST['nombreCargo'];
     $estadoInicial = $_POST['estadoInicial'];
+    $sexo = $_POST['sexo'];
     $imagenFirma = $_FILES['imagenFirma']['name'];
 
     // Validamos que no hayamos recibido ningún dato vacío
-    if (isEmpty([$documento, $nombres, $apellidos, $nombreCargo, $email, $celular, $estadoInicial])) {
+    if (isEmpty([$documento, $nombres, $apellidos, $nombreCargo, $email, $celular, $estadoInicial, $sexo])) {
         showErrorFieldsEmpty("editar-funcionario.php?id_edit-document=" . $documento);
         exit();
     }
@@ -118,11 +125,9 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya están registrados", "funcionarios.php");
         exit();
     } else {
-
         $permitidos = array(
             'image/jpeg',
             'image/png',
-            'image/webp'
         );
         $limite_KB = 10000;
 
@@ -132,6 +137,10 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
             createDirectoryIfNotExists($ruta);
             if (!file_exists($imagenRuta)) {
                 $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
+
+                // borramos la imagen que esta de la persona 
+                if (file_exists($queryFetch['imagenFirma'])) {
+                }
                 if ($registroImagen) {
                     // Inserta los datos en la base de datos
                     $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, imagenFirma = :imagenFirma, id_estado = :estadoInicial WHERE documento = :documento");

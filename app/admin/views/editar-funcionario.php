@@ -83,26 +83,50 @@ if (!empty($_GET['id_edit-document'])) {
                                         placeholder="Ingresar corrreo electronico" />
                                 </div>
                             </div>
-
                             <div class="mb-3">
-                                <label class="form-label" for="nombreCargo">Cargo del Funcionario</label>
+                                <label for="sexo" class="form-label">Orientacion Sexual</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="nombre_area-span" class="input-group-text"><i class="fas fa-user"></i>
-                                    </span>
-                                    <input type="text" required minlength="2"
-                                        value="<?php echo $funcionarioFindById['cargo_funcionario'] ?>" maxlength="100"
-                                        class="form-control" name="nombreCargo" id="nombreCargo"
-                                        placeholder="Ingresa el cargo del funcionario" />
+                                    <span id="sexo-2" class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <select class="form-select" name="sexo" required>
+                                        <option value="">Seleccionar sexo...</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="femenino">Femenino</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <div class="mb-3 col-md-6">
-                                <label class="form-label" for="imagenFirma">Firma Actual</label>
-                                <img src="../assets/images/<?php echo $funcionarioFindById['foto_data'] ?>" alt=""
-                                    class="card-img mt-2" />
-                            </div>
-
                             <div class="mb-3">
+                                <label for="nombreCargo" class="form-label">Cargo del funcionario</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="nombreCargo-2" class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <select class="form-select" id="nombreCargo" name="nombreCargo" required>
+                                        <option value="">Seleccionar cargo funcionario...</option>
+                                        <?php
+                                                // CONSUMO DE DATOS DE LOS PROCESOS
+                                                $listCargos = $connection->prepare("SELECT * FROM cargos");
+                                                $listCargos->execute();
+                                                $cargos = $listCargos->fetchAll(PDO::FETCH_ASSOC);
+                                                // Verificar si no hay datos
+                                                if (empty($cargos)) {
+                                                    echo "<option value=''>No hay datos...</option>";
+                                                } else {
+                                                    // Iterar sobre los cargos
+                                                    foreach ($cargos as $cargo) {
+                                                        echo "<option value='{$cargo['id_cargo']}'>{$cargo['tipo_cargo']}</option>";
+                                                    }
+                                                }
+                                                ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-6 h-px-200">
+                                <label class="form-label" for="imagenFirma">Firma Actual</label>
+                                <div class="avatar text-center">
+                                    <img src="../assets/images/funcionarios/<?php echo $funcionarioFindById['foto_data'] ?>"
+                                        alt="" class="w-px-200 h-px-200 rounded">
+                                </div>
+                            </div>
+                            <div class="mt-5 mb-3">
                                 <label class="form-label" for="imagenFirma">Cambiar Imagen</label>
                                 <div class="input-group input-group-merge">
                                     <span id="nombre_area-span" class="input-group-text"><i
