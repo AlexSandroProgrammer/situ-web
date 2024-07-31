@@ -50,7 +50,7 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                             </ul>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-4 mt-5">
+                    <div class="col-xl-4 col-lg-4">
                         <!-- Button trigger modal -->
                         <a href="estado-fichas.php" class="btn btn-info"><i class="fas fa-info"></i> Enlistar a
                             Sena Empresa

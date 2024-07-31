@@ -1,5 +1,5 @@
 <?php
-$titlePage = "Registro de Ficha";
+$titlePage = "Registro de Funcionario";
 require_once("../components/sidebar.php");
 ?>
 <!-- Content wrapper -->
@@ -17,20 +17,14 @@ require_once("../components/sidebar.php");
                         <h6 class="mb-0">Ingresa por favor los siguientes datos.</h6>
                     </div>
                     <div class="card-body">
-                        <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                            name="formRegisterFuncionario">
+                        <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="formRegisterFuncionario">
 
                             <div class="mb-3">
                                 <label class="form-label" for="documento">Numero de
                                     Documento</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="documento-icon" class="input-group-text"><i
-                                            class="fas fa-user"></i></span>
-                                    <input type="text" autofocus class="form-control"
-                                        onkeypress="return(multiplenumber(event));" minlength="6" maxlength="10"
-                                        oninput="maxlengthNumber(this);" id="documento" name="documento"
-                                        placeholder="Ingresa el numero de documento"
-                                        aria-describedby="documento-icon" />
+                                    <span id="documento-icon" class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" autofocus class="form-control" onkeypress="return(multiplenumber(event));" minlength="6" maxlength="10" oninput="maxlengthNumber(this);" id="documento" name="documento" placeholder="Ingresa el numero de documento" aria-describedby="documento-icon" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -38,8 +32,7 @@ require_once("../components/sidebar.php");
                                 <div class="input-group input-group-merge">
                                     <span id="nombres_span" class="input-group-text"><i class="fas fa-user"></i>
                                     </span>
-                                    <input type="text" required minlength="2" maxlength="100" class="form-control"
-                                        name="nombres" id="nombres" placeholder="Ingresa el nombre del funcionario" />
+                                    <input type="text" required minlength="2" maxlength="100" class="form-control" name="nombres" id="nombres" placeholder="Ingresa el nombre del funcionario" />
                                 </div>
                             </div>
 
@@ -48,9 +41,7 @@ require_once("../components/sidebar.php");
                                 <div class="input-group input-group-merge">
                                     <span id="nombre_area-span" class="input-group-text"><i class="fas fa-user"></i>
                                     </span>
-                                    <input type="text" required minlength="2" maxlength="100" class="form-control"
-                                        name="apellidos" id="apellidos"
-                                        placeholder="Ingresa los apellidos del funcionario" />
+                                    <input type="text" required minlength="2" maxlength="100" class="form-control" name="apellidos" id="apellidos" placeholder="Ingresa los apellidos del funcionario" />
                                 </div>
                             </div>
 
@@ -59,8 +50,7 @@ require_once("../components/sidebar.php");
                                 <div class="input-group input-group-merge">
                                     <span id="email_span" class="input-group-text"><i class="fas fa-user"></i>
                                     </span>
-                                    <input type="email" required minlength="2" maxlength="100" class="form-control"
-                                        name="email" id="email" placeholder="Ingresar corrreo electronico" />
+                                    <input type="email" required minlength="2" maxlength="100" class="form-control" name="email" id="email" placeholder="Ingresar corrreo electronico" />
                                 </div>
                             </div>
 
@@ -69,16 +59,13 @@ require_once("../components/sidebar.php");
                                 <div class="input-group input-group-merge">
                                     <span id="celular_span" class="input-group-text"><i class="fas fa-user"></i>
                                     </span>
-                                    <input type="text" class="form-control" required
-                                        onkeypress="return(multiplenumber(event));" minlength="10" maxlength="10"
-                                        name="celular" id="celular" placeholder="Ingresar numero de celular" />
+                                    <input type="text" class="form-control" required onkeypress="return(multiplenumber(event));" minlength="10" maxlength="10" name="celular" id="celular" placeholder="Ingresar numero de celular" />
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="estadoInicial" class="form-label">Cargo del funcionario</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="estadoInicial-2" class="input-group-text"><i
-                                            class="fas fa-user"></i></span>
+                                    <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-user"></i></span>
                                     <select class="form-select" name="nombreCargo" required>
                                         <option value="">Seleccionar cargo funcionario...</option>
                                         <?php
@@ -104,18 +91,15 @@ require_once("../components/sidebar.php");
                             <div class="mb-3">
                                 <label class="form-label" for="imagenFirma">Imagen de Firma</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="nombre_area-span" class="input-group-text"><i
-                                            class="fas fa-image"></i></span>
-                                    <input type="file" required class="form-control" accept="image/*" name="imagenFirma"
-                                        id="imagenFirma" />
+                                    <span id="nombre_area-span" class="input-group-text"><i class="fas fa-image"></i></span>
+                                    <input type="file" required class="form-control" accept="image/*" name="imagenFirma" id="imagenFirma" />
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="estadoInicial" class="form-label">Estado
                                     Inicial</label>
                                 <div class="input-group input-group-merge">
-                                    <span id="estadoInicial-2" class="input-group-text"><i
-                                            class="fas fa-user"></i></span>
+                                    <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-user"></i></span>
                                     <select class="form-select" name="estadoInicial" required>
                                         <option value="">Seleccionar Estado...</option>
                                         <?php
@@ -142,8 +126,7 @@ require_once("../components/sidebar.php");
                                     Cancelar
                                 </a>
                                 <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                <input type="hidden" class="btn btn-info" value="formRegisterFuncionario"
-                                    name="MM_formRegisterFuncionario"></input>
+                                <input type="hidden" class="btn btn-info" value="formRegisterFuncionario" name="MM_formRegisterFuncionario"></input>
                             </div>
                         </form>
                     </div>

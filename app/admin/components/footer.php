@@ -139,11 +139,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // Mostrar la imagen en un SweetAlert
             Swal.fire({
-                title: 'Foto del Aprendiz',
+                title: 'Imagen Seleccionada',
                 imageUrl: photoUrl,
                 imageWidth: 400,
                 imageHeight: 400,
-                imageAlt: 'Foto del Aprendiz'
+                imageAlt: 'Imagen Seleccionada'
             });
         });
     });
