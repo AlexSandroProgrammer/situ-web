@@ -105,14 +105,13 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
     $estadoInicial = $_POST['estadoInicial'];
     $sexo = $_POST['sexo'];
     $imagenFirma = $_FILES['imagenFirma']['name'];
-
     // Validamos que no hayamos recibido ningún dato vacío
     if (isEmpty([$documento, $nombres, $apellidos, $nombreCargo, $email, $celular, $estadoInicial, $sexo])) {
         showErrorFieldsEmpty("editar-funcionario.php?id_edit-document=" . $documento);
         exit();
     }
 
-    $documentoQuery = $connection->prepare("SELECT * FROM usuarios WHERE email = :email OR (celular = :celular AND documento <> :documento)");
+    $documentoQuery = $connection->prepare("SELECT * FROM usuarios WHERE (email = :email OR celular = :celular) AND documento <> :documento");
     $documentoQuery->bindParam(':email', $email);
     $documentoQuery->bindParam(':celular', $celular);
     $documentoQuery->bindParam(':documento', $documento);
@@ -121,56 +120,96 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
 
     // Condicionales dependiendo del resultado de la consulta
     if ($queryFetch) {
-        // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya están registrados", "funcionarios.php");
+        // Identificar el dato repetido
+        $repeatedData = '';
+        foreach ($queryFetch as $row) {
+            if ($row['email'] == $email) {
+                $repeatedData = "Email: " . $email;
+            } elseif ($row['celular'] == $celular) {
+                $repeatedData = "Celular: " . $celular;
+            }
+        }
+
+        // Crear el mensaje de error
+        $errorMessage = "El documento " . $documento . " tiene un conflicto con el dato ya registrado: " . $repeatedData . " por favor cambialo por un dato valido.";
+
+        // Mostrar el mensaje de error y redirigir
+        showErrorOrSuccessAndRedirect("error", "Error de registro", $errorMessage, "editar-funcionario.php?id_edit-document=" . $documento);
         exit();
     } else {
-        $permitidos = array(
-            'image/jpeg',
-            'image/png',
-        );
-        $limite_KB = 10000;
+        if (isNotEmpty([$imagenFirma])) {
+            $permitidos = array(
+                'image/jpeg',
+                'image/png',
+            );
+            $limite_KB = 10000;
+            if (isFileValid($_FILES['imagenFirma'], $permitidos, $limite_KB)) {
+                $ruta_actualizada = "../assets/images/funcionarios/";
+                $imagenRuta = $ruta_actualizada . $_FILES['imagenFirma']['name'];
+                if (!file_exists($imagenRuta)) {
+                    // llamamos los datos del usuario
+                    $user_image = $connection->prepare("SELECT * FROM usuarios WHERE documento = :documento");
+                    $user_image->bindParam(':documento', $documento);
+                    $user_image->execute();
+                    $image = $user_image->fetch(PDO::FETCH_ASSOC);
 
-        if (isFileValid($_FILES['imagenFirma'], $permitidos, $limite_KB)) {
-            $ruta = "../assets/images/";
-            $imagenRuta = $ruta . $_FILES['imagenFirma']['name'];
-            createDirectoryIfNotExists($ruta);
-            if (!file_exists($imagenRuta)) {
-                $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
-
-                // borramos la imagen que esta de la persona 
-                if (file_exists($queryFetch['imagenFirma'])) {
-                }
-                if ($registroImagen) {
-                    // Inserta los datos en la base de datos
-                    $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, imagenFirma = :imagenFirma, id_estado = :estadoInicial WHERE documento = :documento");
-                    $registerFuncionario->bindParam(':nombres', $nombres);
-                    $registerFuncionario->bindParam(':apellidos', $apellidos);
-                    $registerFuncionario->bindParam(':nombreCargo', $nombreCargo);
-                    $registerFuncionario->bindParam(':email', $email);
-                    $registerFuncionario->bindParam(':celular', $celular);
-                    $registerFuncionario->bindParam(':imagenFirma', $imagenFirma);
-                    $registerFuncionario->bindParam(':id_estado', $estadoInicial);
-                    $registerFuncionario->bindParam(':documento', $documento);
-                    $registerFuncionario->execute();
-                    if ($registerFuncionario) {
-                        showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han actualizado correctamente", "funcionarios.php");
+                    if (isNotEmpty([$image['foto_data']])) {
+                        // borramos la imagen anterior
+                        $rutaCompletaArchivo = $ruta_actualizada . $image['foto_data'];
+                        if (file_exists($rutaCompletaArchivo)) {
+                            unlink($rutaCompletaArchivo);
+                        }
+                    }
+                    // guardamos la imagen de la firma nueva del funcionario
+                    $registroImagen = moveUploadedFile($_FILES['imagenFirma'], $imagenRuta);
+                    // borramos la imagen que esta de la persona 
+                    if ($registroImagen) {
+                        // Inserta los datos en la base de datos con la nueva imagen
+                        $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, foto_data = :imagenFirma, id_estado = :id_estado WHERE documento = :documento");
+                        $registerFuncionario->bindParam(':nombres', $nombres);
+                        $registerFuncionario->bindParam(':apellidos', $apellidos);
+                        $registerFuncionario->bindParam(':nombreCargo', $nombreCargo);
+                        $registerFuncionario->bindParam(':email', $email);
+                        $registerFuncionario->bindParam(':celular', $celular);
+                        $registerFuncionario->bindParam(':imagenFirma', $imagenFirma);
+                        $registerFuncionario->bindParam(':id_estado', $estadoInicial);
+                        $registerFuncionario->bindParam(':documento', $documento);
+                        $registerFuncionario->execute();
+                        if ($registerFuncionario) {
+                            showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos se han actualizado correctamente", "funcionarios.php");
+                            exit();
+                        }
+                    } else {
+                        showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos", "editar-funcionario.php?id_edit-document=" . $documento);
                         exit();
                     }
                 } else {
-                    showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos", "editar-funcionario.php?id_edit-document=" . $documento);
+                    showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo ya existe en el servidor", "editar-funcionario.php?id_edit-document=" . $documento);
                     exit();
                 }
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo ya existe en el servidor", "editar-funcionario.php?id_edit-document=" . $documento);
+                showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido o supera el tamaño permitido", "editar-funcionario.php?id_edit-document=" . $documento);
                 exit();
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de archivo", "El archivo no es válido o supera el tamaño permitido", "editar-funcionario.php?id_edit-document=" . $documento);
-            exit();
+            // Actualizar sin cambiar la imagen
+            $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, id_estado = :id_estado WHERE documento = :documento");
+            $registerFuncionario->bindParam(':nombres', $nombres);
+            $registerFuncionario->bindParam(':apellidos', $apellidos);
+            $registerFuncionario->bindParam(':nombreCargo', $nombreCargo);
+            $registerFuncionario->bindParam(':email', $email);
+            $registerFuncionario->bindParam(':celular', $celular);
+            $registerFuncionario->bindParam(':id_estado', $estadoInicial);
+            $registerFuncionario->bindParam(':documento', $documento);
+            $registerFuncionario->execute();
+            if ($registerFuncionario) {
+                showErrorOrSuccessAndRedirect("success", "¡Perfecto!", "Los datos se han actualizado correctamente", "funcionarios.php");
+                exit();
+            }
         }
     }
 }
+
 
 
 
