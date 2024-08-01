@@ -1,7 +1,7 @@
 <?php
 $titlePage = "Lista de Funcionarios";
 require_once("../components/sidebar.php");
-$listaFuncionarios = $connection->prepare("SELECT * FROM usuarios INNER JOIN cargos ON usuarios.cargo_funcionario = cargos.id_cargo INNER JOIN estados ON usuarios.id_estado = estados.id_estado WHERE usuarios.id_tipo_usuario = 3");
+$listaFuncionarios = $connection->prepare("SELECT * FROM usuarios LEFT JOIN cargos ON usuarios.cargo_funcionario = cargos.id_cargo LEFT JOIN estados ON usuarios.id_estado = estados.id_estado WHERE usuarios.id_tipo_usuario = 3");
 $listaFuncionarios->execute();
 $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -116,9 +116,9 @@ $funcionarios = $listaFuncionarios->fetchAll(PDO::FETCH_ASSOC);
                                         if (isEmpty([$funcionario['foto_data']])) {
                                         ?>
                                     <td class="avatar">
-                                        <img src="../assets/images/perfil_sin_foto.jpg" alt
-                                            class="w-px-100 mb-3 h-px-100 rounded-circle" />
-                                        <p>Sin foto</p>
+                                        <img src="../assets/images/fondo_imagen.png" alt
+                                            class="w-px-100 mb-3 h-px-100 rounded" />
+                                        <p class="text-danger bold">Sin firma</p>
                                     </td>
 
                                     <?php
