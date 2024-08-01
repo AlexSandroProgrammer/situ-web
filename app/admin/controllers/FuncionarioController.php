@@ -14,10 +14,11 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
     $nombreCargo = $_POST['nombreCargo'];
     $estadoInicial = $_POST['estadoInicial'];
     $sexo = $_POST['sexo'];
+    $tipo_documento = $_POST['tipo_documento'];
     $imagenFirma = $_FILES['imagenFirma']['name'];
 
     // Validamos que no hayamos recibido ningún dato vacío
-    if (isEmpty([$documento, $nombres, $apellidos, $email, $celular, $imagenFirma, $nombreCargo, $sexo])) {
+    if (isEmpty([$documento, $nombres, $apellidos, $email, $celular, $imagenFirma, $nombreCargo, $sexo, $tipo_documento])) {
         showErrorFieldsEmpty("registrar-funcionario.php");
         exit();
     }
@@ -56,8 +57,8 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
                         $fecha_registro = date("Y-m-d H:i:s");
                         // Inserta los datos en la base de datos
                         $registerFuncionario = $connection->prepare("INSERT INTO usuarios(
-                        documento, nombres, apellidos, email, celular, cargo_funcionario, foto_data, id_tipo_usuario, id_estado, sexo, fecha_registro) 
-                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :nombreCargo, :imagenFirma, :id_tipo_usuario, :id_estado, :sexo, :fecha_registro)");
+                        documento, nombres, apellidos, email, celular, cargo_funcionario, foto_data, id_tipo_usuario, id_estado, sexo, fecha_registro, tipo_documento) 
+                        VALUES(:documento, :nombres, :apellidos, :email, :celular, :nombreCargo, :imagenFirma, :id_tipo_usuario, :id_estado, :sexo, :fecha_registro, :tipo_documento)");
                         $registerFuncionario->bindParam(':documento', $documento);
                         $registerFuncionario->bindParam(':nombres', $nombres);
                         $registerFuncionario->bindParam(':apellidos', $apellidos);
@@ -69,6 +70,7 @@ if ((isset($_POST["MM_formRegisterFuncionario"])) && ($_POST["MM_formRegisterFun
                         $registerFuncionario->bindParam(':id_estado', $estadoInicial);
                         $registerFuncionario->bindParam(':sexo', $sexo);
                         $registerFuncionario->bindParam(':fecha_registro', $fecha_registro);
+                        $registerFuncionario->bindParam(':tipo_documento', $tipo_documento);
                         $registerFuncionario->execute();
                         if ($registerFuncionario) {
                             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "funcionarios.php");
@@ -104,9 +106,10 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
     $nombreCargo = $_POST['nombreCargo'];
     $estadoInicial = $_POST['estadoInicial'];
     $sexo = $_POST['sexo'];
+    $tipo_documento = $_POST['tipo_documento'];
     $imagenFirma = $_FILES['imagenFirma']['name'];
     // Validamos que no hayamos recibido ningún dato vacío
-    if (isEmpty([$documento, $nombres, $apellidos, $nombreCargo, $email, $celular, $estadoInicial, $sexo])) {
+    if (isEmpty([$documento, $nombres, $apellidos, $nombreCargo, $email, $celular, $estadoInicial, $sexo, $tipo_documento])) {
         showErrorFieldsEmpty("editar-funcionario.php?id_edit-document=" . $documento);
         exit();
     }
@@ -165,8 +168,9 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
                     // borramos la imagen que esta de la persona 
                     if ($registroImagen) {
                         // Inserta los datos en la base de datos con la nueva imagen
-                        $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, foto_data = :imagenFirma, id_estado = :id_estado WHERE documento = :documento");
+                        $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, tipo_documento = :tipo_documento, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, foto_data = :imagenFirma, id_estado = :id_estado WHERE documento = :documento");
                         $registerFuncionario->bindParam(':nombres', $nombres);
+                        $registerFuncionario->bindParam(':tipo_documento', $tipo_documento);
                         $registerFuncionario->bindParam(':apellidos', $apellidos);
                         $registerFuncionario->bindParam(':nombreCargo', $nombreCargo);
                         $registerFuncionario->bindParam(':email', $email);
@@ -193,9 +197,10 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
             }
         } else {
             // Actualizar sin cambiar la imagen
-            $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, id_estado = :id_estado WHERE documento = :documento");
+            $registerFuncionario = $connection->prepare("UPDATE usuarios SET nombres = :nombres, apellidos = :apellidos, tipo_documento = :tipo_documento, cargo_funcionario = :nombreCargo, email = :email, celular = :celular, id_estado = :id_estado WHERE documento = :documento");
             $registerFuncionario->bindParam(':nombres', $nombres);
             $registerFuncionario->bindParam(':apellidos', $apellidos);
+            $registerFuncionario->bindParam(':tipo_documento', $tipo_documento);
             $registerFuncionario->bindParam(':nombreCargo', $nombreCargo);
             $registerFuncionario->bindParam(':email', $email);
             $registerFuncionario->bindParam(':celular', $celular);
@@ -264,6 +269,15 @@ if (isset($_POST["MM_funcionarioArchivoExcel"]) && ($_POST["MM_funcionarioArchiv
     if (empty($fileName)) {
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "");
     }
+    if ($fileName !== "funcionario_excel.xlsx") {
+        showErrorOrSuccessAndRedirect(
+            "error",
+            "Ops...!",
+            "El nombre del archivo debe ser 'funcionario_excel.xlsx', este es el nombre que se utiliza para importar datos desde un archivo Excel",
+            "funcionarios.php?importarExcel"
+        );
+        exit();
+    }
     // Validar la extensión del archivo
     if (isFileUploaded($_FILES['funcionario_excel'])) {
         // Extensiones permitidas
@@ -308,13 +322,17 @@ if (isset($_POST["MM_funcionarioArchivoExcel"]) && ($_POST["MM_funcionarioArchiv
                         $queryDuplcateFuncionario->execute();
                         $exists = $queryDuplcateFuncionario->fetchColumn();
                         if ($exists) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "Los datos del funcionario ya están registrados en la base de datos, por favor verifica el número de documento, celular y el correo electrónico", "funcionarios.php?importarExcel");
+                            showErrorOrSuccessAndRedirect(
+                                "error",
+                                "Error!",
+                                "Los datos del funcionario ya están registrados en la base de datos, por favor verifica el número de documento, celular y el correo electrónico",
+                                "funcionarios.php?importarExcel"
+                            );
                         }
                         // Guardar la imagen
                         $imageFileName = $nombres . $apellidos . $documento . '.png'; // Asumiendo que la firma es una imagen en base64 en formato PNG
-                        $imageUploadPath = 'ruta/a/tu/carpeta/' . $imageFileName;
+                        $imageUploadPath = '../assets/images/funcionarios/' . $imageFileName;
                         $firmaData = base64_decode($firma);
-
                         if (file_put_contents($imageUploadPath, $firmaData)) {
                             $registerFuncionary->bindParam(":documento", $documento);
                             $registerFuncionary->bindParam(":nombres", $nombres);
@@ -327,7 +345,12 @@ if (isset($_POST["MM_funcionarioArchivoExcel"]) && ($_POST["MM_funcionarioArchiv
                             $registerFuncionary->bindParam(":fecha_registro", $fecha_registro);
                             $registerFuncionary->execute();
                         } else {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "No se pudo guardar la imagen", "funcionarios.php?importarExcel");
+                            showErrorOrSuccessAndRedirect(
+                                "error",
+                                "Error!",
+                                "No se pudo guardar la imagen",
+                                "funcionarios.php?importarExcel"
+                            );
                         }
                     } else {
                         showErrorOrSuccessAndRedirect("error", "Error!", "Todos los campos son obligatorios", "funcionarios.php?importarExcel");

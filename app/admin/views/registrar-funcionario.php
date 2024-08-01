@@ -19,7 +19,18 @@ require_once("../components/sidebar.php");
                     <div class="card-body">
                         <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
                             name="formRegisterFuncionario">
-
+                            <div class="mb-3">
+                                <label for="tipo_documento" class="form-label">Tipo de Documento</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="tipo_documento-2" class="input-group-text"><i
+                                            class="fas fa-user"></i></span>
+                                    <select class="form-select" name="tipo_documento" id="tipo_documento" required>
+                                        <option value="">Seleccionar tipo de documento...</option>
+                                        <option value="C.C.">Cedula de Ciudadania</option>
+                                        <option value="C.E.">Cedula de Extranjeria</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label" for="documento">Numero de
                                     Documento</label>
@@ -42,7 +53,6 @@ require_once("../components/sidebar.php");
                                         name="nombres" id="nombres" placeholder="Ingresa el nombre del funcionario" />
                                 </div>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label" for="apellidos">Apellidos</label>
                                 <div class="input-group input-group-merge">
@@ -148,7 +158,6 @@ require_once("../components/sidebar.php");
                                     </select>
                                 </div>
                             </div>
-
                             <div class="mt-4">
                                 <a href="funcionarios.php" class="btn btn-danger">
                                     Cancelar
