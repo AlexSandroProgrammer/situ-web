@@ -10,3 +10,5 @@ require_once("../controllers/EstadoController.php");
 require_once("../controllers/AprendicesController.php");
 require_once("../controllers/TurnoRutinarioController.php");
 require_once("../controllers/EmpresaController.php");
+require_once("../controllers/CiudadController.php");
+require_once("../controllers/DepartamentoController.php");
