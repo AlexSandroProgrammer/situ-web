@@ -147,32 +147,6 @@
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-star"></i>
-                            <div data-i18n="Misc">Departamentos</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="departamentos.php" class="menu-link">
-                                    <div data-i18n="Error">Lista de Departamentos</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-star"></i>
-                            <div data-i18n="Misc">Ciudades</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="ciudades.php" class="menu-link">
-                                    <div data-i18n="Error">Lista de Ciudades</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-star"></i>
                             <div data-i18n="Misc">Areas</div>
                         </a>
                         <ul class="menu-sub">
@@ -430,6 +404,32 @@
                                 </a>
                             </li>
 
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-star"></i>
+                            <div data-i18n="Misc">Departamentos</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="departamentos.php" class="menu-link">
+                                    <div data-i18n="Error">Lista de Departamentos</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-star"></i>
+                            <div data-i18n="Misc">Ciudades</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="ciudades.php" class="menu-link">
+                                    <div data-i18n="Error">Lista de Ciudades</div>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <li class="menu-header small text-uppercase">

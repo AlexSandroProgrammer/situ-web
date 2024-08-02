@@ -24,7 +24,7 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Modal -->
                         <div class="modal fade" id="formCiudad" tabindex="-1" aria-hidden="true">
                             <form class="modal-dialog" action="" method="POST" autocomplete="off"
-                                name="formRegisterArea">
+                                name="formRegisterCiudad">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel1">Registro de Ciudad</h5>
@@ -47,21 +47,21 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="input-group input-group-merge">
                                                 <span id="departamento-2" class="input-group-text"><i
                                                         class="fas fa-layer-group"></i></span>
-                                                <select class="form-select" name="departamento" required
+                                                <select class="form-select" id="departamento" required
                                                     name="departamento">
                                                     <option value="">Seleccionar Departamento...</option>
                                                     <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
-                                                    $list_ciudades = $connection->prepare("SELECT * FROM departamentos");
-                                                    $list_ciudades->execute();
-                                                    $ciudades_fetch = $list_ciudades->fetchAll(PDO::FETCH_ASSOC);
+                                                    $lista_departamentos = $connection->prepare("SELECT * FROM departamentos");
+                                                    $lista_departamentos->execute();
+                                                    $fetch_departamentos = $lista_departamentos->fetchAll(PDO::FETCH_ASSOC);
                                                     // Verificar si no hay datos
-                                                    if (empty($ciudades_fetch)) {
+                                                    if (empty($fetch_departamentos)) {
                                                         echo "<option value=''>No hay datos...</option>";
                                                     } else {
                                                         // Iterar sobre los estados
-                                                        foreach ($ciudades_fetch as $ciudad_fetch) {
-                                                            echo "<option value='{$ciudad_fetch['id_departamento']}'>{$ciudad_fetch['departamento']}</option>";
+                                                        foreach ($fetch_departamentos as $fetch_departamento) {
+                                                            echo "<option value='{$fetch_departamento['id_departamento']}'>{$fetch_departamento['departamento']}</option>";
                                                         }
                                                     }
                                                     ?>
@@ -74,74 +74,63 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </button>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterArea"
-                                            name="MM_formRegisterArea"></input>
+                                        <input type="hidden" class="btn btn-info" value="formRegisterCiudad"
+                                            name="MM_formRegisterCiudad"></input>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    <!-- Vertically Centered Modal -->
-                    <div class="col-lg-4 col-md-6">
-
-                        <!-- Button trigger modal -->
-                        <a href="ciudades.php?importarExcel" class="btn btn-success">
-                            <i class="fas fa-file-excel"></i> Importar Excel
-                        </a>
-
-                    </div>
                 </div>
                 <?php
-                if (!empty($_GET["id_area"])) {
-                    $id_area = $_GET["id_area"];
+                if (!empty($_GET["id_ciudad"])) {
+                    $id_ciudad = $_GET["id_ciudad"];
                     // CONSUMO DE DATOS DE LOS PROCESOS
-                    $listArea = $connection->prepare("SELECT * FROM ciudades INNER JOIN estados ON ciudades.id_estado = estados.id_estado WHERE id_area = :id_area AND ciudades.id_estado = estados.id_estado");
-                    $listArea->bindParam(":id_area", $id_area);
-                    $listArea->execute();
-                    $areaSeleccionada = $listArea->fetch(PDO::FETCH_ASSOC);
-                    if ($areaSeleccionada) {
+                    $list_ciudades = $connection->prepare("SELECT * FROM municipios LEFT JOIN departamentos ON municipios.id_departamento = departamentos.id_departamento WHERE id_municipio = :id_ciudad");
+                    $list_ciudades->bindParam(":id_ciudad", $id_ciudad);
+                    $list_ciudades->execute();
+                    $ciudadSeleccionada = $list_ciudades->fetch(PDO::FETCH_ASSOC);
+                    if ($ciudadSeleccionada) {
                 ?>
                 <div class="row">
                     <div class="col-xl">
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Actualizacion datos de
-                                    <?php echo $areaSeleccionada['nombreArea'] ?>
+                                    <?php echo $ciudadSeleccionada['nombre_municipio'] ?>
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <form action="" method="POST" autocomplete="off" name="formUpdateArea">
+                                <form action="" method="POST" autocomplete="off" name="formUpdateCiudad">
                                     <div class=" mb-3">
-                                        <label class="form-label" for="codigo-ficha">Nombre de Area</label>
+                                        <label class="form-label" for="codigo-ficha">Ciudad</label>
                                         <div class="input-group input-group-merge">
-                                            <span id="nombre-area" class="input-group-text"><i
+                                            <span id="ciudad" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
-                                            <input type="text" minlength="5" maxlength="20" autofocus
-                                                class="form-control" required name="nombre_area" id="nombre-area"
-                                                placeholder="Ingresa el nombre del area"
-                                                value="<?php echo $areaSeleccionada['nombreArea']  ?>"
-                                                aria-describedby="codigo-ficha-2" />
+                                            <input type="text" minlength="5" maxlength="100" autofocus
+                                                class="form-control" required name="ciudad" id="ciudad"
+                                                placeholder="Ingresa el nombre de la ciudad"
+                                                value="<?php echo $ciudadSeleccionada['nombre_municipio']  ?>" />
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="estadoInicial" class="form-label">Estado
-                                            Inicial</label>
+                                        <label for="departamento" class="form-label">Departamento</label>
                                         <div class="input-group input-group-merge">
                                             <span id="estadoInicial-2" class="input-group-text"><i
                                                     class="fas fa-layer-group"></i></span>
-                                            <select class="form-select" required name="estado_area" required>
-                                                <option value="<?php echo $areaSeleccionada['id_estado'] ?>">
-                                                    <?php echo $areaSeleccionada['estado'] ?></option>
+                                            <select class="form-select" required name="id_departamento"
+                                                id="id_departamento">
+                                                <option value="<?php echo $ciudadSeleccionada['id_departamento'] ?>">
+                                                    <?php echo $ciudadSeleccionada['departamento'] ?></option>
                                                 <?php
                                                         // CONSUMO DE DATOS DE LOS PROCESOS
-                                                        $listEstados = $connection->prepare("SELECT * FROM estados");
-                                                        $listEstados->execute();
-                                                        $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
-
+                                                        $list_departamentos = $connection->prepare("SELECT * FROM departamentos");
+                                                        $list_departamentos->execute();
+                                                        $departamentos = $list_departamentos->fetchAll(PDO::FETCH_ASSOC);
                                                         // Iterar sobre los procedimientos
-                                                        foreach ($estados as $estado) {
-                                                            echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
+                                                        foreach ($departamentos as $estado) {
+                                                            echo "<option value='{$departamento['id_departamento']}'>{$departamento['departamento']}</option>";
                                                         }
                                                         ?>
                                             </select>
@@ -149,16 +138,14 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
 
                                     <input type="hidden" minlength="5" maxlength="20" autofocus class="form-control"
-                                        id="id_area" name="id_area"
-                                        value="<?php echo $areaSeleccionada['id_area']  ?>" />
-
+                                        id="id_ciudad" name="id_ciudad" value="<?php echo $id_ciudad ?>" />
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger" href="areas.php">
+                                        <a class="btn btn-danger" href="ciudades.php">
                                             Cancelar
                                         </a>
                                         <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formUpdateArea"
-                                            name="MM_formUpdateArea"></input>
+                                        <input type="hidden" class="btn btn-info" value="formUpdateCiudad"
+                                            name="MM_formUpdateCiudad"></input>
                                     </div>
                                 </form>
                             </div>
@@ -167,54 +154,16 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <?php
                     } else {
-                        showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "areas.php");
+                        showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "ciudades.php");
                         exit();
                     }
-                }
-                ?>
-                <?php
-                if (isset($_GET['importarExcel'])) {
-                ?>
-                <div class="row">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Importacion de Archivo Excel
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="registroArchivoExcel">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="area_excel">Subir Archivo</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="span_csv" class="input-group-text"><i
-                                                    class="fas fa-file-excel"></i></span>
-                                            <input type="file" autofocus class="form-control" required name="area_excel"
-                                                id="area_excel" />
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="areas.php">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                        <input type="hidden" class="btn btn-info" value="registroArchivoExcel"
-                                            name="MM_registroArchivoExcel"></input>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php
                 }
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
                         <div class="table-responsive p-3">
-                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0"
-                                width="100%">
+                            <table id="example" class="table table-striped table-bordered top-table text-center"
+                                cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
@@ -230,14 +179,14 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                                     <tr>
                                         <td>
                                             <form method="GET" action="">
-                                                <input type="hidden" name="id_municipio-delete"
+                                                <input type="hidden" name="id_ciudad-delete"
                                                     value="<?= $ciudad['id_municipio'] ?>">
                                                 <button class="btn btn-danger mt-2"
                                                     onclick="return confirm('desea eliminar el registro seleccionado');"
                                                     type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
                                             </form>
                                             <form method="GET" class="mt-2" action="">
-                                                <input type="hidden" name="id_municipio"
+                                                <input type="hidden" name="id_ciudad"
                                                     value="<?= $ciudad['id_municipio'] ?>">
                                                 <button class="btn btn-success"
                                                     onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
@@ -245,7 +194,7 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
                                                         title="Actualizar"></i></button>
                                             </form>
                                         </td>
-                                        <td><?php echo $ciudad['id_municipio'] ?></td>
+                                        <td class="w-px-200"><?php echo $ciudad['id_municipio'] ?></td>
                                         <td><?php echo $ciudad['nombre_municipio'] ?></td>
                                         <td><?php echo $ciudad['departamento'] ?></td>
                                     </tr>

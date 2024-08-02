@@ -37,7 +37,8 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col-xl-3 col-lg-4">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="fas fa-star"></i> Filtrar Fichas
                             </button>
                             <ul class="dropdown-menu">
@@ -60,40 +61,46 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 if (isset($_GET["importarExcel"])) {
                 ?>
-                    <div class="row mt-2">
-                        <div class="col-xl">
-                            <div class="card mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Importacion de Archivo Excel
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="registroFichaExcel">
-                                        <div class=" mb-3">
-                                            <label class="form-label" for="ficha_excel">Cargar Archivo Excel</label>
-                                            <div class="input-group input-group-merge">
-                                                <span id="ficha_excel-2" class="input-group-text"><i class="fas fa-file-excel"></i></span>
-                                                <input type="file" autofocus class="form-control" required name="ficha_excel" id="ficha_excel" aria-describedby="ficha_excel-2" />
-                                            </div>
+                <div class="row mt-2">
+                    <div class="col-xl">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Importacion de Archivo Excel
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
+                                    name="registroFichaExcel">
+                                    <div class=" mb-3">
+                                        <label class="form-label" for="ficha_excel">Cargar Archivo Excel</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="ficha_excel-2" class="input-group-text"><i
+                                                    class="fas fa-file-excel"></i></span>
+                                            <input type="file" autofocus class="form-control" required
+                                                name="ficha_excel" id="ficha_excel" aria-describedby="ficha_excel-2" />
                                         </div>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-danger" href="fichas.php">
-                                                Cancelar
-                                            </a>
-                                            <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                            <input type="hidden" class="btn btn-info" value="registroFichaExcel" name="MM_registroFichaExcel"></input>
-                                        </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" href="fichas.php">
+                                            Cancelar
+                                        </a>
+                                        <input type="submit" class="btn btn-primary" value="Registrar"></input>
+                                        <input type="hidden" class="btn btn-info" value="registroFichaExcel"
+                                            name="MM_registroFichaExcel"></input>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
                 <?php
                 }
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-                        <table id="example" class="table table-striped table-bordered top-table table-responsive" cellspacing="0" width="100%">
+                        <table id="example"
+                            class="table table-striped table-bordered top-table table-responsive text-center"
+                            cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th>Acciones</th>
@@ -115,32 +122,39 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                     $fin_formacion = DateTime::createFromFormat('Y-m-d', $ficha['fin_formacion'])->format('m/d/Y');
                                     $fecha_productiva = DateTime::createFromFormat('Y-m-d', $ficha['fecha_productiva'])->format('m/d/Y');
                                 ?>
-                                    <tr>
-                                        <td>
-                                            <form method="GET" action="">
-                                                <input type="hidden" name="id_ficha-delete" value="<?= $ficha['codigoFicha'] ?>">
-                                                <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                            </form>
-                                            <form method="GET" class="mt-2" action="editar-ficha.php">
-                                                <input type="hidden" name="id_ficha-edit" value="<?= $ficha['codigoFicha'] ?>">
-                                                <input type="hidden" name="ruta" value="fichas.php">
-                                                <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
-                                            </form>
-                                        </td>
-                                        <td><?php echo $ficha['codigoFicha'] ?></td>
-                                        <td><?php echo $ficha['nombre_programa'] ?></td>
-                                        <td>
-                                            <div class="row p-1 text-center">
-                                                <p><?php echo $ficha['cantidad_aprendices'] ?></p>
-                                                <a href="aprendices.php?id_ficha=<?= $ficha['codigoFicha'] ?>&ruta=fichas.php" class="btn btn-primary"><i class="fas fa-eye"></i> Ver Aprendices</a>
-                                            </div>
-                                        </td>
-                                        <td><?php echo $inicio_formacion ?></td>
-                                        <td><?php echo $fin_formacion ?></td>
-                                        <td><?php echo $fecha_productiva ?></td>
-                                        <td><?php echo $ficha['nombre_estado_ficha'] ?></td>
-                                        <td><?php echo $ficha['nombre_estado_se'] ?></td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <form method="GET" action="">
+                                            <input type="hidden" name="id_ficha-delete"
+                                                value="<?= $ficha['codigoFicha'] ?>">
+                                            <button class="btn btn-danger mt-2"
+                                                onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                        </form>
+                                        <form method="GET" class="mt-2" action="editar-ficha.php">
+                                            <input type="hidden" name="id_ficha-edit"
+                                                value="<?= $ficha['codigoFicha'] ?>">
+                                            <input type="hidden" name="ruta" value="fichas.php">
+                                            <button class="btn btn-success"
+                                                onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
+                                                type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
+                                        </form>
+                                    </td>
+                                    <td><?php echo $ficha['codigoFicha'] ?></td>
+                                    <td><?php echo $ficha['nombre_programa'] ?></td>
+                                    <td>
+                                        <div class="row p-1 text-center">
+                                            <p><?php echo $ficha['cantidad_aprendices'] ?></p>
+                                            <a href="aprendices.php?id_ficha=<?= $ficha['codigoFicha'] ?>&ruta=fichas.php"
+                                                class="btn btn-primary"><i class="fas fa-eye"></i> Ver Aprendices</a>
+                                        </div>
+                                    </td>
+                                    <td><?php echo $inicio_formacion ?></td>
+                                    <td><?php echo $fin_formacion ?></td>
+                                    <td><?php echo $fecha_productiva ?></td>
+                                    <td><?php echo $ficha['nombre_estado_ficha'] ?></td>
+                                    <td><?php echo $ficha['nombre_estado_se'] ?></td>
+                                </tr>
                                 <?php
                                 }
                                 ?>

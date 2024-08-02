@@ -11,6 +11,10 @@ if ((isset($_POST["MM_formRegisterDepartamento"])) && ($_POST["MM_formRegisterDe
         showErrorFieldsEmpty("departamentos.php");
         exit();
     }
+    if (containsSpecialCharacters([$departamento_lower])) {
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "El nombre del departamento no puede contener caracteres especiales", "departamentos.php");
+        exit();
+    }
     $departamento = strtoupper($departamento_lower);
     // validamos que no se repitan los datos del nombre del departamento
     $departamentSelectQuery = $connection->prepare("SELECT * FROM departamentos WHERE departamento = :departamento");
@@ -47,6 +51,11 @@ if ((isset($_POST["MM_formUpdateDepartamento"])) && ($_POST["MM_formUpdateDepart
     // validamos que no hayamos recibido ningun dato vacio
     if (isEmpty([$departamento_minuscula, $id_departamento])) {
         showErrorFieldsEmpty("departamentos.php?id_departamento=" . $id_departamento);
+        exit();
+    }
+
+    if (containsSpecialCharacters([$departamento_minuscula])) {
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "El nombre del departamento no puede contener caracteres especiales", "departamentos.php?id_departamento=" . $id_departamento);
         exit();
     }
     // convertimos el dato en tipo mayuscula

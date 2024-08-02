@@ -4,42 +4,38 @@ require '../../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 //  REGISTRO DE AREA
-if ((isset($_POST["MM_formRegisterArea"])) && ($_POST["MM_formRegisterArea"] == "formRegisterArea")) {
+if ((isset($_POST["MM_formRegisterCiudad"])) && ($_POST["MM_formRegisterCiudad"] == "formRegisterCiudad")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
-    $nombreArea = $_POST['nombreArea'];
-    $estadoInicial = $_POST['estadoInicial'];
-
+    $ciudad_lower = $_POST['ciudad'];
+    $departamento = $_POST['departamento'];
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombreArea, $estadoInicial])) {
-        showErrorFieldsEmpty("areas.php");
+    if (isEmpty([$departamento, $ciudad_lower])) {
+        showErrorFieldsEmpty("ciudades.php");
         exit();
     }
 
+    $ciudad = strtoupper($ciudad_lower);
     // validamos que no se repitan los datos del nombre del area
-    // // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaSelectQuery = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea");
-    $areaSelectQuery->bindParam(':nombreArea', $nombreArea);
-    $areaSelectQuery->execute();
-    $queryFetch = $areaSelectQuery->fetchAll();
+    $ciudadSelectQuery = $connection->prepare("SELECT * FROM municipios WHERE nombre_municipio = :ciudad");
+    $ciudadSelectQuery->bindParam(':ciudad', $ciudad);
+    $ciudadSelectQuery->execute();
+    $ciudad_query = $ciudadSelectQuery->fetchAll();
     // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
-    if ($queryFetch) {
-        // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "areas.php");
+    if ($ciudad_query) {
+        // Si ya existe una ciudad con ese nombre entonces cancelamos el registro y le indicamos al usuario
+        showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "ciudades.php");
         exit();
     } else {
-        // Obtener la fecha y hora actual
-        $fecha_registro = date('Y-m-d H:i:s');
         // Inserta los datos en la base de datos
-        $registerArea = $connection->prepare("INSERT INTO areas(nombreArea, id_estado, fecha_registro) VALUES(:nombreArea, :estadoInicial, :fecha_registro)");
-        $registerArea->bindParam(':nombreArea', $nombreArea);
-        $registerArea->bindParam(':estadoInicial', $estadoInicial);
-        $registerArea->bindParam(':fecha_registro', $fecha_registro);
-        $registerArea->execute();
-        if ($registerArea) {
-            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "areas.php");
+        $registerCiudad = $connection->prepare("INSERT INTO municipios(nombre_municipio, id_departamento) VALUES(:ciudad, :departamento)");
+        $registerCiudad->bindParam(':ciudad', $ciudad);
+        $registerCiudad->bindParam(':departamento', $departamento);
+        $registerCiudad->execute();
+        if ($registerCiudad) {
+            showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "ciudades.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de registro", "Error al momento de registrar los datos, por favor intentalo nuevamente", "ciudades.php");
             exit();
         }
     }
@@ -47,196 +43,68 @@ if ((isset($_POST["MM_formRegisterArea"])) && ($_POST["MM_formRegisterArea"] == 
 
 
 //  EDITAR AREA
-if ((isset($_POST["MM_formUpdateArea"])) && ($_POST["MM_formUpdateArea"] == "formUpdateArea")) {
-    // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE AREA
-    $nombre_area = $_POST['nombre_area'];
-    $estado_area = $_POST['estado_area'];
-    $id_area = $_POST['id_area'];
+if ((isset($_POST["MM_formUpdateCiudad"])) && ($_POST["MM_formUpdateCiudad"] == "formUpdateCiudad")) {
+    // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE CIUDAD
+    $ciudad = $_POST['ciudad'];
+    $id_municipio = $_POST['id_ciudad'];
+    $id_departamento = $_POST['id_departamento'];
 
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombre_area, $estado_area, $id_area])) {
-        showErrorFieldsEmpty("areas.php?id_area=" . $id_area);
+    if (isEmpty([$ciudad, $id_municipio, $id_departamento])) {
+        showErrorFieldsEmpty("ciudades.php");
         exit();
     }
 
-    // validamos que no se repitan los datos del nombre del area
-    // CONSULTA SQL PARA VERIFICAR SI EL REGISTRO YA EXISTE EN LA BASE DE DATOS
-    $areaQueryUpdate = $connection->prepare("SELECT * FROM areas WHERE nombreArea = :nombreArea AND id_area <> :id_area");
-    $areaQueryUpdate->bindParam(':nombreArea', $nombre_area);
-    $areaQueryUpdate->bindParam(':id_area', $id_area);
-    $areaQueryUpdate->execute();
+    // validamos que no se repitan los datos del nombre del ciudades
+    $ciudadValidation = $connection->prepare("SELECT * FROM municipios WHERE nombre_municipio = :ciudad AND id_municipio <> :id_municipio");
+    $ciudadValidation->bindParam(':ciudad', $ciudad);
+    $ciudadValidation->bindParam(':id_municipio', $id_municipio);
+    $ciudadValidation->execute();
     // Obtener todos los resultados en un array
-    $queryAreas = $areaQueryUpdate->fetchAll(PDO::FETCH_ASSOC);
+    $queryCiudades = $ciudadValidation->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($queryAreas) {
+    if ($queryCiudades) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
-        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "areas.php");
+        showErrorOrSuccessAndRedirect("error", "Coincidencia de datos", "Los datos ingresados ya corresponden a otro registro", "ciudades.php");
         exit();
     } else {
         $fecha_actualizacion = date('Y-m-d H:i:s');
         // Inserta los datos en la base de datos
-        $updateDocument = $connection->prepare("UPDATE areas SET nombreArea = :nombreArea, id_estado = :id_estado, fecha_actualizacion = :fecha_actualizacion WHERE id_area = :idArea");
-        $updateDocument->bindParam(':nombreArea', $nombre_area);
-        $updateDocument->bindParam(':id_estado', $estado_area);
-        $updateDocument->bindParam(':fecha_actualizacion', $fecha_actualizacion);
-        $updateDocument->bindParam(':idArea', $id_area);
-        $updateDocument->execute();
-        if ($updateDocument) {
-            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "areas.php");
+        $updateCiudad = $connection->prepare("UPDATE municipios SET nombre_municipio = :ciudad, id_departamento = :id_departamento  WHERE id_municipio = :id_municipio");
+        $updateCiudad->bindParam(':ciudad', $ciudad);
+        $updateCiudad->bindParam(':id_departamento', $id_departamento);
+        $updateCiudad->bindParam(':id_municipio', $id_municipio);
+        $updateCiudad->execute();
+        if ($updateCiudad) {
+            showErrorOrSuccessAndRedirect("success", "Actualizacion Exitosa", "Los datos se han actualizado correctamente", "ciudades.php");
             exit();
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de Actualizacion", "Error al momento de actualizar los datos, por favor intentalo nuevamente", "ciudades.php");
         }
     }
 }
 
 // ELIMINAR AREA
-if (isset($_GET['id_area-delete'])) {
-    $id_area = $_GET["id_area-delete"];
-    if ($id_area == null) {
-        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "areas.php");
+if (isset($_GET['id_ciudad-delete'])) {
+    $id_ciudad = $_GET["id_ciudad-delete"];
+    if (isEmpty([$id_ciudad])) {
+        showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "ciudades.php");
     } else {
-        $deleteArea = $connection->prepare("SELECT * FROM areas WHERE id_area = :id_area");
-        $deleteArea->bindParam(":id_area", $id_area);
-        $deleteArea->execute();
-        $deleteAreaSelect = $deleteArea->fetch(PDO::FETCH_ASSOC);
-        if ($deleteAreaSelect) {
-            $delete = $connection->prepare("DELETE  FROM areas WHERE id_area = :id_area");
-            $delete->bindParam(':id_area', $id_area);
+        $deleteCiudad = $connection->prepare("SELECT * FROM municipios WHERE id_municipio = :id_ciudad");
+        $deleteCiudad->bindParam(":id_ciudad", $id_ciudad);
+        $deleteCiudad->execute();
+        $deleteCiudadSelect = $deleteCiudad->fetch(PDO::FETCH_ASSOC);
+        if ($deleteCiudadSelect) {
+            $delete = $connection->prepare("DELETE  FROM municipios WHERE id_municipio = :id_ciudad");
+            $delete->bindParam(':id_ciudad', $id_ciudad);
             $delete->execute();
             if ($delete) {
-                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "areas.php");
+                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "ciudades.php");
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "areas.php");
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "ciudades.php");
             }
         } else {
-            showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "areas.php");
+            showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "ciudades.php");
         }
-    }
-}
-
-// REGISTRO ARCHIVO DE EXCEL 
-if ((isset($_POST["MM_registroArchivoExcel"])) && ($_POST["MM_registroArchivoExcel"] == "registroArchivoExcel")) {
-    // Validar que se haya subido un archivo
-    $fileTmpPath = $_FILES['area_excel']['tmp_name'];
-    $fileName = $_FILES['area_excel']['name'];
-    $fileSize = $_FILES['area_excel']['size'];
-    $fileType = $_FILES['area_excel']['type'];
-    $fileNameCmps = explode(".", $fileName);
-    $fileExtension = strtolower(end($fileNameCmps));
-    // Validar si el archivo no está vacío y si tiene una extensión válida
-    if (isEmpty([$fileName])) {
-        showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "areas.php?importarExcel");
-    }
-    if ($fileName !== "area_excel.xlsx") {
-        showErrorOrSuccessAndRedirect("error", "��Ops...!", "Error al momento de subir el archivo, el nombre del archivo debe llamarse 'area_excel'", "areas.php?importarExcel");
-        exit();
-    }
-    if (isFileUploaded($_FILES['area_excel'])) {
-        $allowedExtensions = array("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        $maxSizeKB = 10000;
-        if (isFileValid($_FILES['area_excel'], $allowedExtensions, $maxSizeKB)) {
-            // Cargar el archivo Excel
-            $spreadsheet = IOFactory::load($fileTmpPath);
-            $hojaDatosArea = $spreadsheet->getSheetByName('Datos');
-            if ($hojaDatosArea) {
-                $data = $hojaDatosArea->toArray();
-                $requiredColumnCount = 2;
-
-                if (isset($data[0]) && count($data[0]) < $requiredColumnCount) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "El archivo debe contener al menos dos columnas", "areas.php?importarExcel");
-                    exit();
-                }
-                // Verificar duplicados en el arreglo
-                $uniqueData = [];
-                $duplicateFound = false;
-                $duplicateData = '';
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $nombreArea = $row[0];
-                    $id_estado = $row[1];
-                    if (isNotEmpty([$nombreArea, $id_estado])) {
-                        // Verificar si el área ya está en el arreglo
-                        if (in_array($nombreArea, $uniqueData)) {
-                            $duplicateFound = true;
-                            $duplicateData = $nombreArea;
-                            break; // Salir del ciclo si se encuentra un duplicado
-                        } else {
-                            $uniqueData[] = $nombreArea; // Agregar al arreglo de datos únicos
-                        }
-                    }
-                }
-                if ($duplicateFound) {
-                    showErrorOrSuccessAndRedirect("error", "Error!", "Existen datos duplicados, por favor verifica el archivo", "areas.php?importarExcel");
-                    exit();
-                }
-                // Consultar los ids válidos
-                $get_estados = $connection->prepare("SELECT id_estado FROM estados");
-                $get_estados->execute();
-                $valid_ids = $get_estados->fetchAll(PDO::FETCH_COLUMN, 0); // Obtener solo la columna id_estado en un array
-                // Validar ids en el archivo
-                $invalidRows = []; // Arreglo para guardar las filas con ids inválidos
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $id_estado = $row[1];
-                    if (isNotEmpty([$id_estado])) {
-                        $isNumeric = filter_var($id_estado, FILTER_VALIDATE_INT);
-                        if (!$isNumeric) {
-                            showErrorOrSuccessAndRedirect(
-                                "error",
-                                "Error!",
-                                "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
-                                "areas.php?importarExcel"
-                            );
-                            exit();
-                        }
-                        if (!in_array($id_estado, $valid_ids)) {
-                            $invalidRows[] = $index + 1; // Guardar el número de la fila con id inválido
-                        }
-                    }
-                }
-                if (!empty($invalidRows)) {
-                    $invalidRowsList = implode(', ', $invalidRows);
-                    showErrorOrSuccessAndRedirect(
-                        "error",
-                        "Error!",
-                        "Por verifica la hoja parametros para colocar correctamente el id de los estados, ademas el id del estado debe ser un número entero, no puedes subir el archivo con id_estado no numérico.",
-                        "areas.php?importarExcel"
-                    );
-                    exit();
-                }
-                // Si no se encontraron problemas, realizar el registro en la base de datos
-                $stmtCheck = $connection->prepare("SELECT COUNT(*) FROM areas WHERE nombreArea = :nombreArea");
-                $queryRegister = $connection->prepare("INSERT INTO areas(nombreArea, id_estado, fecha_registro) VALUES (:nombreArea, :estado, :fecha_registro)");
-                $fecha_registro = date('Y-m-d H:i:s');
-                foreach ($data as $index => $row) {
-                    if ($index == 0) continue; // Saltar la primera fila si es el encabezado
-                    $nombreArea = $row[0];
-                    $id_estado = $row[1];
-
-                    if (isNotEmpty([$nombreArea, $id_estado])) {
-                        $stmtCheck->bindParam(':nombreArea', $nombreArea);
-                        $stmtCheck->execute();
-                        $exists = $stmtCheck->fetchColumn();
-                        if ($exists) {
-                            showErrorOrSuccessAndRedirect("error", "Error!", "El área ya está registrada en la base de datos, por favor verifica el listado de áreas", "areas.php?importarExcel");
-                            exit();
-                        }
-                        $queryRegister->bindParam(":nombreArea", $nombreArea);
-                        $queryRegister->bindParam(":estado", $id_estado);
-                        $queryRegister->bindParam(":fecha_registro", $fecha_registro);
-                        $queryRegister->execute();
-                    }
-                }
-                showErrorOrSuccessAndRedirect("success", "Perfecto!", "Los datos han sido importados correctamente", "areas.php");
-                exit();
-            } else {
-                showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, adjunta un archivo válido", "areas.php?importarExcel");
-            }
-        } else {
-            showErrorOrSuccessAndRedirect("error", "Error!", "La extensión del archivo es incorrecta o el tamaño del archivo es demasiado grande, el máximo permitido es de 10 MB", "areas.php?importarExcel");
-        }
-    } else {
-        showErrorOrSuccessAndRedirect("error", "Error!", "Error al momento de cargar el archivo, verifica las celdas del archivo", "areas.php?importarExcel");
     }
 }

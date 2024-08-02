@@ -69,7 +69,8 @@ $unidades = $getUnidades->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-                        <table id="example" class="table table-striped table-bordered top-table table-responsive"
+                        <table id="example"
+                            class="table table-striped table-bordered top-table table-responsive text-center"
                             cellspacing="0" width="100%">
                             <thead>
                                 <tr>

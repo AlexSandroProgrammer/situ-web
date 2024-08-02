@@ -35,7 +35,8 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col-xl-3 col-lg-4">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="fas fa-star"></i> Filtrar Fichas
                             </button>
                             <ul class="dropdown-menu">
@@ -52,7 +53,9 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="col-lg-12 mt-3">
 
-                        <table id="example" class="table table-striped table-bordered top-table table-responsive" cellspacing="0" width="100%">
+                        <table id="example"
+                            class="table table-striped table-bordered top-table table-responsive text-center"
+                            cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th>Acciones</th>
@@ -74,32 +77,39 @@ $fichas = $getFichas->fetchAll(PDO::FETCH_ASSOC);
                                     $fin_formacion = DateTime::createFromFormat('Y-m-d', $ficha['fin_formacion'])->format('m/d/Y');
                                     $fecha_productiva = DateTime::createFromFormat('Y-m-d', $ficha['fecha_productiva'])->format('m/d/Y');
                                 ?>
-                                    <tr>
-                                        <td>
-                                            <form method="GET" action="">
-                                                <input type="hidden" name="id_ficha-delete" value="<?= $ficha['codigoFicha'] ?>">
-                                                <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                            </form>
-                                            <form method="GET" class="mt-2" action="editar-ficha.php">
-                                                <input type="hidden" name="id_ficha-edit" value="<?= $ficha['codigoFicha'] ?>">
-                                                <input type="hidden" name="ruta" value="fichas-productiva.php">
-                                                <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
-                                            </form>
-                                        </td>
-                                        <td><?php echo $ficha['codigoFicha'] ?></td>
-                                        <td><?php echo $ficha['nombre_programa'] ?></td>
-                                        <td>
-                                            <div class="row p-3 text-center">
-                                                <p><?php echo $ficha['cantidad_aprendices'] ?></p>
-                                                <a href="aprendices.php?id_ficha=<?= $ficha['codigoFicha'] ?>" class="btn btn-primary"><i class="fas fa-eye"></i> Ver Aprendices</a>
-                                            </div>
-                                        </td>
-                                        <td><?php echo $inicio_formacion ?></td>
-                                        <td><?php echo $fin_formacion ?></td>
-                                        <td><?php echo $fecha_productiva ?></td>
-                                        <td><?php echo $ficha['nombre_estado_ficha'] ?></td>
-                                        <td><?php echo $ficha['nombre_estado_se'] ?></td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <form method="GET" action="">
+                                            <input type="hidden" name="id_ficha-delete"
+                                                value="<?= $ficha['codigoFicha'] ?>">
+                                            <button class="btn btn-danger mt-2"
+                                                onclick="return confirm('desea eliminar el registro seleccionado');"
+                                                type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                        </form>
+                                        <form method="GET" class="mt-2" action="editar-ficha.php">
+                                            <input type="hidden" name="id_ficha-edit"
+                                                value="<?= $ficha['codigoFicha'] ?>">
+                                            <input type="hidden" name="ruta" value="fichas-productiva.php">
+                                            <button class="btn btn-success"
+                                                onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
+                                                type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
+                                        </form>
+                                    </td>
+                                    <td><?php echo $ficha['codigoFicha'] ?></td>
+                                    <td><?php echo $ficha['nombre_programa'] ?></td>
+                                    <td>
+                                        <div class="row p-3 text-center">
+                                            <p><?php echo $ficha['cantidad_aprendices'] ?></p>
+                                            <a href="aprendices.php?id_ficha=<?= $ficha['codigoFicha'] ?>"
+                                                class="btn btn-primary"><i class="fas fa-eye"></i> Ver Aprendices</a>
+                                        </div>
+                                    </td>
+                                    <td><?php echo $inicio_formacion ?></td>
+                                    <td><?php echo $fin_formacion ?></td>
+                                    <td><?php echo $fecha_productiva ?></td>
+                                    <td><?php echo $ficha['nombre_estado_ficha'] ?></td>
+                                    <td><?php echo $ficha['nombre_estado_se'] ?></td>
+                                </tr>
                                 <?php
                                 }
                                 ?>

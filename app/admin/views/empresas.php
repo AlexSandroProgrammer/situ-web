@@ -17,42 +17,31 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Default Modal -->
                     <div class="col-lg-2 col-md-6">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#formRegisterEmpresaModal">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formRegisterEmpresaModal">
                             <i class="fas fa-layer-group"></i> Registrar
                         </button>
                         <!-- Modal -->
                         <div class="modal fade" id="formRegisterEmpresaModal" tabindex="-1" aria-hidden="true">
-                            <form class="modal-dialog" action="" method="POST" autocomplete="off"
-                                name="formRegisterEmpresa">
+                            <form class="modal-dialog" action="" method="POST" autocomplete="off" name="formRegisterEmpresa">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel1">Registro de Empresa</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- input nombre de la empresa -->
                                         <div class="mb-3">
                                             <label class="form-label" for="id_empresa">NIT de Empresa</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="id_empresa-span" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i> </span>
-                                                <input type="number" required
-                                                    onkeypress="return(multiplenumber(event));"
-                                                    oninput="maxlengthNumber(this);" minlength="9" maxlength="11"
-                                                    autofocus class="form-control" name="id_empresa" id="id_empresa"
-                                                    placeholder="Ingresa el Nit de la empresa" />
+                                                <span id="id_empresa-span" class="input-group-text"><i class="fas fa-layer-group"></i> </span>
+                                                <input type="number" required onkeypress="return(multiplenumber(event));" oninput="maxlengthNumber(this);" minlength="9" maxlength="11" autofocus class="form-control" name="id_empresa" id="id_empresa" placeholder="Ingresa el Nit de la empresa" />
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="nombre_empresa">Nombre de la empresa</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="nombre_empresa-span" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i> </span>
-                                                <input type="text" required minlength="2" maxlength="100" autofocus
-                                                    class="form-control" name="nombre_empresa" id="nombre_empresa"
-                                                    placeholder="Ingresa el nombre de la empresa" />
+                                                <span id="nombre_empresa-span" class="input-group-text"><i class="fas fa-layer-group"></i> </span>
+                                                <input type="text" required minlength="2" maxlength="100" autofocus class="form-control" name="nombre_empresa" id="nombre_empresa" placeholder="Ingresa el nombre de la empresa" />
                                             </div>
                                         </div>
                                         <!-- input estado de la empresa -->
@@ -60,8 +49,7 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                             <label for="estado" class="form-label">Estado
                                                 Inicial</label>
                                             <div class="input-group input-group-merge">
-                                                <span id="estado-2" class="input-group-text"><i
-                                                        class="fas fa-layer-group"></i></span>
+                                                <span id="estado-2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
                                                 <select class="form-select" name="estado" required name="estado">
                                                     <option value="">Seleccionar Estado...</option>
                                                     <?php
@@ -88,8 +76,7 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                             Cancelar
                                         </button>
                                         <input type="submit" class="btn btn-primary" value="Registrar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formRegisterEmpresa"
-                                            name="MM_formRegisterEmpresa"></input>
+                                        <input type="hidden" class="btn btn-info" value="formRegisterEmpresa" name="MM_formRegisterEmpresa"></input>
                                     </div>
                                 </div>
                             </form>
@@ -113,38 +100,32 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                     $empresaSeleccionada = $getEmpresas->fetch(PDO::FETCH_ASSOC);
                     if ($empresaSeleccionada) {
                 ?>
-                <div class="row">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Actualizacion datos de
-                                    <?php echo $empresaSeleccionada['nombre_empresa'] ?>
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" autocomplete="off" name="formUpdateEmpresa">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="empresa">Nombre Empresa</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="empresa" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <input type="text" minlength="2" maxlength="200" autofocus
-                                                class="form-control" required name="empresa" id="empresa"
-                                                placeholder="Ingresa el nombre de la empresa"
-                                                value="<?php echo $empresaSeleccionada['nombre_empresa']  ?>"
-                                                aria-describedby="empresa-2" />
-                                        </div>
+                        <div class="row">
+                            <div class="col-xl">
+                                <div class="card mb-4">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Actualizacion datos de
+                                            <?php echo $empresaSeleccionada['nombre_empresa'] ?>
+                                        </h5>
                                     </div>
+                                    <div class="card-body">
+                                        <form action="" method="POST" autocomplete="off" name="formUpdateEmpresa">
+                                            <div class=" mb-3">
+                                                <label class="form-label" for="empresa">Nombre Empresa</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="empresa" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                    <input type="text" minlength="2" maxlength="200" autofocus class="form-control" required name="empresa" id="empresa" placeholder="Ingresa el nombre de la empresa" value="<?php echo $empresaSeleccionada['nombre_empresa']  ?>" aria-describedby="empresa-2" />
+                                                </div>
+                                            </div>
 
-                                    <div class="mb-3">
-                                        <label for="estado" class="form-label">Estado</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="estadoInicial-2" class="input-group-text"><i
-                                                    class="fas fa-layer-group"></i></span>
-                                            <select class="form-select" required name="estado" id="estado" required>
-                                                <option value="<?php echo $empresaSeleccionada['id_estado'] ?>">
-                                                    <?php echo $empresaSeleccionada['estado'] ?></option>
-                                                <?php
+                                            <div class="mb-3">
+                                                <label for="estado" class="form-label">Estado</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="estadoInicial-2" class="input-group-text"><i class="fas fa-layer-group"></i></span>
+                                                    <select class="form-select" required name="estado" id="estado" required>
+                                                        <option value="<?php echo $empresaSeleccionada['id_estado'] ?>">
+                                                            <?php echo $empresaSeleccionada['estado'] ?></option>
+                                                        <?php
                                                         // CONSUMO DE DATOS DE LOS PROCESOS
                                                         $listEstados = $connection->prepare("SELECT * FROM estados");
                                                         $listEstados->execute();
@@ -155,26 +136,24 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                                             echo "<option value='{$estado['id_estado']}'>{$estado['estado']}</option>";
                                                         }
                                                         ?>
-                                            </select>
-                                        </div>
-                                    </div>
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                                    <input type="hidden" class="form-control" name="id_empresa"
-                                        value="<?php echo $empresaSeleccionada['id_empresa']  ?>">
+                                            <input type="hidden" class="form-control" name="id_empresa" value="<?php echo $empresaSeleccionada['id_empresa']  ?>">
 
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="empresas.php">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-primary" value="Actualizar"></input>
-                                        <input type="hidden" class="btn btn-info" value="formUpdateEmpresa"
-                                            name="MM_formUpdateEmpresa"></input>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-danger" href="empresas.php">
+                                                    Cancelar
+                                                </a>
+                                                <input type="submit" class="btn btn-primary" value="Actualizar"></input>
+                                                <input type="hidden" class="btn btn-info" value="formUpdateEmpresa" name="MM_formUpdateEmpresa"></input>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
                 <?php
                     } else {
                         showErrorOrSuccessAndRedirect("error", "Registro no encontrado", "El registro que buscas no esta registrado.", "empresas.php");
@@ -185,46 +164,41 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 if (isset($_GET['importarExcel'])) {
                 ?>
-                <div class="row">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Importacion de Archivo Excel
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="registroEmpresaExcel">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="empresa_excel">Subir Archivo</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="span_csv" class="input-group-text"><i
-                                                    class="fas fa-file-excel"></i></span>
-                                            <input type="file" autofocus class="form-control" required
-                                                name="empresa_excel" id="empresa_excel" />
+                    <div class="row">
+                        <div class="col-xl">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Importacion de Archivo Excel
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="registroEmpresaExcel">
+                                        <div class=" mb-3">
+                                            <label class="form-label" for="empresa_excel">Subir Archivo</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="span_csv" class="input-group-text"><i class="fas fa-file-excel"></i></span>
+                                                <input type="file" autofocus class="form-control" required name="empresa_excel" id="empresa_excel" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="empresas.php">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                        <input type="hidden" class="btn btn-info" value="registroEmpresaExcel"
-                                            name="MM_registroEmpresaExcel"></input>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" href="empresas.php">
+                                                Cancelar
+                                            </a>
+                                            <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
+                                            <input type="hidden" class="btn btn-info" value="registroEmpresaExcel" name="MM_registroEmpresaExcel"></input>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <?php
                 }
                 ?>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered top-table" cellspacing="0"
-                                width="100%">
+                            <table id="example" class="table table-striped table-bordered top-table text-center" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
@@ -238,29 +212,22 @@ $empresas = $getEmpresas->fetchAll(PDO::FETCH_ASSOC);
                                     <?php
                                     foreach ($empresas as $empresa) {
                                     ?>
-                                    <tr>
-                                        <td>
-                                            <form method="GET" action="">
-                                                <input type="hidden" name="id_empresa-delete"
-                                                    value="<?= $empresa['id_empresa'] ?>">
-                                                <button class="btn btn-danger mt-2"
-                                                    onclick="return confirm('desea eliminar el registro seleccionado');"
-                                                    type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
-                                            </form>
-                                            <form method="GET" class="mt-2" action="">
-                                                <input type="hidden" name="id_empresa"
-                                                    value="<?= $empresa['id_empresa'] ?>">
-                                                <button class="btn btn-success"
-                                                    onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
-                                                    type="submit"><i class="bx bx-refresh"
-                                                        title="Actualizar"></i></button>
-                                            </form>
-                                        </td>
-                                        <td><?php echo $empresa['id_empresa'] ?></td>
-                                        <td><?php echo $empresa['nombre_empresa'] ?></td>
-                                        <td><?php echo $empresa['estado'] ?></td>
-                                        <td><?php echo $empresa['fecha_registro'] ?></td>
-                                    </tr>
+                                        <tr>
+                                            <td>
+                                                <form method="GET" action="">
+                                                    <input type="hidden" name="id_empresa-delete" value="<?= $empresa['id_empresa'] ?>">
+                                                    <button class="btn btn-danger mt-2" onclick="return confirm('desea eliminar el registro seleccionado');" type="submit"><i class="bx bx-trash" title="Eliminar"></i></button>
+                                                </form>
+                                                <form method="GET" class="mt-2" action="">
+                                                    <input type="hidden" name="id_empresa" value="<?= $empresa['id_empresa'] ?>">
+                                                    <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit"><i class="bx bx-refresh" title="Actualizar"></i></button>
+                                                </form>
+                                            </td>
+                                            <td><?php echo $empresa['id_empresa'] ?></td>
+                                            <td class="w-px-300"><?php echo $empresa['nombre_empresa'] ?></td>
+                                            <td><?php echo $empresa['estado'] ?></td>
+                                            <td><?php echo $empresa['fecha_registro'] ?></td>
+                                        </tr>
                                     <?php
 
                                     }
