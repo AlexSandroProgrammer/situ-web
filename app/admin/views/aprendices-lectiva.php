@@ -30,14 +30,13 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Vertically Centered Modal -->
                     <div class="col-xl-3 col-lg-4">
                         <!-- Button trigger modal -->
-                        <a href="funcionarios.php?importarExcel" class="btn btn-success">
+                        <a href="aprendices-lectiva.php?importarExcel" class="btn btn-success">
                             <i class="fas fa-file-excel"></i> Importar Excel
                         </a>
                     </div>
                     <div class="col-xl-3 col-lg-4">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-star"></i> Filtrar Aprendices
                             </button>
                             <ul class="dropdown-menu">
@@ -58,38 +57,34 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 if (isset($_GET['importarExcel'])) {
                 ?>
-                <div class="row">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Importacion de Archivo Excel
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="aprendizMasivoExcel">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="aprendiz_excel">Subir Archivo</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="span_csv" class="input-group-text"><i
-                                                    class="fas fa-file-excel"></i></span>
-                                            <input type="file" autofocus class="form-control" required
-                                                name="aprendiz_excel" id="aprendiz_excel" />
+                    <div class="row">
+                        <div class="col-xl">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Importacion de Archivo Excel
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="aprendizMasivoExcel">
+                                        <div class=" mb-3">
+                                            <label class="form-label" for="aprendiz_excel">Subir Archivo</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="span_csv" class="input-group-text"><i class="fas fa-file-excel"></i></span>
+                                                <input type="file" autofocus class="form-control" required name="aprendiz_excel" id="aprendiz_excel" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="aprendices-lectiva.php">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-success" value="Subir Imagen"></input>
-                                        <input type="hidden" class="btn btn-info" value="aprendizMasivoExcel"
-                                            name="MM_aprendizMasivoExcel"></input>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" href="aprendices-lectiva.php">
+                                                Cancelar
+                                            </a>
+                                            <input type="submit" class="btn btn-success" value="Subir Imagen"></input>
+                                            <input type="hidden" class="btn btn-info" value="aprendizMasivoExcel" name="MM_aprendizMasivoExcel"></input>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <?php
                 }
                 ?>
@@ -103,49 +98,43 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                     $aprendiz = $datosAprendiz->fetch(PDO::FETCH_ASSOC);
 
                 ?>
-                <div class="row mt-2">
-                    <div class="col-xl">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Actualizar Foto de <?php echo $aprendiz['nombres'] ?> -
-                                    <?php echo $aprendiz['apellidos'] ?>
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="POST" enctype="multipart/form-data" autocomplete="off"
-                                    name="updateImageAprendiz">
-                                    <div class=" mb-3">
-                                        <label class="form-label" for="aprendiz_foto">Subir Archivo</label>
-                                        <div class="input-group input-group-merge">
-                                            <span id="span_csv" class="input-group-text"><i
-                                                    class='bx bx-image-add'></i></span>
-                                            <input type="file" accept="image/*" autofocus class="form-control" required
-                                                name="fotoAprendiz" id="aprendiz_foto" />
+                    <div class="row mt-2">
+                        <div class="col-xl">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Actualizar Foto de <?php echo $aprendiz['nombres'] ?> -
+                                        <?php echo $aprendiz['apellidos'] ?>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="POST" enctype="multipart/form-data" autocomplete="off" name="updateImageAprendiz">
+                                        <div class=" mb-3">
+                                            <label class="form-label" for="aprendiz_foto">Subir Archivo</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="span_csv" class="input-group-text"><i class='bx bx-image-add'></i></span>
+                                                <input type="file" accept="image/*" autofocus class="form-control" required name="fotoAprendiz" id="aprendiz_foto" />
+                                            </div>
+                                            <input type="hidden" name="document" value="<?php echo $documento ?>">
+                                            <input type="hidden" name="ruta" value="<?php echo $ruta ?>">
                                         </div>
-                                        <input type="hidden" name="document" value="<?php echo $documento ?>">
-                                        <input type="hidden" name="ruta" value="<?php echo $ruta ?>">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger" href="<?php echo $ruta ?>">
-                                            Cancelar
-                                        </a>
-                                        <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
-                                        <input type="hidden" class="btn btn-info" value="updateImageAprendiz"
-                                            name="MM_updateImageAprendiz"></input>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" href="<?php echo $ruta ?>">
+                                                Cancelar
+                                            </a>
+                                            <input type="submit" class="btn btn-success" value="Subir Archivo"></input>
+                                            <input type="hidden" class="btn btn-info" value="updateImageAprendiz" name="MM_updateImageAprendiz"></input>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <?php
                 }
                 ?>
                 <div class="row mt-5">
                     <div class="col-lg-12 mt-3">
-                        <table id="example"
-                            class="table table-striped table-bordered top-table table-responsive text-center"
-                            cellspacing="0" width="100%">
+                        <table id="example" class="table table-striped table-bordered top-table table-responsive text-center" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th>Acciones</th>
@@ -177,70 +166,59 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     // Obtener la edad en años
                                     $edad = $diferencia->y;
                                 ?>
-                                <tr>
-                                    <td>
-                                        <form method="GET" action="">
-                                            <input type="hidden" name="id_aprendiz-delete"
-                                                value="<?= $aprendiz['documento'] ?>">
-                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
-                                            <button class="btn btn-danger mt-2"
-                                                onclick="return confirm('¿Desea eliminar el registro seleccionado?');"
-                                                type="submit">
-                                                <i class="bx bx-trash" title="Eliminar"></i>
-                                            </button>
-                                        </form>
-                                        <form method="GET" class="mt-2" action="editar-aprendiz.php">
-                                            <input type="hidden" name="id_aprendiz-edit"
-                                                value="<?= $aprendiz['documento'] ?>">
-                                            <input type="hidden" name="ruta" value="aprendices-lectiva.php">
-                                            <button class="btn btn-success"
-                                                onclick="return confirm('¿Desea actualizar el registro seleccionado?');"
-                                                type="submit">
-                                                <i class="bx bx-refresh" title="Actualizar"></i>
-                                            </button>
-                                        </form>
-                                        <a href="aprendices-lectiva.php?document=<?php echo $aprendiz['documento'] ?>&ruta=aprendices-lectiva.php"
-                                            class="btn btn-info mt-2" title="Cambiar Imagen"><i
-                                                class='bx bx-image-add'></i></a>
-                                    </td>
-                                    <?php
+                                    <tr>
+                                        <td>
+                                            <form method="GET" action="">
+                                                <input type="hidden" name="id_aprendiz-delete" value="<?= $aprendiz['documento'] ?>">
+                                                <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                                <button class="btn btn-danger mt-2" onclick="return confirm('¿Desea eliminar el registro seleccionado?');" type="submit">
+                                                    <i class="bx bx-trash" title="Eliminar"></i>
+                                                </button>
+                                            </form>
+                                            <form method="GET" class="mt-2" action="editar-aprendiz.php">
+                                                <input type="hidden" name="id_aprendiz-edit" value="<?= $aprendiz['documento'] ?>">
+                                                <input type="hidden" name="ruta" value="aprendices-lectiva.php">
+                                                <button class="btn btn-success" onclick="return confirm('¿Desea actualizar el registro seleccionado?');" type="submit">
+                                                    <i class="bx bx-refresh" title="Actualizar"></i>
+                                                </button>
+                                            </form>
+                                            <a href="aprendices-lectiva.php?document=<?php echo $aprendiz['documento'] ?>&ruta=aprendices-lectiva.php" class="btn btn-info mt-2" title="Cambiar Imagen"><i class='bx bx-image-add'></i></a>
+                                        </td>
+                                        <?php
                                         if (isEmpty([$aprendiz['foto_data']])) {
                                         ?>
-                                    <td class="avatar">
-                                        <img src="../assets/images/perfil_sin_foto.jpg" alt
-                                            class="w-px-100 mb-3 h-px-100 rounded-circle" />
-                                        <p>Sin foto</p>
-                                    </td>
+                                            <td class="avatar">
+                                                <img src="../assets/images/perfil_sin_foto.jpg" alt class="w-px-100 mb-3 h-px-100 rounded-circle" />
+                                                <p>Sin foto</p>
+                                            </td>
 
-                                    <?php
+                                        <?php
                                         } else {
                                         ?>
-                                    <td class="avatar">
-                                        <img src="../assets/images/aprendices/<?php echo $aprendiz['foto_data'] ?>" alt
-                                            class="w-px-100 h-px-100 rounded-circle" />
-                                        <button class="btn btn-primary mt-2 view-photo-btn"
-                                            data-photo="../assets/images/aprendices/<?php echo $aprendiz['foto_data'] ?>">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                    <?php
+                                            <td class="avatar">
+                                                <img src="../assets/images/aprendices/<?php echo $aprendiz['foto_data'] ?>" alt class="w-px-100 h-px-100 rounded-circle" />
+                                                <button class="btn btn-primary mt-2 view-photo-btn" data-photo="../assets/images/aprendices/<?php echo $aprendiz['foto_data'] ?>">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        <?php
                                         }
                                         ?>
-                                    <td><?php echo $aprendiz['documento'] ?></td>
-                                    <td><?php echo $aprendiz['nombres'] ?></td>
-                                    <td><?php echo $aprendiz['apellidos'] ?></td>
-                                    <td><?php echo $aprendiz['email'] ?></td>
-                                    <td><?php echo $aprendiz['celular'] ?></td>
-                                    <td><?php echo $aprendiz['id_ficha'] ?></td>
-                                    <td><?php echo $aprendiz['nombre_programa'] ?></td>
-                                    <td><?php echo strtoupper($aprendiz['patrocinio']) ?></td>
-                                    <td><?php echo $aprendiz['nombre_empresa'] ?></td>
-                                    <td><?php echo $edad ?></td>
-                                    <td><?php echo $aprendiz['sexo'] ?></td>
-                                    <td><?php echo $aprendiz['tipo_usuario'] ?></td>
-                                    <td><?php echo $aprendiz['estado_aprendiz'] ?></td>
-                                    <td><?php echo $aprendiz['nombre_estado_se'] ?></td>
-                                </tr>
+                                        <td><?php echo $aprendiz['documento'] ?></td>
+                                        <td><?php echo $aprendiz['nombres'] ?></td>
+                                        <td><?php echo $aprendiz['apellidos'] ?></td>
+                                        <td><?php echo $aprendiz['email'] ?></td>
+                                        <td><?php echo $aprendiz['celular'] ?></td>
+                                        <td><?php echo $aprendiz['id_ficha'] ?></td>
+                                        <td><?php echo $aprendiz['nombre_programa'] ?></td>
+                                        <td><?php echo strtoupper($aprendiz['patrocinio']) ?></td>
+                                        <td><?php echo $aprendiz['nombre_empresa'] ?></td>
+                                        <td><?php echo $edad ?></td>
+                                        <td><?php echo $aprendiz['sexo'] ?></td>
+                                        <td><?php echo $aprendiz['tipo_usuario'] ?></td>
+                                        <td><?php echo $aprendiz['estado_aprendiz'] ?></td>
+                                        <td><?php echo $aprendiz['nombre_estado_se'] ?></td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>

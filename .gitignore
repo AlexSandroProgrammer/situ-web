@@ -12,7 +12,6 @@ ehthumbs_vista.db
 # Dump file
 *.stackdump
 
-app/formatos/
 private/
 # Folder config file
 [Dd]esktop.ini

@@ -13,7 +13,6 @@ if ((isset($_POST["MM_formRegisterCiudad"])) && ($_POST["MM_formRegisterCiudad"]
         showErrorFieldsEmpty("ciudades.php");
         exit();
     }
-
     $ciudad = strtoupper($ciudad_lower);
     // validamos que no se repitan los datos del nombre del area
     $ciudadSelectQuery = $connection->prepare("SELECT * FROM municipios WHERE nombre_municipio = :ciudad");
@@ -45,15 +44,17 @@ if ((isset($_POST["MM_formRegisterCiudad"])) && ($_POST["MM_formRegisterCiudad"]
 //  EDITAR AREA
 if ((isset($_POST["MM_formUpdateCiudad"])) && ($_POST["MM_formUpdateCiudad"] == "formUpdateCiudad")) {
     // VARIABLES DE ASIGNACION DE VALORES QUE SE ENVIA DEL FORMULARIO REGISTRO DE CIUDAD
-    $ciudad = $_POST['ciudad'];
+    $ciudad_minuscula = $_POST['ciudad'];
     $id_municipio = $_POST['id_ciudad'];
     $id_departamento = $_POST['id_departamento'];
 
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$ciudad, $id_municipio, $id_departamento])) {
+    if (isEmpty([$ciudad_minuscula, $id_municipio, $id_departamento])) {
         showErrorFieldsEmpty("ciudades.php");
         exit();
     }
+
+    $ciudad = strtoupper($ciudad_minuscula);
 
     // validamos que no se repitan los datos del nombre del ciudades
     $ciudadValidation = $connection->prepare("SELECT * FROM municipios WHERE nombre_municipio = :ciudad AND id_municipio <> :id_municipio");
