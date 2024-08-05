@@ -11,7 +11,7 @@ $ciudades = $lista_municipios->fetchAll(PDO::FETCH_ASSOC);
     <div class="container-xxl flex-grow-1 container-p-y">
         <!-- Bootstrap modals -->
         <div class="card mb-4">
-            <h2 class="card-header font-bold">Listado de Municipio y Ciudades de Colombia</h2>
+            <h2 class="card-header font-bold">Listado de Municipios y Ciudades de Colombia</h2>
             <div class="card-body">
                 <div class="row gy-3 mb-3">
                     <!-- Default Modal -->

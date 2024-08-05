@@ -94,6 +94,7 @@ require_once("../components/sidebar.php");
                                             id="fecha_nacimiento" />
                                     </div>
                                 </div>
+                                <!-- Ficha de formacion -->
                                 <div class="mb-3 col-12 col-lg-6">
                                     <label for="ficha_formacion" class="form-label">Ficha de formacion</label>
                                     <div class="input-group input-group-merge">
@@ -120,6 +121,89 @@ require_once("../components/sidebar.php");
                                         </select>
                                     </div>
                                 </div>
+                                <div class="mb-3 col-12 col-lg-6">
+                                    <label for="departamento" class="form-label">Departamento</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="departamento-2" class="input-group-text"><i
+                                                class="fas fa-user"></i></span>
+                                        <select class="form-select" name="departamento" id="idDepartamentoResidencia"
+                                            required>
+                                            <option value="">Seleccionar Departamento...</option>
+                                            <?php
+                                            // CONSUMO DE DATOS DE LOS PROCESOS
+                                            $get_departamentos_residencia = $connection->prepare("SELECT * FROM departamentos");
+                                            $get_departamentos_residencia->execute();
+                                            $departamentos_residencia = $get_departamentos_residencia->fetchAll(PDO::FETCH_ASSOC);
+                                            // Verificar si no hay datos
+                                            if (empty($departamentos_residencia)) {
+                                                echo "<option value=''>No hay datos...</option>";
+                                            } else {
+                                                // Iterar sobre los estados
+                                                foreach ($departamentos_residencia as $departamento_residencia) {
+                                                    echo "<option value='{$departamento_residencia['id_departamento']}'>{$departamento_residencia['departamento']}</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-12 col-lg-6" id="containerCiudadResidencia" style="display: none;">
+                                    <label for="ciudad" class="form-label">Ciudad</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="ciudad-2" class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <select class="form-select" name="ciudad" required>
+                                            <option value="">Seleccionar Ciudad...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const idDepartamentoResidencia = document.getElementById(
+                                        'idDepartamentoResidencia');
+                                    const containerCiudadResidencia = document.getElementById(
+                                        'containerCiudadResidencia');
+                                    const selectCiudad = document.querySelector(
+                                        '#containerCiudadResidencia select');
+                                    idDepartamentoResidencia.addEventListener('change', function() {
+                                        const selectedValue = this.value;
+                                        if (selectedValue === '') {
+                                            selectCiudad.innerHTML =
+                                                '<option value="">Seleccionar Ciudad...</option>';
+                                            containerCiudadResidencia.style.display = 'none';
+                                            return;
+                                        }
+                                        // Realizar una solicitud AJAX para obtener las ciudades del departamento seleccionado
+                                        fetch(
+                                                `get_ciudades.php?id_departamento_residencia=${selectedValue}`
+                                            )
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log(data);
+                                                // Limpiar las opciones del select de ciudades
+                                                selectCiudad.innerHTML =
+                                                    '<option value="">Seleccionar Ciudad...</option>';
+
+                                                // Añadir nuevas opciones basadas en los datos recibidos
+                                                data.forEach(ciudad => {
+                                                    const option = document.createElement(
+                                                        'option');
+                                                    option.value = ciudad.id_municipio;
+                                                    option.textContent = ciudad
+                                                        .nombre_municipio;
+                                                    selectCiudad.appendChild(option);
+                                                });
+
+                                                // Mostrar el select de ciudades
+                                                containerCiudadResidencia.style.display = 'block';
+                                            })
+                                            .catch(error => {
+                                                console.error(
+                                                    'Error al obtener las ciudades del departamento:',
+                                                    error);
+                                            });
+                                    });
+                                });
+                                </script>
                                 <!-- patrocinio -->
                                 <div class="mb-3 col-12 col-lg-6">
                                     <label for="tipo_patrocinio" class="form-label">Patrocinio</label>

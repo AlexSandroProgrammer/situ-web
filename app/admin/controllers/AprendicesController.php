@@ -25,6 +25,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
     $estadoSenaEmpresa = $_POST['estadoSenaEmpresa'];
     $sexo = $_POST['sexo'];
     $fotoAprendiz = $_FILES['fotoAprendiz']['name'];
+    $ciudad = $_POST['ciudad'];
     // Validamos que no hayamos recibido ningún dato vacío
     if (isEmpty([
         $documento,
@@ -39,7 +40,8 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
         $estadoAprendiz,
         $estadoSenaEmpresa,
         $fotoAprendiz,
-        $sexo
+        $sexo,
+        $ciudad
     ])) {
         showErrorFieldsEmpty("registrar-aprendiz.php");
         exit();
@@ -82,7 +84,7 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                 // Obtener la extensión del archivo
                 $extension = pathinfo($_FILES['fotoAprendiz']['name'], PATHINFO_EXTENSION);
                 // Construir el nuevo nombre del archivo
-                $nuevoNombreArchivo = $nombres . "_" . $apellidos . "_" . $ficha . "." . $extension;
+                $nuevoNombreArchivo = $documento . "." . $extension;
                 $imagenRuta = $ruta . $nuevoNombreArchivo;
                 createDirectoryIfNotExists($ruta);
                 if (!file_exists($imagenRuta)) {
@@ -90,30 +92,32 @@ if ((isset($_POST["MM_formRegisterAprendiz"])) && ($_POST["MM_formRegisterAprend
                     if ($registroImagen) {
                         try {
                             // Inserta los datos en la base de datos, incluyendo la edad
-                            $registerFuncionario = $connection->prepare("INSERT INTO usuarios(documento, nombres, apellidos, email, celular, id_ficha, fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, foto_data, empresa_patrocinadora, id_estado, id_estado_se, id_tipo_usuario, sexo) VALUES(:documento, :nombres, :apellidos, :email, :celular, :id_ficha, :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro,:foto_data, :empresa, :id_estado, :id_estado_se, :id_tipo_usuario, :sexo)");
+                            $registerAprendix = $connection->prepare("INSERT INTO usuarios(documento, nombres, apellidos, email, celular, id_ficha, fecha_nacimiento, tipo_convivencia, patrocinio, fecha_registro, foto_data, empresa_patrocinadora, id_estado, id_estado_se, id_tipo_usuario, sexo, id_ciudad) VALUES(:documento, :nombres, :apellidos, :email, :celular, :id_ficha, :fecha_nacimiento, :tipo_convivencia, :patrocinio, :fecha_registro, :foto_data, :empresa, :id_estado, :id_estado_se, :id_tipo_usuario, :sexo, :ciudad)");
                             // Vincular los parámetros
-                            $registerFuncionario->bindParam(':documento', $documento);
-                            $registerFuncionario->bindParam(':nombres', $nombres);
-                            $registerFuncionario->bindParam(':apellidos', $apellidos);
-                            $registerFuncionario->bindParam(':email', $email);
-                            $registerFuncionario->bindParam(':celular', $celular);
-                            $registerFuncionario->bindParam(':id_ficha', $ficha);
-                            $registerFuncionario->bindParam(':fecha_nacimiento', $fecha_nacimiento);
-                            $registerFuncionario->bindParam(':tipo_convivencia', $tipo_convivencia);
-                            $registerFuncionario->bindParam(':patrocinio', $patrocinio);
-                            $registerFuncionario->bindParam(':fecha_registro', $fecha_registro);
-                            $registerFuncionario->bindParam(':foto_data', $nuevoNombreArchivo);
-                            $registerFuncionario->bindParam(':empresa', $empresa);
-                            $registerFuncionario->bindParam(':id_estado', $estadoAprendiz);
-                            $registerFuncionario->bindParam(':id_estado_se', $estadoSenaEmpresa);
-                            $registerFuncionario->bindParam(':id_tipo_usuario', $id_aprendiz);
-                            $registerFuncionario->bindParam(':sexo', $sexo);
-                            $registerFuncionario->execute();
-                            if ($registerFuncionario) {
+                            $registerAprendix->bindParam(':documento', $documento);
+                            $registerAprendix->bindParam(':nombres', $nombres);
+                            $registerAprendix->bindParam(':apellidos', $apellidos);
+                            $registerAprendix->bindParam(':email', $email);
+                            $registerAprendix->bindParam(':celular', $celular);
+                            $registerAprendix->bindParam(':id_ficha', $ficha);
+                            $registerAprendix->bindParam(':fecha_nacimiento', $fecha_nacimiento);
+                            $registerAprendix->bindParam(':tipo_convivencia', $tipo_convivencia);
+                            $registerAprendix->bindParam(':patrocinio', $patrocinio);
+                            $registerAprendix->bindParam(':fecha_registro', $fecha_registro);
+                            $registerAprendix->bindParam(':foto_data', $nuevoNombreArchivo);
+                            $registerAprendix->bindParam(':empresa', $empresa);
+                            $registerAprendix->bindParam(':id_estado', $estadoAprendiz);
+                            $registerAprendix->bindParam(':id_estado_se', $estadoSenaEmpresa);
+                            $registerAprendix->bindParam(':id_tipo_usuario', $id_aprendiz);
+                            $registerAprendix->bindParam(':sexo', $sexo);
+                            $registerAprendix->bindParam(':ciudad', $ciudad);
+                            $registerAprendix->execute();
+                            if ($registerAprendix) {
                                 showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "aprendices-lectiva.php");
                                 exit();
                             }
                         } catch (Exception $e) {
+                            echo $w;
                             showErrorOrSuccessAndRedirect("error", "Error de Registro", "Error al momento de registrar los datos.", "registrar-aprendiz.php");
                             exit();
                         }
