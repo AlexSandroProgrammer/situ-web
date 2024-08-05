@@ -24,7 +24,6 @@ if ((isset($_POST["MM_formRegisterFicha"])) && ($_POST["MM_formRegisterFicha"] =
         showErrorFieldsEmpty("registrar-ficha.php");
         exit();
     }
-
     // creamos una variable para almacenar la fecha en que la ficha sale a etapa productiva
     $etapa_productiva = date('Y-m-d', strtotime('-6 months', strtotime($cierre_formacion)));
     // validamos que no se repitan los datos del nombre del area
@@ -144,19 +143,19 @@ if (isset($_GET['id_ficha-delete'])) {
     if ($id_ficha == null) {
         showErrorOrSuccessAndRedirect("error", "Error de datos", "El parametro enviado se encuentra vacio.", "fichas.php");
     } else {
-        $deleteArea = $connection->prepare("SELECT * FROM fichas WHERE codigoFicha = :id_ficha");
-        $deleteArea->bindParam(":id_ficha", $id_ficha);
-        $deleteArea->execute();
-        $deleteAreaSelect = $deleteArea->fetch(PDO::FETCH_ASSOC);
+        $deleteFicha = $connection->prepare("SELECT * FROM fichas WHERE codigoFicha = :id_ficha");
+        $deleteFicha->bindParam(":id_ficha", $id_ficha);
+        $deleteFicha->execute();
+        $deleteFichaSelect = $deleteFicha->fetch(PDO::FETCH_ASSOC);
 
-        if ($deleteAreaSelect) {
+        if ($deleteFichaSelect) {
             $delete = $connection->prepare("DELETE  FROM fichas WHERE codigoFicha = :id_ficha");
             $delete->bindParam(':id_ficha', $id_ficha);
             $delete->execute();
             if ($delete) {
-                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "fichas.php");
+                showErrorOrSuccessAndRedirect("success", "Perfecto", "El registro seleccionado se ha eliminado correctamente.", "");
             } else {
-                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "fichas.php");
+                showErrorOrSuccessAndRedirect("error", "Error de peticion", "Hubo algun tipo de error al momento de eliminar el registro", "");
             }
         }
     }
@@ -170,6 +169,7 @@ if ((isset($_POST["MM_registroFichaExcel"])) && ($_POST["MM_registroFichaExcel"]
     $fileName = $_FILES['ficha_excel']['name'];
     $fileSize = $_FILES['ficha_excel']['size'];
     $fileType = $_FILES['ficha_excel']['type'];
+    echo $fileName;
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
     // Validar si el archivo no está vacío y si tiene una extensión válida

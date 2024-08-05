@@ -218,7 +218,7 @@ if ((isset($_POST["MM_formUpdateFuncionario"])) && ($_POST["MM_formUpdateFuncion
 
 
 
-// ELIMINAR PROCESO
+// ELIMINAR FUNCIONARIO
 if (isset($_GET['id_funcionario-delete'])) {
     $id_funcionario = $_GET["id_funcionario-delete"];
     if (isEmpty([$id_funcionario])) {
@@ -275,7 +275,7 @@ if ((isset($_POST["MM_funcionarioArchivoExcel"])) && ($_POST["MM_funcionarioArch
         showErrorOrSuccessAndRedirect("error", "¡Ops...!", "Error al momento de subir el archivo, no existe ningún archivo adjunto", "funcionarios.php?importarExcel");
     }
     if ($fileName !== "funcionario_excel.xlsx") {
-        showErrorOrSuccessAndRedirect("error", "��Ops...!", "Error al momento de subir el archivo, el nombre del archivo debe llamarse 'funcionario_excel'", "funcionarios.php?importarExcel");
+        showErrorOrSuccessAndRedirect("error", "Ops...!", "Error al momento de subir el archivo, el nombre del archivo debe llamarse 'funcionario_excel'", "funcionarios.php?importarExcel");
         exit();
     }
     if (isFileUploaded($_FILES['funcionario_excel'])) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-08-2024 a las 22:52:06
+-- Tiempo de generación: 05-08-2024 a las 22:36:49
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -380,22 +380,22 @@ CREATE TABLE `fichas` (
   `fin_formacion` date NOT NULL,
   `fecha_productiva` date DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
-  `id_estado_se` int(11) DEFAULT NULL
+  `id_estado_se` int(11) DEFAULT NULL,
+  `fecha_registro` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `fichas`
 --
 
-INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `fecha_productiva`, `id_estado`, `id_estado_se`) VALUES
-(2925778, 28, '2023-06-08', '2024-02-22', '2023-08-22', 2, 2),
-(2925779, 25, '2023-02-02', '2025-02-02', '2024-08-02', 1, 2),
-(2925791, 22, '2024-08-10', '2027-08-01', '2027-02-01', 1, 2),
-(2925792, 32, '2023-10-01', '2026-08-01', '2026-02-01', 1, 2),
-(2925794, 30, '2024-08-10', '2026-08-29', '2026-03-01', 1, 2),
-(2925802, 35, '2022-08-01', '2025-08-01', '2025-02-01', 1, 2),
-(2969843, 30, '2023-08-12', '2025-08-01', '2025-02-01', 1, 2),
-(2969857, 28, '2023-07-14', '2026-08-15', '2026-02-15', 1, 2);
+INSERT INTO `fichas` (`codigoFicha`, `id_programa`, `inicio_formacion`, `fin_formacion`, `fecha_productiva`, `id_estado`, `id_estado_se`, `fecha_registro`) VALUES
+(2201230, 22, '2024-02-04', '2025-11-04', '2025-05-04', 1, 2, '2024-08-05 14:50:16'),
+(2925791, 22, '2024-08-10', '2027-08-01', '2027-02-01', 1, 2, NULL),
+(2925792, 32, '2023-10-01', '2026-08-01', '2026-02-01', 1, 2, NULL),
+(2925794, 30, '2024-08-10', '2026-08-29', '2026-03-01', 1, 2, NULL),
+(2925802, 35, '2022-08-01', '2025-08-01', '2025-02-01', 1, 2, NULL),
+(2969843, 30, '2023-08-12', '2025-08-01', '2025-02-01', 1, 2, NULL),
+(2969857, 28, '2023-07-14', '2026-08-15', '2026-02-15', 1, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -1727,42 +1727,55 @@ INSERT INTO `unidad` (`id_unidad`, `nombre_unidad`, `id_area`, `hora_inicio`, `h
 --
 
 CREATE TABLE `usuarios` (
-  `documento` int(11) NOT NULL,
+  `documento` bigint(20) NOT NULL,
   `nombres` varchar(255) NOT NULL,
   `apellidos` varchar(255) NOT NULL,
   `foto_data` varchar(255) NOT NULL,
   `celular` varchar(20) NOT NULL,
+  `celular_acudiente` varchar(20) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `sexo` varchar(100) DEFAULT NULL,
   `id_estado_se` int(11) DEFAULT NULL,
   `id_ficha` int(11) DEFAULT NULL,
   `id_tipo_usuario` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `email_institucional` varchar(200) DEFAULT NULL,
   `cargo_funcionario` int(11) DEFAULT NULL,
   `id_estado` int(11) NOT NULL,
+  `id_ciudad_nacimiento` int(10) DEFAULT NULL,
   `fecha_registro` datetime DEFAULT NULL,
   `fecha_actualizacion` datetime DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
   `tipo_convivencia` varchar(255) DEFAULT NULL,
   `patrocinio` varchar(50) DEFAULT NULL,
   `empresa_patrocinadora` varchar(255) DEFAULT NULL,
-  `tipo_documento` varchar(100) DEFAULT NULL
+  `tipo_documento` varchar(100) DEFAULT NULL,
+  `id_ciudad_residencia` int(11) DEFAULT NULL,
+  `estrato` varchar(200) DEFAULT NULL,
+  `ruta_buses` varchar(100) DEFAULT NULL,
+  `nombreEPS` varchar(200) DEFAULT NULL,
+  `hijos` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `cargo_funcionario`, `id_estado`, `fecha_registro`, `fecha_actualizacion`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`, `tipo_documento`) VALUES
-(79464482, 'Daniel', 'Alvarez', 'colombia.jpg', '3144501250', NULL, 'masculino', NULL, NULL, 3, 'daniel_alvarez@gmail.com', 11, 1, '2024-08-01 07:23:49', NULL, NULL, NULL, NULL, NULL, 'C.C.'),
-(99464482, 'Albeiro', 'Mejia', 'Albeiro_Mejia_23911216.jpg', '3132001000', NULL, 'masculino', 2, 23911216, 2, 'albeiro@gmail.com', NULL, 9, '2024-07-29 08:43:36', '2024-07-29 09:21:45', '2009-07-17', 'interno', 'si', '5', 'C.C.'),
-(100523010, 'Albeiro ', 'Castro', '', '3202401201', NULL, 'Femenino', NULL, NULL, 3, 'prueba@gmail.com', 8, 1, '2024-08-01 12:27:11', NULL, NULL, NULL, NULL, NULL, 'C.C.'),
-(1005717700, 'Natalia', 'Olmos Villarraga', 'Natalia_Olmos Villarraga_23911202.jpeg', '3043254508', NULL, 'femenino', 1, 23911202, 2, 'nataliaolmos02@gmail.com', NULL, 1, '2024-07-26 15:18:22', '2024-07-29 09:16:23', '2003-08-06', 'externo', 'si', '4', 'C.C.'),
-(1009200120, 'Gloria Amparo', 'Garcia', 'Gloria Amparo_Garcia_28230188.png', '3222309999', NULL, 'masculino', 9, 28230188, 2, 'amparo123@gmail.com', NULL, 8, '2024-07-29 08:45:24', '2024-07-29 09:20:35', '2009-06-11', 'interno', 'no', '', 'C.C.'),
-(1105230203, 'Daniel ', 'Cardenas Lozano', '066dfc3d307b8fc00f1b1f756cc91bcb.jpg', '3201203020', NULL, 'masculino', NULL, NULL, 3, 'daniel@gmail.com', 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, 'C.C.'),
-(1110460410, 'Alejandro', 'Munoz', 'Alejandro_Munoz_23911202.jpg', '3201201122', NULL, NULL, 1, 23911202, 2, 'alejandro@gmail.com', NULL, 1, '2024-07-26 15:36:13', NULL, '2009-07-11', 'externo', 'si', '4', 'C.C.'),
-(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', NULL, 1, '2024-07-24 15:12:02', NULL, '2015-07-17', NULL, 'si', '5', 'C.C.'),
-(1444240230, 'German', 'Moreno', 'descarga.jfif', '3102402301', NULL, 'masculino', NULL, NULL, 3, 'moreno@gmail.com', 8, 1, '2024-07-31 13:25:19', NULL, NULL, NULL, NULL, NULL, 'C.C.');
+INSERT INTO `usuarios` (`documento`, `nombres`, `apellidos`, `foto_data`, `celular`, `celular_acudiente`, `password`, `sexo`, `id_estado_se`, `id_ficha`, `id_tipo_usuario`, `email`, `email_institucional`, `cargo_funcionario`, `id_estado`, `id_ciudad_nacimiento`, `fecha_registro`, `fecha_actualizacion`, `fecha_nacimiento`, `tipo_convivencia`, `patrocinio`, `empresa_patrocinadora`, `tipo_documento`, `id_ciudad_residencia`, `estrato`, `ruta_buses`, `nombreEPS`, `hijos`) VALUES
+(1023368198, 'Jefferson', 'Ramírez lasso', '', '3138028530', '3138028530', NULL, 'M', 2, 2201230, 2, 'jramirez891@misena.edu.co', 'jramirez891@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-07-11', 'INT', 'no', NULL, 'C.C.', 1030, 'A1', 'no', 'Asmet Salud', 'no'),
+(1104695640, 'Wendy Daniela', 'Peñaloza Cardona', '', '3192108407', '3192108407', NULL, 'F', 2, 2201230, 2, 'wdpenaloza0@misena.edu.co ', 'wdpenaloza0@misena.edu.co ', NULL, 1, 1040, '2024-08-05 15:26:38', NULL, '2004-08-11', 'INT', 'no', NULL, 'T.I.', 1030, 'B6', 'no', 'Medimas', 'no'),
+(1105304265, 'Braulio', 'Legarda Padilla', '', '3107211063', '3107211063', NULL, 'M', 2, 2201230, 2, 'blegarda5@misena.edu.co', 'blegarda5@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-08-11', 'INT', 'no', NULL, 'T.I.', 1030, 'B2', 'no', 'Asmet Salud', 'no'),
+(1106769627, 'Jessica Neidery', 'Vaquiro cometa', '', '3214677782', '3214677782', NULL, 'F', 2, 2201230, 2, 'jnvaquiro@misena.edu.co', 'jnvaquiro@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2004-10-11', 'INT', 'no', NULL, 'T.I.', 1030, 'A3', 'no', 'Ecopsos', 'no'),
+(1106769898, 'Alexandra', 'Vaquiro cometa', '', '3145753692', '3145753692', NULL, 'F', 2, 2201230, 2, 'avaquiro8@misena.edu.co', 'avaquiro8@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2004-09-11', 'INT', 'no', NULL, 'T.I.', 1030, 'A1', 'no', 'Ecopsos', 'no'),
+(1108828245, 'Yeison', 'Cruz Avila', '', '3016122859', '3016122859', NULL, 'M', 2, 2201230, 2, 'ycruz5428@misena.edu.co', 'ycruz5428@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-04-11', 'INT', 'no', NULL, 'T.I.', 1030, 'B1', 'no', 'Nueva Eps', 'no'),
+(1108828628, 'Johan Oswaldo', 'Ortiz Roldan', '', '3183717502', '3183717502', NULL, 'M', 2, 2201230, 2, 'joortiz82@misena.edu.co', 'joortiz82@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-06-11', 'EXT', 'no', NULL, 'T.I.', 1030, 'A1', 'no', 'pijao salud', 'no'),
+(1108828877, 'Angie Vivíana', 'Ruiz Lasso', '', '3227917418', '3227917418', NULL, 'F', 2, 2201230, 2, 'avruiz77@misena.edu.co', 'avruiz77@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-01-11', 'INT', 'no', NULL, 'T.I.', 1030, 'A2', 'no', 'Nueva Eps', 'no'),
+(1109490322, 'Jailer', 'Ortiz Merchán', '', '3005574615', '3005574615', NULL, 'M', 2, 2201230, 2, 'jortiz223@misena.edu.co', 'jortiz223@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-05-11', 'INT', 'no', NULL, 'T.I.', 1030, 'b1', 'no', 'pijao salud', 'no'),
+(1111042536, 'Kevin', 'Reinoso Pira', '', '3102468098', '3102468098', NULL, 'M', 2, 2201230, 2, 'kreinosob@misena.edu.co', 'kreinosob@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2004-12-11', 'INT', 'no', NULL, 'T.I.', 1030, 'A1', 'no', 'Ecopsos', 'no'),
+(1111042591, 'Sharick Tatiana', 'Cuenca Sogamoso', '', '3108864353', '3108864353', NULL, 'F', 2, 2201230, 2, 'stcuenca1@misena.edu.co', 'stcuenca1@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-02-11', NULL, 'no', NULL, 'T.I.', 1030, 'A2', 'no', 'Ecopsos', 'no'),
+(1111042673, 'Laura Sofía', 'Ariza Useche', '', '3208883671', '3208883671', NULL, 'F', 2, 2201230, 2, 'Isariza376@misena.edu.co', 'Isariza376@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2005-03-11', 'INT', 'no', NULL, 'C.C.', 1030, 'B2', 'no', 'Medimas', 'no'),
+(1111042683, 'Angie Lorena', 'Morales Chávez', '', '3104946434', '3104946434', NULL, 'F', 2, 2201230, 2, 'almorales38@misena.edu.co', 'almorales38@misena.edu.co', NULL, 1, 1025, '2024-08-05 15:26:38', NULL, '2004-11-11', 'INT', 'no', NULL, 'C.C.', 1030, 'A1', 'no', 'Ecopsos', 'no'),
+(1140914512, 'Laura Sofia', 'Casallas Cardenas', 'logonegro.png', '3203694662', '', '$2y$15$Nfes2HTuFrz0tRw3S41jsekld.pLkC7bJyamVGXQUmVwt2JmvyFwK', 'Femenino', 1, 2669497, 1, 'mitalentohumanose@gmail.com', NULL, NULL, 1, NULL, '2024-07-24 15:12:02', NULL, '2015-07-17', NULL, 'si', '5', 'C.C.', NULL, '', NULL, NULL, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -1885,7 +1898,7 @@ ALTER TABLE `cargos`
 -- AUTO_INCREMENT de la tabla `departamentos`
 --
 ALTER TABLE `departamentos`
-  MODIFY `id_departamento` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_departamento` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_area_unidades`
@@ -1915,7 +1928,7 @@ ALTER TABLE `intentos_fallidos`
 -- AUTO_INCREMENT de la tabla `municipios`
 --
 ALTER TABLE `municipios`
-  MODIFY `id_municipio` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1113;
+  MODIFY `id_municipio` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1116;
 
 --
 -- AUTO_INCREMENT de la tabla `programas_formacion`
@@ -1946,27 +1959,6 @@ ALTER TABLE `turno_rutinario`
 --
 ALTER TABLE `unidad`
   MODIFY `id_unidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
-
-DELIMITER $$
---
--- Eventos
---
-CREATE DEFINER=`root`@`localhost` EVENT `actualizar_estado_fichas_aprendices` ON SCHEDULE EVERY 1 DAY STARTS '2024-08-01 14:43:39' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
-    -- Actualizar estado en la tabla fichas
-    UPDATE fichas
-    SET id_estado = 2, id_estado_se = 2
-    WHERE fecha_productiva <= CURDATE();
-    -- Actualizar estado en la tabla aprendiz
-    UPDATE usuarios
-    SET id_estado = 2
-    WHERE ficha_formacion IN (
-        SELECT ficha_formacion
-        FROM fichas
-        WHERE fecha_productiva <= CURDATE()
-    );
-END$$
-
-DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
