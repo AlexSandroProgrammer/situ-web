@@ -3,8 +3,16 @@ $titlePage = "Lista de Aprendices || Etapa Lectiva";
 require_once("../components/sidebar.php");
 // arreglo con ids de la consulta
 $array_keys = [1, 2];
-$listaAprendicesLectiva = $connection->prepare("SELECT usuarios.nombres,usuarios.documento,usuarios.apellidos,usuarios.foto_data,usuarios.celular,usuarios.sexo,usuarios.email,usuarios.fecha_registro,usuarios.fecha_nacimiento,usuarios.tipo_convivencia,usuarios.patrocinio,usuarios.empresa_patrocinadora,usuarios.id_ficha,empresas.nombre_empresa,programas_formacion.nombre_programa,tipo_usuario.tipo_usuario,estado_usuario.estado AS estado_aprendiz,estado_se.estado AS nombre_estado_se FROM usuarios LEFT JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha  LEFT JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa LEFT JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id LEFT JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado LEFT JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa WHERE usuarios.id_tipo_usuario = :id_tipo_usuario  AND usuarios.id_estado = :id_estado  AND usuarios.id_estado_se = :id_estado_se
-");
+$listaAprendicesLectiva = $connection->prepare("SELECT usuarios.nombres,usuarios.documento,usuarios.apellidos,usuarios.foto_data,usuarios.celular,usuarios.sexo,usuarios.email, usuarios.email_institucional, usuarios.celular_acudiente, 
+usuarios.id_ciudad_nacimiento, usuarios.tipo_documento, usuarios.estrato, usuarios.ruta_buses, usuarios.nombreEPS, usuarios.hijos, usuarios.fecha_registro,
+usuarios.fecha_nacimiento,usuarios.tipo_convivencia,usuarios.patrocinio,usuarios.empresa_patrocinadora,usuarios.id_ficha,empresas.nombre_empresa,programas_formacion.nombre_programa, usuarios.tipo_documento,tipo_usuario.tipo_usuario,
+estado_usuario.estado AS estado_aprendiz,estado_se.estado AS nombre_estado_se, ciudad_residencia.nombre_municipio AS nombre_ciudad_residencia, ciudad_nacimiento.nombre_municipio AS nombre_ciudad_nacimiento, 
+departamento_residencia.departamento AS nombre_departamento_residencia, departamento_nacimiento.departamento AS nombre_departamento_nacimiento FROM usuarios 
+LEFT JOIN fichas ON usuarios.id_ficha = fichas.codigoFicha  LEFT JOIN empresas ON usuarios.empresa_patrocinadora = empresas.id_empresa 
+LEFT JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id LEFT JOIN estados AS estado_usuario ON usuarios.id_estado = estado_usuario.id_estado LEFT JOIN municipios AS ciudad_nacimiento ON
+usuarios.id_ciudad_nacimiento = ciudad_nacimiento.id_municipio LEFT JOIN departamentos AS departamento_nacimiento ON ciudad_nacimiento.id_departamento = departamento_nacimiento.id_departamento LEFT JOIN municipios AS ciudad_residencia 
+ON usuarios.id_ciudad_residencia = ciudad_residencia.id_municipio LEFT JOIN departamentos AS departamento_residencia ON ciudad_residencia.id_departamento = departamento_residencia.id_departamento  LEFT JOIN estados AS estado_se ON usuarios.id_estado_se = estado_se.id_estado
+LEFT JOIN programas_formacion ON fichas.id_programa = programas_formacion.id_programa WHERE usuarios.id_tipo_usuario = :id_tipo_usuario  AND usuarios.id_estado = :id_estado  AND usuarios.id_estado_se = :id_estado_se");
 $listaAprendicesLectiva->bindParam(":id_tipo_usuario", $array_keys[1]);
 $listaAprendicesLectiva->bindParam(":id_estado", $array_keys[0]);
 $listaAprendicesLectiva->bindParam(":id_estado_se", $array_keys[1]);
@@ -150,20 +158,31 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                 <tr>
                                     <th>Acciones</th>
                                     <th>Foto del Aprendiz</th>
+                                    <th>Tipo Documento</th>
                                     <th>N. documento</th>
                                     <th>Nombres</th>
                                     <th>Apellidos</th>
                                     <th>Email</th>
+                                    <th>Email Institucional</th>
                                     <th>Celular</th>
                                     <th>Ficha de Formacion</th>
                                     <th>Programa de formacion</th>
                                     <th>Patrocinio</th>
                                     <th>Empresa</th>
+                                    <th>Fecha de Nacimiento</th>
                                     <th>Edad</th>
+                                    <th>Ciudad Nacimiento</th>
+                                    <th>Departamento Nacimiento</th>
+                                    <th>Ciudad Residencia</th>
+                                    <th>Departamento Residencia</th>
                                     <th>sexo</th>
                                     <th>Rol del Usuario</th>
                                     <th>Estado Aprendiz</th>
                                     <th>Estado SENA EMPRESA</th>
+                                    <th>Estrato</th>
+                                    <th>Ruta de Buses</th>
+                                    <th>Nombre EPS</th>
+                                    <th>Hijos</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -226,20 +245,31 @@ $aprendices = $listaAprendicesLectiva->fetchAll(PDO::FETCH_ASSOC);
                                     <?php
                                         }
                                         ?>
+                                    <td><?php echo $aprendiz['tipo_documento'] ?></td>
                                     <td><?php echo $aprendiz['documento'] ?></td>
                                     <td><?php echo $aprendiz['nombres'] ?></td>
                                     <td><?php echo $aprendiz['apellidos'] ?></td>
                                     <td><?php echo $aprendiz['email'] ?></td>
+                                    <td><?php echo $aprendiz['email_institucional'] ?></td>
                                     <td><?php echo $aprendiz['celular'] ?></td>
                                     <td><?php echo $aprendiz['id_ficha'] ?></td>
                                     <td><?php echo $aprendiz['nombre_programa'] ?></td>
                                     <td><?php echo strtoupper($aprendiz['patrocinio']) ?></td>
                                     <td><?php echo $aprendiz['nombre_empresa'] ?></td>
+                                    <td><?php echo $aprendiz['fecha_nacimiento'] ?></td>
                                     <td><?php echo $edad ?></td>
+                                    <td><?php echo $aprendiz['nombre_ciudad_nacimiento'] ?></td>
+                                    <td><?php echo $aprendiz['nombre_departamento_nacimiento'] ?></td>
+                                    <td><?php echo $aprendiz['nombre_ciudad_residencia'] ?></td>
+                                    <td><?php echo $aprendiz['nombre_departamento_residencia'] ?></td>
                                     <td><?php echo $aprendiz['sexo'] ?></td>
                                     <td><?php echo $aprendiz['tipo_usuario'] ?></td>
                                     <td><?php echo $aprendiz['estado_aprendiz'] ?></td>
                                     <td><?php echo $aprendiz['nombre_estado_se'] ?></td>
+                                    <td><?php echo strtoupper($aprendiz['estrato']) ?></td>
+                                    <td><?php echo strtoupper($aprendiz['ruta_buses']) ?></td>
+                                    <td><?php echo $aprendiz['nombreEPS'] ?></td>
+                                    <td><?php echo strtoupper($aprendiz['hijos']) ?></td>
                                 </tr>
                                 <?php } ?>
                             </tbody>

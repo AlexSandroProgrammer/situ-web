@@ -219,7 +219,7 @@ require_once("../components/sidebar.php");
                                             required>
                                             <option value="">Seleccionar Departamento...</option>
                                             <?php
-                                            // CONSUMO DE DATOS DE LOS PROCESOS
+                                            // CONSUMO DE DATOS DE LOS DEPARATAMENTOS
                                             $get_departamentos_residencia = $connection->prepare("SELECT * FROM departamentos");
                                             $get_departamentos_residencia->execute();
                                             $departamentos_residencia = $get_departamentos_residencia->fetchAll(PDO::FETCH_ASSOC);
@@ -227,7 +227,7 @@ require_once("../components/sidebar.php");
                                             if (empty($departamentos_residencia)) {
                                                 echo "<option value=''>No hay datos...</option>";
                                             } else {
-                                                // Iterar sobre los estados
+                                                // Iterar sobre los departamentos
                                                 foreach ($departamentos_residencia as $departamento_residencia) {
                                                     echo "<option value='{$departamento_residencia['id_departamento']}'>{$departamento_residencia['departamento']}</option>";
                                                 }
