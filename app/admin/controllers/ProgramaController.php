@@ -8,8 +8,10 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
     $nombrePrograma = $_POST['nombrePrograma'];
     $estadoInicial = $_POST['estadoInicial'];
     $descripcion = $_POST['descripcion'];
+    $id_area = $_POST['id_area'];
+    $tipo_programa = $_POST['tipo_programa'];
     // validamos que no hayamos recibido ningun dato vacio
-    if (isEmpty([$nombrePrograma, $estadoInicial])) {
+    if (isEmpty([$nombrePrograma, $estadoInicial, $id_area, $tipo_programa])) {
         showErrorFieldsEmpty("programas.php");
         exit();
     }
@@ -18,17 +20,19 @@ if ((isset($_POST["MM_formRegisterPrograma"])) && ($_POST["MM_formRegisterProgra
     $programaSelectQuery->bindParam(':nombrePrograma', $nombrePrograma);
     $programaSelectQuery->execute();
     $queryFetchProgram = $programaSelectQuery->fetchAll();
-    // // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
+    // CONDICIONALES DEPENDIENDO EL RESULTADO DE LA CONSULTA
     if ($queryFetchProgram) {
         // Si ya existe una area con ese nombre entonces cancelamos el registro y le indicamos al usuario
         showErrorOrSuccessAndRedirect("error", "Error de registro", "Los datos ingresados ya estan registrados", "programas.php");
         exit();
     } else {
         // Inserta los datos en la base de datos
-        $programRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, id_estado, descripcion) VALUES(:nombrePrograma, :estadoInicial, :descripcion)");
+        $programRegister = $connection->prepare("INSERT INTO programas_formacion(nombre_programa, id_estado, descripcion, id_area, tipo_programa) VALUES(:nombrePrograma, :estadoInicial, :descripcion, :id_area, :tipo_programa)");
         $programRegister->bindParam(':nombrePrograma', $nombrePrograma);
         $programRegister->bindParam(':estadoInicial', $estadoInicial);
         $programRegister->bindParam(':descripcion', $descripcion);
+        $programRegister->bindParam(':id_area', $id_area);
+        $programRegister->bindParam(':tipo_programa', $tipo_programa);
         $programRegister->execute();
         if ($programRegister) {
             showErrorOrSuccessAndRedirect("success", "Registro Exitoso", "Los datos se han registrado correctamente", "programas.php");

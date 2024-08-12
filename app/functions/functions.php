@@ -128,7 +128,105 @@ function cardStadicts($item, $table, $route, $nameTitle)
     }
 }
 
+// FUNCION 
+function itemStatesAprenttices($item, $table, $title, $description, $id_estado, $id_estado_se, $state)
+{
+    require_once("../../../database/connection.php");
+    $db = new Database();
+    $connection = $db->conectar();
+    $countTable = "SELECT COUNT(*) AS $item FROM $table WHERE id_tipo_usuario = 2 AND id_estado = $id_estado AND id_estado_se = $id_estado_se";
+    try {
+        $resultado = $connection->query($countTable);
+        $count = $resultado->fetch(PDO::FETCH_ASSOC)[$item];
+        if ($count >= 1) {
+            echo "
+                <li class='d-flex mb-4 pb-1'>
+                    <div class='avatar flex-shrink-0 me-3'>
+                        <span class='avatar-initial rounded bg-label-$state'><i class='bx bx-user'></i></span>
+                    </div>
+                    <div class='d-flex w-100 flex-wrap align-items-center justify-content-between gap-2'>
+                        <div class='me-2'>
+                            <h6 class='mb-0'>$title</h6>
+                            <small class='text-muted'>$description</small>
+                        </div>
+                        <div class='user-progress'>
+                            <small class='fw-semibold'>$count</small>
+                        </div>
+                    </div>
+                </li>
+            ";
+        } else {
+            echo "
+                                <li class='d-flex mb-4 pb-1'>
+                                <div class='avatar flex-shrink-0 me-3'>
+                                    <span class='avatar-initial rounded bg-label-$state'><i class='bx bx-user'></i></span>
+                                </div>
+                                <div class='d-flex w-100 flex-wrap align-items-center justify-content-between gap-2'>
+                                    <div class='me-2'>
+                                        <h6 class='mb-0'>$title</h6>
+                                        <small class='text-muted'>Sin registros</small>
+                                    </div>
+                                    <div class='user-progress'>
+                                        <small class='fw-semibold'>0</small>
+                                    </div>
+                                </div>
+                            </li>
+            ";
+        }
+    } catch (PDOException $e) {
+        echo "Error en la consulta: " . $e->getMessage();
+    }
+}
 
+
+function itemStatesFichas($item, $table, $title, $description, $id_estado, $id_estado_se, $state)
+{
+    require_once("../../../database/connection.php");
+    $db = new Database();
+    $connection = $db->conectar();
+    $countTable = "SELECT COUNT(*) AS $item FROM $table id_estado = $id_estado AND id_estado_se = $id_estado_se";
+    try {
+        $resultado = $connection->query($countTable);
+        $count = $resultado->fetch(PDO::FETCH_ASSOC)[$item];
+        if ($count >= 1) {
+            echo "
+                <li class='d-flex mb-4 pb-1'>
+                    <div class='avatar flex-shrink-0 me-3'>
+                        <span class='avatar-initial rounded bg-label-$state'><i class='bx bx-user'></i></span>
+                    </div>
+                    <div class='d-flex w-100 flex-wrap align-items-center justify-content-between gap-2'>
+                        <div class='me-2'>
+                            <h6 class='mb-0'>$title</h6>
+                            <small class='text-muted'>$description</small>
+                        </div>
+                        <div class='user-progress'>
+                            <small class='fw-semibold'>$count</small>
+                        </div>
+                    </div>
+                </li>
+            ";
+        } else {
+            echo "
+                                <li class='d-flex mb-4 pb-1'>
+                                <div class='avatar flex-shrink-0 me-3'>
+                                    <span class='avatar-initial rounded bg-label-$state'><i class='bx bx-user'></i></span>
+                                </div>
+                                <div class='d-flex w-100 flex-wrap align-items-center justify-content-between gap-2'>
+                                    <div class='me-2'>
+                                        <h6 class='mb-0'>$title</h6>
+                                        <small class='text-muted'>Sin registros</small>
+                                    </div>
+                                    <div class='user-progress'>
+                                        <small class='fw-semibold'>0</small>
+                                    </div>
+                                </div>
+                            </li>
+            ";
+        }
+    } catch (PDOException $e) {
+        echo "Error en la consulta: " . $e->getMessage();
+    }
+}
 
 
 // ------------------------ FUNCTIONS OR METHODS ---------------------------------------

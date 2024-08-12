@@ -23,7 +23,9 @@ require_once("../components/sidebar.php");
                         </div>
                         <div class="col-sm-5 text-center text-sm-left">
                             <div class="card-body pb-0 px-0 px-md-4">
-                                <img src="../../assets/img/illustrations/man-with-laptop-light.png" height="140" alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png" data-app-light-img="illustrations/man-with-laptop-light.png" />
+                                <img src="../../assets/img/illustrations/man-with-laptop-light.png" height="140"
+                                    alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                                    data-app-light-img="illustrations/man-with-laptop-light.png" />
                             </div>
                         </div>
                     </div>
@@ -40,67 +42,41 @@ require_once("../components/sidebar.php");
                     </div>
                     <div class="card-body mt-3">
                         <ul class="p-0 m-0">
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-success"><i class="bx bx-user"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Activos</h6>
-                                        <small class="text-muted">Aprendices Activos Trimestre</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">23.8k</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-danger"><i class="bx bx-user"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Retirados</h6>
-                                        <small class="text-muted">Aprendices Retirados</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">20.0k</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-secondary"><i class="bx bx-user"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Aplazados</h6>
-                                        <small class="text-muted">Aprendices Aplazados</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">849k</small>
+                            <?php
+                            itemStatesAprenttices("conteoAprendicesActivos", "usuarios", "Etapa Lectiva", "Aprendices Etapa Lectiva", "1", "2", "warning");
+                            itemStatesAprenttices("conteoAprendicesRetirados", "usuarios", "Etapa Productiva", "Aprendices Etapa Productiva", "8", "2", "info");
+                            itemStatesAprenttices("conteoAprendicesSenaEmpresa", "usuarios", "Sena Empresa", "Aprendices Sena Empresa", "1", "1", "success");
+                            itemStatesAprenttices("conteoAprendicesRetirados", "usuarios", "Retirados", "Aprendices Retirados", "9", "2", "danger");
+                            itemStatesAprenttices("conteoAprendicesInactivos", "usuarios", "Inactivos", "Aprendices Inactivos", "2", "2", "danger");
+                            itemStatesAprenttices("conteoAprendicesSuspendidos", "usuarios", "Suspendidos", "Aprendices Suspendidos", "2", "4", "danger");
+                            ?>
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-4">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-star"></i> Filtrar Aprendices
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="aprendices-lectiva.php">Aprendices Etapa
+                                                    Lectiva</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="aprendices-se.php">Aprendices SENA
+                                                    EMPRESA</a></li>
+                                            <li><a class="dropdown-item" href="aprendices-productiva.php">Aprendices
+                                                    Etapa
+                                                    Productiva</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="aprendices-historico.php">Aprendices
+                                                    Historico</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="aprendices-bloqueados.php">Aprendices
+                                                    Bloqueados</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                            </li>
-
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-user"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Sena Empresa</h6>
-                                        <small class="text-muted">Aprendices en Sena Empresa</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">849k</small>
-                                    </div>
-                                </div>
-                            </li>
-
-
-                            <div class="text-center"><a href="aprendices.php" class="btn btn-outline-primary">Ver
-                                    Aprendices</a></div>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -116,77 +92,9 @@ require_once("../components/sidebar.php");
                     </div>
                     <div class="card-body mt-3">
                         <ul class="p-0 m-0">
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-warning"><i class="bx bxs-user-account"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Gestion</h6>
-                                        <small class="text-muted">Total Fichas de Gestion</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">849k</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-success"><i class="bx bxs-user-account"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Agricola</h6>
-                                        <small class="text-muted">Total Fichas Agricolas</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">23.8k</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-secondary"><i class="bx bxs-user-account"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Agroindustria</h6>
-                                        <small class="text-muted">Total Fichas de Agroindustria</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">20.0k</small>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-danger"><i class="bx bxs-user-account"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Pecuaria</h6>
-                                        <small class="text-muted">Total Fichas de Pecuaria</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">849k</small>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li class="d-flex mb-4 pb-1">
-                                <div class="avatar flex-shrink-0 me-3">
-                                    <span class="avatar-initial rounded bg-label-primary"><i class="bx bxs-user-account"></i></span>
-                                </div>
-                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                    <div class="me-2">
-                                        <h6 class="mb-0">Mecanizacion</h6>
-                                        <small class="text-muted">Total Fichas de Mecanizacion</small>
-                                    </div>
-                                    <div class="user-progress">
-                                        <small class="fw-semibold">849k</small>
-                                    </div>
-                                </div>
-                            </li>
+                            <?php
+                            itemStatesFichas("conteoAprendicesActivos", "usuarios", "Etapa Lectiva", "Aprendices Etapa Lectiva", "1", "2", "warning");
+                            ?>
                             <div class="text-center"><a href="fichas.php" class="btn btn-outline-primary">Ver Fichas</a>
                             </div>
                         </ul>

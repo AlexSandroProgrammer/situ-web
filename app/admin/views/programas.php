@@ -1,7 +1,8 @@
 <?php
 $titlePage = "Listado de Programas";
 require_once("../components/sidebar.php");
-$getProgramas = $connection->prepare("SELECT * FROM programas_formacion INNER JOIN estados ON programas_formacion.id_estado = estados.id_estado WHERE programas_formacion.id_estado = estados.id_estado");
+$getProgramas = $connection->prepare("SELECT * FROM programas_formacion LEFT JOIN estados ON programas_formacion.id_estado = estados.id_estado 
+LEFT JOIN areas ON programas_formacion.id_area = areas.id_area");
 $getProgramas->execute();
 $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -17,11 +18,12 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                     <!-- Default Modal -->
                     <div class="col-lg-2 col-md-6">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formArea">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#formPrograma">
                             <i class="fas fa-layer-group"></i> Registrar
                         </button>
                         <!-- Modal -->
-                        <div class="modal fade" id="formArea" tabindex="-1" aria-hidden="true">
+                        <div class="modal fade" id="formPrograma" tabindex="-1" aria-hidden="true">
                             <form class="modal-dialog" action="" method="POST" autocomplete="off"
                                 name="formRegisterPrograma">
                                 <div class="modal-content">
@@ -31,6 +33,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
+                                        <!-- nombre del programa -->
                                         <div class="mb-3">
                                             <label class="form-label" for="nombre_programa">Nombre de Programa</label>
                                             <div class="input-group input-group-merge">
@@ -41,6 +44,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                     placeholder="Ingresa el nombre del programa" />
                                             </div>
                                         </div>
+                                        <!-- estado inicial -->
                                         <div class="mb-3">
                                             <label for="estadoInicial" class="form-label">Estado
                                                 Inicial</label>
@@ -52,9 +56,9 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                     <option value="">Seleccionar Estado...</option>
                                                     <?php
                                                     // CONSUMO DE DATOS DE LOS PROCESOS
-                                                    $listAreas = $connection->prepare("SELECT * FROM estados");
-                                                    $listAreas->execute();
-                                                    $estados = $listAreas->fetchAll(PDO::FETCH_ASSOC);
+                                                    $listEstados = $connection->prepare("SELECT * FROM estados");
+                                                    $listEstados->execute();
+                                                    $estados = $listEstados->fetchAll(PDO::FETCH_ASSOC);
                                                     // Verificar si no hay datos
                                                     if (empty($estados)) {
                                                         echo "<option value=''>No hay datos...</option>";
@@ -68,6 +72,47 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                 </select>
                                             </div>
                                         </div>
+                                        <!-- area del programa -->
+                                        <div class="mb-3">
+                                            <label for="id_area" class="form-label">Area del Programa</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="id_area-2" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i></span>
+                                                <select class="form-select" name="id_area" required name="id_area">
+                                                    <option value="">Seleccionar Area...</option>
+                                                    <?php
+                                                    // CONSUMO DE DATOS DE LOS PROCESOS
+                                                    $listAreas = $connection->prepare("SELECT * FROM areas");
+                                                    $listAreas->execute();
+                                                    $areas = $listAreas->fetchAll(PDO::FETCH_ASSOC);
+                                                    // Verificar si no hay datos
+                                                    if (empty($areas)) {
+                                                        echo "<option value=''>No hay datos...</option>";
+                                                    } else {
+                                                        // Iterar sobre los areas
+                                                        foreach ($areas as $area) {
+                                                            echo "<option value='{$area['id_area']}'>{$area['nombreArea']}</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- area del programa -->
+                                        <div class="mb-3">
+                                            <label for="tipo_programa" class="form-label">Tipo de Programa</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="tipo_programa-2" class="input-group-text"><i
+                                                        class="fas fa-layer-group"></i></span>
+                                                <select class="form-select" name="tipo_programa" required
+                                                    name="tipo_programa">
+                                                    <option value="">Seleccionar Tipo ...</option>
+                                                    <option value="Tecnologo">Tecnologo</option>
+                                                    <option value="Tecnico">Tecnico</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- descripcion del programa -->
                                         <div class="mb-3">
                                             <label class="form-label" for="input-programa">Descripcion del
                                                 Programa</label>
@@ -104,7 +149,8 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                 if (!empty($_GET["id_programa"])) {
                     $id_programa = $_GET["id_programa"];
                     // CONSUMO DE DATOS DE LOS PROCESOS
-                    $listPrograma = $connection->prepare("SELECT * FROM programas_formacion INNER JOIN estados ON programas_formacion.id_estado = estados.id_estado WHERE id_programa = :id_programa AND programas_formacion.id_estado = estados.id_estado");
+                    $listPrograma = $connection->prepare("SELECT * FROM programas_formacion INNER JOIN areas ON programas_formacion.id_area = areas.id_area 
+                    INNER JOIN estados ON programas_formacion.id_estado = estados.id_estado WHERE id_programa = :id_programa AND programas_formacion.id_estado = estados.id_estado");
                     $listPrograma->bindParam(":id_programa", $id_programa);
                     $listPrograma->execute();
                     $programaSeleccionado = $listPrograma->fetch(PDO::FETCH_ASSOC);
@@ -129,6 +175,27 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                                 class="form-control" required name="nombre_programa"
                                                 id="nombre_programa" placeholder="Ingresa el nombre del programa"
                                                 value="<?php echo $programaSeleccionado['nombre_programa']  ?>" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="id_area" class="form-label">Area del Programa</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="id_area-2" class="input-group-text"><i
+                                                    class="fas fa-layer-group"></i></span>
+                                            <select class="form-select" required name="id_area" id="id_area">
+                                                <option value="<?php echo $programaSeleccionado['id_area'] ?>">
+                                                    <?php echo $programaSeleccionado['nombreArea'] ?></option>
+                                                <?php
+                                                        // CONSUMO DE DATOS DE LOS PROCESOS
+                                                        $list_areas = $connection->prepare("SELECT * FROM areas");
+                                                        $list_areas->execute();
+                                                        $areas = $list_areas->fetchAll(PDO::FETCH_ASSOC);
+                                                        // Iterar sobre los procedimientos
+                                                        foreach ($areas as $area) {
+                                                            echo "<option value='{$area['id_area']}'>{$area['nombreArea']}</option>";
+                                                        }
+                                                        ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -233,6 +300,7 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                     <tr>
                                         <th>Acciones</th>
                                         <th>ID Programa</th>
+                                        <th>Area</th>
                                         <th>Nombre de Programa</th>
                                         <th>Descripcion</th>
                                         <th>Estado</th>
@@ -261,8 +329,9 @@ $programas = $getProgramas->fetchAll(PDO::FETCH_ASSOC);
                                             </form>
                                         </td>
                                         <td><?php echo $programa['id_programa'] ?></td>
+                                        <td class="w-px-200"><?php echo $programa['nombreArea'] ?></td>
                                         <td><?php echo $programa['nombre_programa'] ?></td>
-                                        <td class="w-px-500"><?php echo $programa['descripcion'] ?></td>
+                                        <td class="w-px-350"><?php echo $programa['descripcion'] ?></td>
                                         <td class="w-px-200"><?php echo $programa['estado'] ?></td>
                                     </tr>
                                     <?php
