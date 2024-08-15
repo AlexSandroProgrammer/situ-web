@@ -50,34 +50,10 @@ require_once("../components/sidebar.php");
                             itemStatesAprenttices("conteoAprendicesInactivos", "usuarios", "Inactivos", "Aprendices Inactivos", "2", "2", "danger");
                             itemStatesAprenttices("conteoAprendicesSuspendidos", "usuarios", "Suspendidos", "Aprendices Suspendidos", "2", "4", "danger");
                             ?>
-                            <div class="row">
-                                <div class="col-xl-3 col-lg-4">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-star"></i> Filtrar Aprendices
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="aprendices-lectiva.php">Aprendices Etapa
-                                                    Lectiva</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="aprendices-se.php">Aprendices SENA
-                                                    EMPRESA</a></li>
-                                            <li><a class="dropdown-item" href="aprendices-productiva.php">Aprendices
-                                                    Etapa
-                                                    Productiva</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="aprendices-historico.php">Aprendices
-                                                    Historico</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="aprendices-bloqueados.php">Aprendices
-                                                    Bloqueados</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
                         </ul>
+                        <div class="text-center"><a href="aprendices-lectiva.php" class="btn btn-outline-primary">Ver
+                                Aprendices</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,7 +69,26 @@ require_once("../components/sidebar.php");
                     <div class="card-body mt-3">
                         <ul class="p-0 m-0">
                             <?php
-                            itemStatesFichas("conteoAprendicesActivos", "usuarios", "Etapa Lectiva", "Aprendices Etapa Lectiva", "1", "2", "warning");
+                            itemStatesFichas(
+                                "conteoFichasLectiva",
+                                "fichas",
+                                "Fichas Etapa Lectiva",
+                                "Fichas Activa Etapa Lectiva",
+                                "1",
+                                "2",
+                                "success"
+                            );
+                            ?>
+                            <?php
+                            itemStatesFichas(
+                                "conteoFichasSenaEmpresa",
+                                "fichas",
+                                "Fichas Etapa Lectiva",
+                                "Fichas Activa Etapa Lectiva",
+                                "1",
+                                "2",
+                                "success"
+                            );
                             ?>
                             <div class="text-center"><a href="fichas.php" class="btn btn-outline-primary">Ver Fichas</a>
                             </div>
