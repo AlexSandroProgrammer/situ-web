@@ -76,20 +76,47 @@ require_once("../components/sidebar.php");
                                 "Fichas Activa Etapa Lectiva",
                                 "1",
                                 "2",
-                                "success"
+                                "info"
                             );
-                            ?>
-                            <?php
                             itemStatesFichas(
                                 "conteoFichasSenaEmpresa",
                                 "fichas",
-                                "Fichas Etapa Lectiva",
-                                "Fichas Activa Etapa Lectiva",
+                                "Fichas Sena Empresa",
+                                "Fichas Sena Empresa",
                                 "1",
-                                "2",
+                                "1",
                                 "success"
                             );
+                            itemStatesFichas(
+                                "conteoFichasBloqueadas",
+                                "fichas",
+                                "Fichas Bloqueadas",
+                                "Fichas Bloqueadas",
+                                "5",
+                                "5",
+                                "danger",
+                            );
+                            itemStatesFichas(
+                                "conteoFichasEtapaProductiva",
+                                "fichas",
+                                "Fichas Etapa Productiva",
+                                "Fichas Etapa Productiva",
+                                "8",
+                                "8",
+                                "dark",
+                            );
+                            itemStatesFichas(
+                                "conteoFichasRetiradas",
+                                "fichas",
+                                "Fichas Retiradas",
+                                "Fichas Retiradas",
+                                "9",
+                                "9",
+                                "white",
+                            );
                             ?>
+
+
                             <div class="text-center"><a href="fichas.php" class="btn btn-outline-primary">Ver Fichas</a>
                             </div>
                         </ul>
